@@ -1,0 +1,71 @@
+alias vim='nvim'
+alias help='cat ~/.oh-my-zsh/custom/aliases.zsh'
+alias aliases='vim ~/.aliases'
+
+alias my='sudo chown -R `id -u`'
+
+# SHORTCUTS
+alias c='clear'
+alias h='history'
+alias r='source ~/.zshrc'
+alias version='lsb_release -a'
+alias kernel='uname -r'
+alias sl='xset dpms force off'
+alias upgrade-system='do-release-upgrade'
+alias pushCloud='$HOME/Scripts/pushCloud.sh'
+alias pullCloud='$HOME/Scripts/pullCloud.sh'
+alias weather='curl wttr.in'
+alias library='cd /home/alex/OneDrive/Libraries/'
+alias cpackages='dpkg --list | wc --lines'
+#Sudo	
+alias su='sudo '
+alias shutdown='sudo shutdown -r now'
+alias stopB='sudo service bluetooth stop'
+alias startB='sudo service bluetooth start'
+alias plugins='vim $HOME/.config/nvim/init.vim'
+
+# APT GET Stuff
+alias u='sudo nala upgrade -y'
+alias up='sudo nala update'
+alias ug='sudo nala upgrade -y'
+alias i='sudo nala install -y'
+alias rem='sudo nala remove'
+alias purge='sudo nala purge'
+alias ar='sudo nala autoremove -y'
+alias aar='sudo add-apt-repository -y'
+alias dug='sudo apt-get dist-upgrade -y' ../..'
+
+# EXTRACTING Stuff
+alias tgz='tar -cvvzf'
+alias tbz2='tar -cvvjf'
+alias utgz='tar -xvvzf'
+alias utbz2='tar -xvvjf'
+alias mktar='tar -cvvf'
+alias untar='tar -xvvf'
+
+#Clipboardhelper
+# MEDIA
+alias youtube-dl='youtube-dl -t --audio-format mp3 --extract-audio --audio-quality 192'
+alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
+
+# LS Stuff
+alias ls='ls -F --color=always --group-directories-first'
+alias ll='ls -la'
+alias ld="ls -d */"
+alias la='ls -CA'
+alias l='ls'
+
+# GIT Stuff
+alias gs='git status'
+alias gc='git commit -m'
+alias gca='git commit -am'
+alias ga='git add'
+alias gaa='git add .'
+
+# CD Stuff
+alias .='cd && ld'
+alias ..='cd .. && ld'
+alias ...='cd ../.. && ld'
+alias ,='cd'
+alias ,,='cd ..'
+alias ,,,='cd
