@@ -17,6 +17,7 @@ alias pullCloud='$HOME/Scripts/pullCloud.sh'
 alias weather='curl wttr.in'
 alias library='cd /home/alex/OneDrive/Libraries/'
 alias cpackages='dpkg --list | wc --lines'
+alias archive='cd $HOME/Documents/archivebox && archivebox server'
 #Sudo	
 alias su='sudo '
 alias shutdown='sudo shutdown -r now'

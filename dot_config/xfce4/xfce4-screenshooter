@@ -4,4 +4,8 @@ last_extension=png
 screenshot_dir=file:/home/alex/Pictures
 enable_imgur_upload=true
 action=2
+delay=0
+region=1
+show_mouse=1
+show_border=1
 

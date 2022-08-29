@@ -21,4 +21,8 @@
   <property name="last-details-view-column-widths" type="string" value="50,136,50,50,1483,50,50,63,50,67"/>
   <property name="last-side-pane" type="string" value="ThunarShortcutsPane"/>
   <property name="last-menubar-visible" type="bool" value="true"/>
+  <property name="misc-single-click" type="bool" value="false"/>
+  <property name="misc-directory-specific-settings" type="bool" value="true"/>
+  <property name="misc-open-new-window-as-tab" type="bool" value="true"/>
+  <property name="misc-confirm-close-multiple-tabs" type="bool" value="false"/>
 </channel>
