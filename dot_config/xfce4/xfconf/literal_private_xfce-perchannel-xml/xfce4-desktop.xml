@@ -18,7 +18,7 @@
   <property name="backdrop" type="empty">
     <property name="screen0" type="empty">
       <property name="monitor0" type="empty">
-        <property name="image-path" type="string" value="/home/alex/Downloads/wallpapers/ign_outer_space.png"/>
+        <property name="image-path" type="string" value="/home/alex/Downloads/linux-1657137595117-2508.jpg"/>
         <property name="image-style" type="int" value="0"/>
         <property name="image-show" type="bool" value="true"/>
         <property name="workspace0" type="empty">
@@ -82,32 +82,10 @@
         <property name="workspace3" type="empty">
           <property name="color-style" type="int" value="0"/>
           <property name="image-style" type="int" value="5"/>
-          <property name="last-image" type="string" value="/usr/share/wallpapers/ign_astronaut.png"/>
+          <property name="last-image" type="string" value="/home/alex/wallpaper/linux-1657137595117-2508.jpg"/>
           <property name="backdrop-cycle-enable" type="bool" value="true"/>
           <property name="backdrop-cycle-period" type="int" value="2"/>
           <property name="backdrop-cycle-timer" type="uint" value="9999"/>
-        </property>
-      </property>
-      <property name="monitorHDMI-1" type="empty">
-        <property name="workspace0" type="empty">
-          <property name="color-style" type="int" value="0"/>
-          <property name="image-style" type="int" value="5"/>
-          <property name="last-image" type="string" value="/usr/share/xfce4/backdrops/xubuntu-wallpaper.png"/>
-        </property>
-        <property name="workspace1" type="empty">
-          <property name="color-style" type="int" value="0"/>
-          <property name="image-style" type="int" value="5"/>
-          <property name="last-image" type="string" value="/usr/share/xfce4/backdrops/xubuntu-wallpaper.png"/>
-        </property>
-        <property name="workspace2" type="empty">
-          <property name="color-style" type="int" value="0"/>
-          <property name="image-style" type="int" value="5"/>
-          <property name="last-image" type="string" value="/usr/share/xfce4/backdrops/xubuntu-wallpaper.png"/>
-        </property>
-        <property name="workspace3" type="empty">
-          <property name="color-style" type="int" value="0"/>
-          <property name="image-style" type="int" value="5"/>
-          <property name="last-image" type="string" value="/usr/share/xfce4/backdrops/xubuntu-wallpaper.png"/>
         </property>
       </property>
     </property>

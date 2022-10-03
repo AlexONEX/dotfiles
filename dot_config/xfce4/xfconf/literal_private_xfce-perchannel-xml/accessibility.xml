@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <channel name="accessibility" version="1.0">
-  <property name="StickyKeys" type="bool" value="false">
-    <property name="TwoKeysDisable" type="bool" value="false"/>
-    <property name="LatchToLock" type="bool" value="false"/>
+  <property name="StickyKeys" type="bool" value="true">
+    <property name="TwoKeysDisable" type="bool" value="true"/>
   </property>
   <property name="SlowKeys" type="bool" value="false">
     <property name="Delay" type="int" value="522"/>

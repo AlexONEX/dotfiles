@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<channel name="xfce4-panel" version="1.0">
+  <property name="panels" type="array">
+    <value type="int" value="1"/>
+    <property name="dark-mode" type="bool" value="true"/>
+    <property name="panel-1" type="empty">
+      <property name="position" type="string" value="p=2;x=1824;y=25"/>
+      <property name="size" type="uint" value="20"/>
+      <property name="position-locked" type="bool" value="true"/>
+      <property name="length" type="uint" value="100"/>
+      <property name="plugin-ids" type="array">
+        <value type="int" value="17"/>
+        <value type="int" value="13"/>
+        <value type="int" value="16"/>
+        <value type="int" value="8"/>
+        <value type="int" value="15"/>
+        <value type="int" value="14"/>
+      </property>
+      <property name="background-style" type="uint" value="0"/>
+      <property name="disable-struts" type="bool" value="false"/>
+      <property name="icon-size" type="uint" value="16"/>
+    </property>
+  </property>
+  <property name="plugins" type="empty">
+    <property name="plugin-13" type="string" value="separator">
+      <property name="expand" type="bool" value="true"/>
+      <property name="style" type="uint" value="0"/>
+    </property>
+    <property name="plugin-14" type="string" value="clock"/>
+    <property name="plugin-15" type="string" value="power-manager-plugin"/>
+    <property name="plugin-16" type="string" value="pulseaudio">
+      <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
+      <property name="mpris-players" type="string" value="chromium.instance110127;chromium.instance137402;chromium.instance1737;chromium.instance17803;chromium.instance1807;chromium.instance1895;chromium.instance1914;chromium.instance21204;chromium.instance2531;chromium.instance2694;chromium.instance2757;chromium.instance2828;chromium.instance3009;chromium.instance3034;chromium.instance3041;chromium.instance3103;chromium.instance3118;chromium.instance3257;chromium.instance3707;chromium.instance4759;chromium.instance4876;chromium.instance54877;chromium.instance5683;chromium.instance5718;chromium.instance7130;chromium.instance7601;chromium.instance81148;firefox.instance36006;spotify;vlc"/>
+    </property>
+    <property name="plugin-17" type="string" value="whiskermenu"/>
+    <property name="plugin-8" type="string" value="systray">
+      <property name="known-legacy-items" type="array">
+        <value type="string" value="thunar"/>
+        <value type="string" value="ulauncher"/>
+      </property>
+      <property name="known-items" type="array">
+        <value type="string" value="vlc"/>
+        <value type="string" value="blueman"/>
+        <value type="string" value="nm-applet"/>
+        <value type="string" value="ulauncher"/>
+      </property>
+      <property name="square-icons" type="bool" value="false"/>
+      <property name="single-row" type="bool" value="true"/>
+      <property name="icon-size" type="int" value="0"/>
+      <property name="symbolic-icons" type="bool" value="true"/>
+      <property name="menu-is-primary" type="bool" value="false"/>
+      <property name="hide-new-items" type="bool" value="false"/>
+    </property>
+  </property>
+  <property name="configver" type="int" value="2"/>
+</channel>

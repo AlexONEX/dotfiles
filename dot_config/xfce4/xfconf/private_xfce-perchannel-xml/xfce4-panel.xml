@@ -10,12 +10,12 @@
       <property name="position-locked" type="bool" value="true"/>
       <property name="length" type="uint" value="100"/>
       <property name="plugin-ids" type="array">
-        <value type="int" value="17"/>
         <value type="int" value="13"/>
+        <value type="int" value="2"/>
         <value type="int" value="16"/>
-        <value type="int" value="8"/>
         <value type="int" value="15"/>
         <value type="int" value="14"/>
+        <value type="int" value="1"/>
       </property>
       <property name="background-style" type="uint" value="0"/>
       <property name="disable-struts" type="bool" value="false"/>
@@ -31,26 +31,19 @@
     <property name="plugin-15" type="string" value="power-manager-plugin"/>
     <property name="plugin-16" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
-      <property name="mpris-players" type="string" value="chromium.instance110127;chromium.instance137402;chromium.instance1737;chromium.instance17803;chromium.instance1807;chromium.instance1895;chromium.instance1914;chromium.instance21204;chromium.instance2531;chromium.instance2694;chromium.instance2757;chromium.instance2828;chromium.instance3009;chromium.instance3034;chromium.instance3041;chromium.instance3103;chromium.instance3118;chromium.instance3257;chromium.instance3707;chromium.instance4759;chromium.instance4876;chromium.instance54877;chromium.instance5683;chromium.instance5718;chromium.instance7130;chromium.instance7601;chromium.instance81148;firefox.instance36006;spotify;vlc"/>
+      <property name="mpris-players" type="string" value="chromium.instance110127;chromium.instance125982;chromium.instance137402;chromium.instance1737;chromium.instance17803;chromium.instance1807;chromium.instance1895;chromium.instance1914;chromium.instance20900;chromium.instance21204;chromium.instance2531;chromium.instance2694;chromium.instance2757;chromium.instance2828;chromium.instance3009;chromium.instance3021;chromium.instance3034;chromium.instance3041;chromium.instance3084;chromium.instance3103;chromium.instance3118;chromium.instance3142;chromium.instance3246;chromium.instance3253;chromium.instance3257;chromium.instance3258;chromium.instance3271;chromium.instance3286;chromium.instance3304;chromium.instance3328;chromium.instance3333;chromium.instance3346;chromium.instance3351;chromium.instance3360;chromium.instance3369;chromium.instance3372;chromium.instance3388;chromium.instance3394;chromium.instance3396;chromium.instance3406;chromium.instance3455;chromium.instance3474;chromium.instance3494;chromium.instance3707;chromium.instance43324;chromium.instance4600;chromium.instance4626;chromium.instance4725;chromium.instance4759;chromium.instance4769;chromium.instance4794;chromium.instance4818;chromium.instance4876;chromium.instance54877;chromium.instance5683;chromium.instance5718;chromium.instance5946;chromium.instance6067;chromium.instance7130;chromium.instance7311;chromium.instance7601;chromium.instance81148;chromium.instance8697;chromium.instance9377;chromium.instance9588;firefox.instance36006;spotify;vlc"/>
     </property>
-    <property name="plugin-17" type="string" value="whiskermenu"/>
-    <property name="plugin-8" type="string" value="systray">
-      <property name="known-legacy-items" type="array">
-        <value type="string" value="thunar"/>
-        <value type="string" value="ulauncher"/>
+    <property name="plugin-1" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="16624238231.desktop"/>
       </property>
-      <property name="known-items" type="array">
-        <value type="string" value="vlc"/>
-        <value type="string" value="blueman"/>
-        <value type="string" value="nm-applet"/>
-        <value type="string" value="ulauncher"/>
+    </property>
+    <property name="plugin-2" type="string" value="indicator">
+      <property name="known-indicators" type="array">
+        <value type="string" value="libayatana-application.so"/>
       </property>
       <property name="square-icons" type="bool" value="false"/>
-      <property name="single-row" type="bool" value="true"/>
-      <property name="icon-size" type="int" value="0"/>
-      <property name="symbolic-icons" type="bool" value="true"/>
-      <property name="menu-is-primary" type="bool" value="false"/>
-      <property name="hide-new-items" type="bool" value="false"/>
+      <property name="align-left" type="bool" value="true"/>
     </property>
   </property>
   <property name="configver" type="int" value="2"/>
