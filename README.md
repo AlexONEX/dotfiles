@@ -1,5 +1,5 @@
 # AlexONEX/dotfiles
-### OS: Xubuntu 22.04.1 LTS x86_64
+### OS: Xubuntu 22.04
 ### Shell: zsh
 ### DE: XFCE 
 ### WM: XFwm4
