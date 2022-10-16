@@ -25,7 +25,7 @@ nnoremap <leader>n :NERDTreeToggle<CR>
 syntax enable
 setlocal spell
 set spelllang=es_ar
-#set spelllang = en_us
+"set spelllang = en_us
 set tabstop=2
 set shiftwidth=2
 set expandtab
