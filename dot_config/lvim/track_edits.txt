@@ -1,2 +1,0 @@
-In cmp.lua changed from <TAB> to <C-a> to autocomplete copilot and LSP suggestions with C-a.
-Also changed: https://github.com/LunarVim/LunarVim/issues/2597
