@@ -16,6 +16,11 @@ Plug 'sirver/ultisnips'
 	let g:python3_host_prog = '/usr/bin/python3'
 	let g:UltiSnipsSnippetsDir = '~/.config/nvim/ultisnips'
 	let g:UltiSnipsSnippetDirectories=['ultisnips']
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-surround' 
+Plug 'Chiel92/vim-autoformat'
 Plug 'honza/vim-snippets'
 call plug#end()
 
@@ -31,6 +36,9 @@ set shiftwidth=2
 set expandtab
 set number
 set relativenumber
+set formatoptions=tc
+set fo+=a
+set textwidth=80
 
 map <Space> <Leader>
 

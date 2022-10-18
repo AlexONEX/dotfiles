@@ -1,4 +1,5 @@
-alias vim='lvim'
+alias vim='nvim'
+alias vconfig='nvim $HOME/.config/nvim/init.vim'
 alias emacs="(emacsclient -c -a 'emacs' & > /dev/null)"
 alias help='cat ~/.oh-my-zsh/custom/aliases.zsh'
 alias aliases='vim ~/.aliases'
@@ -9,6 +10,7 @@ alias obb='conda activate obb && python $HOME/Github/Repos/OpenBBTerminal/termin
 alias invchad='git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1 && nvim'
 alias pnvim='rm -rf ~/.config/nvim && rm -rf ~/.local/share/nvim && rm -rf ~/.cache/nvim'
 alias rm='rm -i'
+alias pullAndroid='cd $HOME/Pictures/Android && adb pull /storage/emulated/0/Pictures && adb pull /storage/emulated/0/Dcim'
 alias c='clear'
 alias h='history'
 alias r='source ~/.zshrc'
