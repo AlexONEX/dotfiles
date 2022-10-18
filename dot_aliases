@@ -1,8 +1,7 @@
 alias vim='nvim'
-alias vconfig='nvim $HOME/.config/nvim/init.vim'
-alias emacs="(emacsclient -c -a 'emacs' & > /dev/null)"
-alias help='cat ~/.oh-my-zsh/custom/aliases.zsh'
-alias aliases='vim ~/.aliases'
+alias vconfig='nvim $HOME/.config/nvim/init.vim' 
+alias emacs="(emacsclient -c -a 'emacs' & > /dev/null)" 
+alias help='cat ~/.oh-my-zsh/custom/aliases.zsh' alias aliases='vim ~/.aliases'
 alias my='sudo chown -R `id -u`'
 
 # SHORTCUTS

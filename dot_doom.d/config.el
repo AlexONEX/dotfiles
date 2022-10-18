@@ -81,3 +81,5 @@
          :map copilot-completion-map
          ("<tab>" . 'copilot-accept-completion)
          ("TAB" . 'copilot-accept-completion)))
+
+(setq! doom-unicode-font (font-spec :family "JetBrainsMono Nerd Font" :size 11))
