@@ -1,4 +1,5 @@
 alias vim='nvim'
+alias ideb='sudo dpkg -i'
 alias vconfig='nvim $HOME/.config/nvim/init.vim' 
 alias emacs="(emacsclient -c -a 'emacs' & > /dev/null)" 
 alias help='cat ~/.oh-my-zsh/custom/aliases.zsh' alias aliases='vim ~/.aliases'
@@ -25,6 +26,9 @@ alias cpackages='dpkg --list | wc --lines'
 alias archive='cd $HOME/Documents/archivebox && archivebox server'
 alias playlist='yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"'
 alias audio='yt-dlp --extract-audio --audio-format "wav"'
+alias aPlaylist='yt-dlp --format bestaudio --extract-audio --audio-format "wav" --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist '
+
+
 
 #Sudo	
 alias su='sudo '

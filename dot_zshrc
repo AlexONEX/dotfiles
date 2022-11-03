@@ -87,15 +87,10 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
-path+=('$HOME/.local/bin')
-export PATH="/usr/local/go/bin:$PATH"
-export DENO_INSTALL="/$HOME/.deno"
-export PATH="$DENO_INSTALL/bin:$PATH"
+#export PATH="/usr/local/go/bin:$PATH"
+#export DENO_INSTALL="/$HOME/.deno"
 export PATH="$HOME/.emacs.d/bin:$PATH"
-export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.npm-global/bin:$PATH"
-export PATH="$HOME/.emacs.d/doomemacs/bin:$PATH"
-export PATH="$HOME/developement/flutter/bin/:$PATH"
 export PATH="/usr/src/linux-headers-$(uname -r)/include:$PATH"
 export PATH="/$HOME/Scripts/:$PATH"
 export PATH="/$HOME/go/bin/:$PATH"
@@ -158,4 +153,12 @@ lazyg() {
 	git add .
 	git commit -m "$1"
 	git push
+}
+
+path_remove() {
+  # Delete path by parts so we can never accidentally remove sub paths
+  if [ "$PATH" == "$1" ] ; then PATH="" ; fi
+  PATH=${PATH//":$1:"/":"} # delete any instances in the middle
+  PATH=${PATH/#"$1:"/} # delete any instance at the beginning
+  PATH=${PATH/%":$1"/} # delete any instance in the at the end
 }

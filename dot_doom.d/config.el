@@ -30,9 +30,10 @@
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
+;; available. You can either set `doo-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-nord)
+;;(setq doom-theme 'dracula)
+(setq doom-theme 'doom-dracula)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -74,6 +75,23 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they a
+(setq! doom-unicode-font (font-spec :family "JetBrainsMono Nerd Font" :size 11))
+(setq gc-cons-threshold 20000000)
+
+(setq make-backup-files nil)
+(setq large-file-warning-threshold 20000000)
+
+(setq sentence-end-double-space nil)
+(fset 'yes-or-no-p 'y-or-n-p)
+
+(display-time-mode t)
+
+
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
   :bind (("C-TAB" . 'copilot-accept-completion-by-word)
@@ -82,4 +100,3 @@
          ("<tab>" . 'copilot-accept-completion)
          ("TAB" . 'copilot-accept-completion)))
 
-(setq! doom-unicode-font (font-spec :family "JetBrainsMono Nerd Font" :size 11))
