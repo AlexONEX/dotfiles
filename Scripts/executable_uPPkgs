@@ -5,4 +5,5 @@ python3 -m pip install --force-reinstall https://github.com/yt-dlp/yt-dlp/archiv
 python3 -m pip install --force-reinstall lightnovel-crawler
 
 #spotify-downloader
-python3 -m pip install --force-reinstall spotify-downloader
+python3 -m pip install --force-reinstall spotdl 
+

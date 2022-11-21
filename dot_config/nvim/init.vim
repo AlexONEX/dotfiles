@@ -22,16 +22,16 @@ call plug#end()
 colorscheme nord
 
 nnoremap <leader>n :NERDTreeToggle<CR>
-syntax enable
-setlocal spell
-set spelllang=es_ar
+"syntax enable
+"setlocal spell
+"set spelllang=es_ar
 "set spelllang = en_us
 set tabstop=2
 set shiftwidth=2
 set expandtab
 set number
 set relativenumber
-set textwidth=80
+"set textwidth=80
 
 map <Space> <Leader>
 
