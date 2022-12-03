@@ -1,0 +1,10 @@
+#!/bin/sh
+eget dnote/dnote
+eget naggie/dstask
+eget neovim/neovim/
+eget ClementTsang/bottom
+eget jesseduffield/lazygit
+eget rclone/rclone
+eget achannarasappa/ticker
+eget dipu-bd/lightnovel-crawler
+
