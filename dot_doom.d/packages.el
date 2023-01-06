@@ -48,10 +48,6 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 
-;(unpin! t)
-(package! copilot
-  :recipe (:host github :repo "zerolfx/copilot.el" :files ("*.el" "dist")))
-
 ;(package! nov.el
 ;  :recipe (:host github :repo "wasanasa/nov.el" :files ("*.el")))
 (package! copilot

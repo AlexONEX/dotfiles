@@ -1,19 +1,14 @@
-alias vim='lvim'
-#alias vim='nvim'
-alias task='dstask'
-alias note='dnote'
-alias j='jump'
-
-alias ideb='sudo dpkg -i'
-alias vconfig='nvim $HOME/.config/nvim/init.vim' 
-alias help='cat ~/.oh-my-zsh/custom/aliases.zsh' alias aliases='vim ~/.aliases'
-alias my='sudo chown -R `id -u`'
-alias komikku='(flatpak run info.febvre.Komikku & > /dev/null)'
-
 # SHORTCUTS
-alias obb='conda activate obb && python $HOME/Github/Repos/OpenBBTerminal/terminal.py'
-alias invchad='git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1 && nvim'
-alias cargoList='cargo install --list'
+alias vim='nvim'
+alias em='emacsclient'
+alias emw='emacsclient -c'
+alias task='dstask'
+alias j='jump'
+alias ideb='sudo dpkg -i'
+alias help='cat ~/.oh-my-zsh/custom/aliases.zsh'
+alias aliases='vim ~/.aliases'
+alias my='sudo chown -R `id -u`'
+alias cargoLs='cargo install --list'
 alias rm='rm -i'
 alias pullAndroid='cd $HOME/Pictures/Android && adb pull /storage/emulated/0/Pictures && adb pull /storage/emulated/0/Dcim'
 alias c='clear'
@@ -31,9 +26,7 @@ alias playlist='yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"'
 alias audio='yt-dlp --extract-audio --audio-format "wav"'
 alias aPlaylist='yt-dlp --format bestaudio --extract-audio --audio-format "wav" --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist '
 
-
-
-#Sudo	
+#Sudo
 alias su='sudo '
 alias shutdown='sudo shutdown -r now'
 alias stopB='sudo service bluetooth stop'
