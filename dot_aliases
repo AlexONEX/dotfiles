@@ -1,7 +1,7 @@
 # SHORTCUTS
 alias vim='nvim'
-alias em='emacsclient'
-alias emw='emacsclient -c'
+alias e='emacsclient -nw'
+alias em='emacsclient -c'
 alias task='dstask'
 alias j='jump'
 alias ideb='sudo dpkg -i'
