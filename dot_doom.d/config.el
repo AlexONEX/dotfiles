@@ -325,3 +325,6 @@
 
 ;; Improve performance of very long lines
 (setq-default bidi-display-reordering 'left-to-right)
+
+;; Automatically load latex-preview-pane
+(latex-preview-pane-enable)
