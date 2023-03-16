@@ -54,4 +54,6 @@ return require('packer').startup(function(use)
       requires = {'kyazdani42/nvim-web-devicons', opt = true}
   }
   use 'lambdalisue/suda.vim'
+  use 'ntessore/unicode-math.vim'
+  use 'arthurxavierx/vim-unicoder'
 end)
