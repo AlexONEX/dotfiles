@@ -1,4 +1,7 @@
 vim.opt.guicursor = ""
+-- Set limit width for text to 80 columns
+vim.opt.textwidth = 70
+-- Set wrapmargin to 1
 
 vim.opt.nu = true
 vim.opt.relativenumber = true
