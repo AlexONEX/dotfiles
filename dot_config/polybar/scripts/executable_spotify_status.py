@@ -129,13 +129,13 @@ try:
             album = label_with_font.format(font=font, label=album)
 
         # Add 4 to trunclen to account for status symbol, spaces, and other padding characters
-        print(truncate(output.format(artist=artist, 
-                                     song=song, 
-                                     play_pause=play_pause, 
+        print(truncate(output.format(artist=artist,
+                                     song=song,
+                                     play_pause=play_pause,
                                      album=album), trunclen + 4))
 
 except Exception as e:
     if isinstance(e, dbus.exceptions.DBusException):
-        print(' Start some music!')
+        print('Spotify ')
     else:
         print(e)

@@ -17,7 +17,7 @@ def get_formatted_speed(s,bytes=False):
     if bytes:
         return f"{(s/8):.2f} {unit}iB/s"
     return f"{s:.2f} {unit}ib/s"
-    
+
 
 
 parser = argparse.ArgumentParser()

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-#Restore wallpaper
-
 JFILE="$HOME/.config/polybar/scripts/toggle.json"
 WDIR="$HOME/.config/polybar/wallpapers/"
 
@@ -23,7 +21,7 @@ else
 fi
 
 # Terminate already running bar instances
-# If all your bars have ipc enabled, you can use 
+# If all your bars have ipc enabled, you can use
 # polybar-msg cmd quit
 # Otherwise you can use the nuclear option:
 killall -q polybar
@@ -35,6 +33,5 @@ echo "---" | tee -a /tmp/polybar-bottom-dummy.log
 polybar bar1 | tee -a /tmp/polybar1.log & disown
 polybar bottom | tee -a /tmp/polybar-bottom.log & disown
 polybar dummy | tee -a /tmp/polybar-bottom-dummy.log & disown
-
 
 echo "Bars launched..."
