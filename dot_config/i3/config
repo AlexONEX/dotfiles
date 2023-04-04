@@ -234,9 +234,7 @@ font pango:CaskaydiaCove NF Regular 11
 # ArcoLinux Welcome App
 exec --no-startup-id dex $HOME/.config/autostart/arcolinux-welcome-app.desktop
 
-# Execute a script in the background. With path /home/alex/.local/bin/repeatCommit.sh
-exec --no-startup-id /home/alex/.local/bin/repeatCommit.sh
-
+exec --no-startup-id clipster -d
 # Autotiling
 exec_always --no-startup-id autotiling
 
@@ -267,9 +265,6 @@ exec_always --no-startup-id numlockx on
 # volume
 # exec --no-startup-id pasystray
 exec --no-startup-id volumeicon
-
-# clipman
-exec --no-startup-id xfce4-clipman
 
 # Conky
 # exec --no-startup-id conky -c ~/.config/i3/system-overview
@@ -332,7 +327,7 @@ bindsym $mod+f exec --no-startup-id thunar;focus
 
 # mail application
 bindsym $mod+m exec --no-startup-id betterbird;focus
-bindsym $mod+Shift+m exec --no-startup-id harmonoid;focus
+bindsym $mod+Shift+m exec --no-startup-id sayonara;focus
 
 # music
 bindsym $mod+F10 exec --no-startup-id harmonoid;focus
