@@ -1,8 +1,11 @@
 vim.opt.guicursor = ""
+-- allow access to system clipboard
+vim.opt.clipboard = "unnamedplus"
 -- Set limit width for text to 80 columns
 vim.opt.textwidth = 70
 -- Set wrapmargin to 1
-
+-- show hidden files in file explorer
+vim.opt.hidden = true
 vim.opt.nu = true
 vim.opt.relativenumber = true
 

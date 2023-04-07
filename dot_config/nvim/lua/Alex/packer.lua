@@ -56,4 +56,7 @@ return require('packer').startup(function(use)
   use 'lambdalisue/suda.vim'
   use 'ntessore/unicode-math.vim'
   use 'arthurxavierx/vim-unicoder'
+  use 'lervag/vimtex'
+  use 'chrisbra/csv.vim'
+
 end)

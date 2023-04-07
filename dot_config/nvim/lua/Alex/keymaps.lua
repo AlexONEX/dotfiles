@@ -1,6 +1,8 @@
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
-
+-- keymap for csv files using csv.vim
+-- shortuct %!sed 's/","/\&/' | column -t -s '&'
+vim.keymap.set("n", "<leader>cs", [[:%!sed 's/","/\&/' | column -t -s '&'<CR>]])
 vim.keymap.set("n", "<C-r>", vim.cmd.so)
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
