@@ -109,11 +109,6 @@ _G.packer_plugins = {
     path = "/home/alex/.local/share/nvim/site/pack/packer/start/copilot.vim",
     url = "https://github.com/github/copilot.vim"
   },
-  ["csv.vim"] = {
-    loaded = true,
-    path = "/home/alex/.local/share/nvim/site/pack/packer/start/csv.vim",
-    url = "https://github.com/chrisbra/csv.vim"
-  },
   ["friendly-snippets"] = {
     loaded = true,
     path = "/home/alex/.local/share/nvim/site/pack/packer/start/friendly-snippets",
@@ -196,20 +191,10 @@ _G.packer_plugins = {
     path = "/home/alex/.local/share/nvim/site/pack/packer/start/undotree",
     url = "https://github.com/mbbill/undotree"
   },
-  ["unicode-math.vim"] = {
-    loaded = true,
-    path = "/home/alex/.local/share/nvim/site/pack/packer/start/unicode-math.vim",
-    url = "https://github.com/ntessore/unicode-math.vim"
-  },
   ["vim-fugitive"] = {
     loaded = true,
     path = "/home/alex/.local/share/nvim/site/pack/packer/start/vim-fugitive",
     url = "https://github.com/tpope/vim-fugitive"
-  },
-  ["vim-unicoder"] = {
-    loaded = true,
-    path = "/home/alex/.local/share/nvim/site/pack/packer/start/vim-unicoder",
-    url = "https://github.com/arthurxavierx/vim-unicoder"
   },
   vimtex = {
     loaded = true,
