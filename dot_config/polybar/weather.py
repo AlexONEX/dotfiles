@@ -1,14 +1,19 @@
+from pickle import LONG
 import requests
 import json
 
 # Script to automatically get the current city
 city = ""
+coordinates = ""
+
+
 # Get current city from ipinfo.io
 try:
     url = "https://ipinfo.io/json"
     result = requests.get(url)
     if(result.status_code == requests.codes['ok']):
         city = result.json()['city']
+        coordinates = result.json()['loc']
 except:
     city = "Buenos Aires"
 
@@ -52,8 +57,10 @@ atmophere_icons_list = {
 
 def main():
     try:
-        #https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${*API_key*}&units=metric
-        url = "https://api.openweathermap.org/data/2.5/weather?q={}&appid={}&units={}".format(city, api_key, units)
+        # Using city name
+        # url = "https://api.openweathermap.org/data/2.5/weather?q={}&appid={}&units={}".format(city, api_key, units)
+        #Using  coordinates
+        url = "https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}&units={}".format(coordinates.split(",")[0], coordinates.split(",")[1], api_key, units)
         result = requests.get(url)
         if(result.status_code == requests.codes['ok']):
                 weather = result.json()
