@@ -17,7 +17,7 @@ try:
 except:
     city = "Buenos Aires"
 
-api_key = "cd7228f5c33c287c02aa1f6b796579dd"
+api_key = ""
 units = "metric" # {imperial or metric}
 temperature_unit = "C" # Units of measurement. That will be showed in UI. Does not affect on API.
 
