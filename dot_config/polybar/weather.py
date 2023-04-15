@@ -3,12 +3,16 @@ import json
 
 # Script to automatically get the current city
 city = ""
+# Get current city from ipinfo.io
 try:
-    city = requests.get("http://ip-api.com/json").json()["city"]
+    url = "https://ipinfo.io/json"
+    result = requests.get(url)
+    if(result.status_code == requests.codes['ok']):
+        city = result.json()['city']
 except:
-    city = "Ciudad de Buenos Aires"
+    city = "Buenos Aires"
 
-api_key = "76c37aca22b3abee4f068749eb0eacb9"
+api_key = "cd7228f5c33c287c02aa1f6b796579dd"
 units = "metric" # {imperial or metric}
 temperature_unit = "C" # Units of measurement. That will be showed in UI. Does not affect on API.
 
@@ -48,7 +52,8 @@ atmophere_icons_list = {
 
 def main():
     try:
-        url = ('http://api.openweathermap.org/data/2.5/weather?q={}&units={}&appid={}').format(city, units, api_key)
+        #https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${*API_key*}&units=metric
+        url = "https://api.openweathermap.org/data/2.5/weather?q={}&appid={}&units={}".format(city, api_key, units)
         result = requests.get(url)
         if(result.status_code == requests.codes['ok']):
                 weather = result.json()
