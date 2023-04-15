@@ -256,12 +256,6 @@ exec --no-startup-id nm-applet
 # num lock activated
 exec_always --no-startup-id numlockx on
 
-# dropbox
-# exec --no-startup-id dropbox start
-
-# insync
-# exec --no-startup-id insync start
-
 # volume
 # exec --no-startup-id pasystray
 exec --no-startup-id volumeicon
@@ -278,8 +272,8 @@ exec_always --no-startup-id ~/.config/polybar/launch.sh &
 ################# system applications
 
 exec --no-startup-id xfce4-power-manager &
-# exec --no-startup-id xfsettingsd &
 exec --no-startup-id /usr/lib/xfce4/notifyd/xfce4-notifyd &
+exec --no-startup-id /usr/bin/easyeffects --gapplication-service &
 
 ################# applications keyboard shortcuts
 bindsym control+mod1+w exec --no-startup-id arcolinux-welcome-app
@@ -307,9 +301,6 @@ bindsym control+mod1+r exec --no-startup-id rofi-theme-selector
 # htop
 # bindsym $mod+h exec --no-startup-id htop;focus
 
-# pamac-manager
-bindsym control+mod1+p exec --no-startup-id pamac-manager
-
 # Function Keybinds
 # Browser
 bindsym $mod+n exec --no-startup-id google-chrome-stable;focus
@@ -324,6 +315,7 @@ bindsym $mod+Shift+n exec --no-startup-id google-chrome-stable --incognito;focus
 # file management
 for_window [class="Thunar"] focus
 bindsym $mod+f exec --no-startup-id thunar;focus
+bindsym $mod+Shift+f exec --no-startup-id alacritty -e ranger;focus
 
 # mail application
 bindsym $mod+m exec --no-startup-id betterbird;focus
