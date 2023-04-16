@@ -1,0 +1,36 @@
+# Zathura Config File
+# man zathurarc
+
+map r reload
+map p print
+map i recolor
+map J zoom out
+map K zoom in
+map R rotate
+map <C-r> rotate
+
+# set shortcut for mark
+map m set mark
+unmap f
+map <C-n> toggle_statusbar
+# use arrow keys to navigate to next/previous pages
+
+# Open document in fith-width mode by default
+set adjust-open "best-fit"
+set selection-clipboard clipboard
+
+# One page per row by default
+set pages-per-row 1
+
+#zoom settings
+set zoom-min 10
+set guioptions ""
+
+# Stop page at page boundries
+set scroll-page-aware "true"
+set scroll-full-overlap 0.01
+set scroll-step 100
+
+set font "CaskayiaCove NF Regular 12"
+set selection-clipboard clipboard
+
