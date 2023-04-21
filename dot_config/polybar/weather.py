@@ -17,7 +17,7 @@ try:
 except:
     city = "Buenos Aires"
 
-api_key = ""
+api_key = "cd7228f5c33c287c02aa1f6b796579dd"
 units = "metric" # {imperial or metric}
 temperature_unit = "C" # Units of measurement. That will be showed in UI. Does not affect on API.
 
@@ -56,29 +56,22 @@ atmophere_icons_list = {
 }
 
 def main():
-    try:
-        # Using city name
-        # url = "https://api.openweathermap.org/data/2.5/weather?q={}&appid={}&units={}".format(city, api_key, units)
-        #Using  coordinates
-        url = "https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}&units={}".format(coordinates.split(",")[0], coordinates.split(",")[1], api_key, units)
-        result = requests.get(url)
-        if(result.status_code == requests.codes['ok']):
-                weather = result.json()
+    url = "https://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}&units={}".format(coordinates.split(",")[0], coordinates.split(",")[1], api_key, units)
+    result = requests.get(url)
+    if(result.status_code == requests.codes['ok']):
+        weather = result.json()
+        # Get info from array
+        id = int(weather['weather'][0]['id'])
+        group = weather['weather'][0]['main'].capitalize()
+        icon = weather['weather'][0]['icon'].capitalize()
+        temp = int(float(weather['main']['temp']))
 
-                # Get info from array
-                id = int(weather['weather'][0]['id'])
-                group = weather['weather'][0]['main'].capitalize()
-                icon = weather['weather'][0]['icon'].capitalize()
-                temp = int(float(weather['main']['temp']))
+        # Load another icons for Atmosphere group
+        if(group == "Atmosphere"):
+            return atmophere_icons_list[id] + '{}°{}'.format(temp, temperature_unit)
 
-                # Load another icons for Atmosphere group
-                if(group == "Atmosphere"):
-                    return atmophere_icons_list[id] + '{}°{}'.format(temp, temperature_unit)
-
-                return icons_list[icon] + '  {}°{}'.format(temp, temperature_unit)
-        else:
-            return "" # Return reload icon
-    except:
+        return icons_list[icon] + '  {}°{}'.format(temp, temperature_unit)
+    else:
         return "" # Return reload icon
 
 if __name__ == "__main__":
