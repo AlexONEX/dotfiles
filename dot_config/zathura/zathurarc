@@ -54,8 +54,7 @@ set recolor-darkcolor           "#f8f8f2" # Foreground
 # Startup options
 #
 # Open document in fith-width mode by default
-#set adjust-open "best-fit"
-set adjust-open width
+set adjust-open "best-fit"
 
 # One page per row by default
 set pages-per-row 1
