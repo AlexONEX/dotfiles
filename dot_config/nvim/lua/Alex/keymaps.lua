@@ -52,3 +52,12 @@ end)
 -- shorcut for vertical split
 vim.keymap.set("n", "<leader>v", "<cmd>vsplit<CR>")
 vim.keymap.set("n", "<leader>h", "<cmd>split<CR>")
+
+-- shortuct for commenting in visual mode. :'CR>]])
+-- Using :<,>s/^/commentstring/ to comment out a line
+-- Define function that ask char and then inserts at the beginning
+-- of the selected lines
+vim.keymap.set("v", "<leader>c", function()
+    local char = vim.fn.input("Comment char: ")
+    vim.cmd(":'<,'>s/^/" .. char .. "/")
+end)

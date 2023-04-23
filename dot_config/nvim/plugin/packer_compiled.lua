@@ -191,6 +191,11 @@ _G.packer_plugins = {
     path = "/home/alex/.local/share/nvim/site/pack/packer/start/undotree",
     url = "https://github.com/mbbill/undotree"
   },
+  ["vim-epub"] = {
+    loaded = true,
+    path = "/home/alex/.local/share/nvim/site/pack/packer/start/vim-epub",
+    url = "https://github.com/etnadji/vim-epub"
+  },
   ["vim-fugitive"] = {
     loaded = true,
     path = "/home/alex/.local/share/nvim/site/pack/packer/start/vim-fugitive",
