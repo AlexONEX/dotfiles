@@ -91,6 +91,8 @@ alias pscpu='ps auxf | sort -nr -k 3'
 alias merge='xrdb -merge ~/.Xresources'
 
 # git
+alias gcom='git commit -m'
+alias gpush='git push origin'
 alias addup='git add -u'
 alias addall='git add .'
 alias branch='git branch'
