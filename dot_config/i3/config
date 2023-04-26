@@ -268,8 +268,9 @@ exec_always --no-startup-id ~/.config/polybar/launch.sh &
 
 ################# system applications
 
-exec --no-startup-id /usr/lib/xfce4/notifyd/xfce4-notifyd &
 exec --no-startup-id /usr/bin/easyeffects --gapplication-service &
+# use dunst
+exec --no-startup-id dunst &
 
 ################# applications keyboard shortcuts
 # ArchLinux Tweak Tool
