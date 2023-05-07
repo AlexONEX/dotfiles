@@ -55,16 +55,18 @@ lvim.leader = "space"
 -- add your own keymapping
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 
--- split vertical
+-- split vertical/vertical
 lvim.keys.normal_mode["<C-v>"] = ":vsplit<cr>"
--- split horizontal
 lvim.keys.normal_mode["<C-h>"] = ":split<cr>"
 
 -- close buffer control+w
 lvim.keys.normal_mode["<C-w>"] = ":bd<cr>"
 
--- lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
--- lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
+-- Copy to clipboard and paste from clipboard
+lvim.keys.visual_mode["<leader>y"] = '"+y'
+lvim.keys.normal_mode["<leader>y"] = '"+y'
+lvim.keys.normal_mode["<leader>p"] = '"+p'
+
 
 -- -- Use which-key to add extra bindings with the leader-key prefix
 -- lvim.builtin.which_key.mappings["W"] = { "<cmd>noautocmd w<cr>", "Save without formatting" }
@@ -114,15 +116,15 @@ lvim.builtin.treesitter.ensure_installed = { "comment", "markdown_inline", "rege
 -- end
 
 -- -- linters, formatters and code actions <https://www.lunarvim.org/docs/configuration/language-features/linting-and-formatting>
--- local formatters = require "lvim.lsp.null-ls.formatters"
--- formatters.setup {
---   { command = "stylua" },
---   {
---     command = "prettier",
---     extra_args = { "--print-width", "100" },
---     filetypes = { "typescript", "typescriptreact" },
---   },
--- }
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  --   { command = "stylua" },
+  {
+    command = "prettier",
+    extra_args = { "--print-width", "100" },
+    filetypes = { "typescript", "typescriptreact" },
+  },
+}
 -- local linters = require "lvim.lsp.null-ls.linters"
 -- linters.setup {
 --   { command = "flake8", filetypes = { "python" } },
@@ -196,10 +198,10 @@ lvim.plugins = {
 }
 
 -- -- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
--- vim.api.nvim_create_autocmd("FileType", {
---   pattern = "zsh",
---   callback = function()
---     -- let treesitter use bash highlight for zsh files as well
---     require("nvim-treesitter.highlight").attach(0, "bash")
---   end,
--- })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "zsh",
+  callback = function()
+    --     -- let treesitter use bash highlight for zsh files as well
+    require("nvim-treesitter.highlight").attach(0, "bash")
+  end,
+})

@@ -1,29 +1,31 @@
 # SHORTCUTS
-# Get directory size ordered by size in current directory
-
-alias dsize='du -hsx * | sort -rh | head -10'
+alias c='clear'
+alias e='$EDITOR'
+alias dsize='du -hsx * | sort -rh'
 alias calibre='fzf-calibre'
 alias open='handlr open'
-alias vim='nvim'
-alias task='dstask'
+alias vim='lvim'
+alias nvim='lvim'
 alias cat='bat'
 alias clipboard='roficlip'
+# Backup nvim config and .local/share/nvim in a tar.gz file
+alias nvimbackup='tar -czvf nvimbackup.tar.gz ~/.config/nvim ~/.local/share/nvim'
+
 alias uAndroid='adb shell pm uninstall -k --user 0'
 
-export EDITOR=nvim
 # Create a diretory with a name with spaces and cd into it
 alias mk='mkdir '@' && cd '@''
-
+alias cd..='cd ..'
+alias ..='cd..'
 # Alias to compress folders
 alias zipf='zip -r'
-
-alias listpkgs='pacman -Qqe > pkglist.txt'
-alias listaur='paru -Qqe > aurlist.txt'
-alias installpkgs='sudo paru -S - < pkglist.txt'
-
 alias u='paru -Syu'
 alias i='paru'
 alias purge='sudo pacman -Rnsc'
+alias listpkgs='pacman -Qqe > pkglist.txt'
+alias listaur='paru -Qqe > aurlist.txt'
+alias installpkgs='sudo paru -S - < pkglist.txt'
+alias uninstallpks='pacman -Qtdq | sudo pacman -Rnsc' 
 
 alias j='jump'
 alias aliases='vim ~/.aliases'
@@ -47,8 +49,7 @@ alias ytp='yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"'
 alias yta-best='yt-dlp --extract-audio --audio-format "wav"'
 alias ytp-abest='yt-dlp --extract-audio --audio-format "wav" --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist '
 alias ytv-best="yt-dlp -f bestvideo+bestaudio "
-
-
+alias spotdl='spotdl --cookie-file /home/alex/Music/music.youtube.com_cookies.txt'
 
 # LS Stuff
 alias ls='exa -al --color=always --group-directories-first' # my preferred listing
@@ -67,6 +68,7 @@ alias mirrora="sudo reflector --latest 50 --number 20 --sort age --save /etc/pac
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
+alias g="grep --color=auto -i"
 
 # confirm before overwriting something
 alias cp="cp -i"
@@ -76,8 +78,6 @@ alias rm='rm -i'
 # adding flags
 alias df='df -h'                          # human-readable sizes
 alias free='free -m'                      # show sizes in MB
-alias lynx='lynx -cfg=~/.lynx/lynx.cfg -lss=~/.lynx/lynx.lss -vikeys'
-alias vifm='./.config/vifm/scripts/vifmrun'
 alias ncmpcpp='ncmpcpp ncmpcpp_directory=$HOME/.config/ncmpcpp/'
 alias mocp='mocp -M "$XDG_CONFIG_HOME"/moc -O MOCDir="$XDG_CONFIG_HOME"/moc'
 
@@ -91,33 +91,90 @@ alias pscpu='ps auxf | sort -nr -k 3'
 alias merge='xrdb -merge ~/.Xresources'
 
 # git
-alias gcom='git commit -m'
-alias gpush='git push origin'
-alias addup='git add -u'
-alias addall='git add .'
-alias branch='git branch'
-alias checkout='git checkout'
-alias clone='git clone'
-alias commit='git commit -m'
-alias fetch='git fetch'
-alias pull='git pull origin'
-alias push='git push origin'
-alias stat='git status'  # 'status' is protected name so using 'stat' instead
-alias tag='git tag'
-alias newtag='git tag -a'
+alias g="git"
+alias ga="git add"
+alias gc="git commit -m"
+alias gs="git status"
+alias gd="git diff"
+alias gf="git fetch"
+alias gm="git merge"
+alias gr="git rebase"
+alias gp="git push"
+alias gu="git unstage"
+alias gg="git graph"
+alias ggg="git graphgpg"
+alias gco="git checkout"
+alias gcs="git commit -S -m"
+alias gpr="hub pull-request"
 
 # get error messages from journalctl
 alias jctl="journalctl -p 3 -xb"
 
 # gpg encryption
-# verify signature for isos
 alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
-# receive the key of a developer
 alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
+
+# passowrd manager 
+alias pass otp="pass otp -c"
+alias pass ="pass -c"
+
 
 # switch between shells
 alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
 alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
 
-# Managing Dots
-alias dots='yadm'
+
+
+alias disks='echo "╓───── m o u n t . p o i n t s"; \
+			 echo "╙────────────────────────────────────── ─ ─ "; \
+			 lsblk -a; echo ""; \
+			 echo "╓───── d i s k . u s a g e";\
+			 echo "╙────────────────────────────────────── ─ ─ "; \
+			 df -h;'
+
+function docclean() {
+	sudo docker rm $(sudo docker ps -a -q)
+	sudo docker rmi $(sudo docker images -q)
+}
+
+alias docstats="sudo docker ps -q | xargs  docker stats --no-stream"
+
+function t() {
+	X=$#
+	[[ $X -eq 0 ]] || X=X
+	tmux new-session -A -s $X
+}
+
+function pdf {
+	zathura "$*" &>/dev/null
+}
+
+function gitforge() {
+	[ ! -d .git ] && echo "not a git repo" && return
+	gitauthor=`git config user.name`
+	printf "author ($gitauthor): "
+	read -r author
+	author=${author:=$gitauthor}
+	gitemail=`git config user.email`
+	printf "email ($gitemail):"
+	read -r email
+	email=${email:=$gitemail}
+	now=`date -Is`
+	printf "date ($now):"
+	read -r date
+	date=${date:=$now}
+	echo "\nhacking time as: $author <$email> $date\n"
+	export GIT_AUTHOR_DATE=$date
+	export GIT_AUTHOR_EMAIL=$email
+	export GIT_AUTHOR_NAME=$author
+	export GIT_COMMITTER_DATE=$date
+	export GIT_COMMITTER_EMAIL=$email
+	export GIT_COMMITTER_NAME=$author
+	[ ! "$1" ] && git commit || git commit -S$1
+	unset GIT_AUTHOR_DATE
+	unset GIT_AUTHOR_EMAIL
+	unset GIT_AUTHOR_NAME
+	unset GIT_COMMITTER_DATE
+	unset GIT_COMMITTER_EMAIL
+	unset GIT_COMMITTER_NAME
+}
