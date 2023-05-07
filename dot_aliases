@@ -116,7 +116,7 @@ alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 
 # passowrd manager 
 alias pass otp="pass otp -c"
-alias pass ="pass -c"
+alias pass="pass -c"
 
 
 # switch between shells
