@@ -1,9 +1,4 @@
---[[
- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
- `lvim` is the global options object
-]]
 -- vim options
-
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
@@ -13,7 +8,6 @@ vim.opt.relativenumber = true
 vim.opt.guicursor = ""
 vim.opt.hidden = true
 vim.opt.nu = true
-
 
 vim.opt.smartindent = true
 vim.opt.wrap = false
@@ -25,7 +19,6 @@ vim.opt.undofile = true
 
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
-
 vim.opt.termguicolors = true
 
 vim.opt.scrolloff = 8
@@ -33,9 +26,7 @@ vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50
-
 vim.opt.colorcolumn = "80"
-
 
 -- general
 lvim.log.level = "info"
@@ -52,25 +43,46 @@ lvim.format_on_save = {
 lvim.lsp.buffer_mappings.normal_mode['<Tab>'] = nil
 lvim.leader = "space"
 
--- add your own keymapping
-lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
+-- Normal Mode
+-- Source current file "so" using leader leader
+vim.keymap.set("n", "<leader><leader>", function()
+  vim.cmd("so")
+end)
 
--- split vertical/vertical
+lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["<C-v>"] = ":vsplit<cr>"
 lvim.keys.normal_mode["<C-h>"] = ":split<cr>"
 
--- close buffer control+w
 lvim.keys.normal_mode["<C-w>"] = ":bd<cr>"
 
--- Copy to clipboard and paste from clipboard
-lvim.keys.visual_mode["<leader>y"] = '"+y'
+lvim.keys.normal_mode["<leader>pv"] = vim.cmd.Ex
+
+
 lvim.keys.normal_mode["<leader>y"] = '"+y'
 lvim.keys.normal_mode["<leader>p"] = '"+p'
 
+lvim.keys.normal_mode["n"] = "mzJ`z"
+lvim.keys.normal_mode["<C-d>"] = "<C-d>zz"
+lvim.keys.normal_mode["<C-u>"] = "<C-u>zz"
+lvim.keys.normal_mode["n"] = "nzzzv"
+lvim.keys.normal_mode["N"] = "Nzzzv"
 
--- -- Use which-key to add extra bindings with the leader-key prefix
--- lvim.builtin.which_key.mappings["W"] = { "<cmd>noautocmd w<cr>", "Save without formatting" }
--- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
+lvim.keys.normal_mode["Q"] = "<nop>"
+lvim.keys.normal_mode["<leader>f"] = "<cmd>lua vim.lsp.buf.formatting()<CR>"
+
+vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
+vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
+vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
+
+vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
+vim.keymap.set("n", "<leader>vpp", "<cmd>e ~/.config/lvim/config.lua<CR>")
+
+-- Visual
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+
+-- Copy to clipboard and paste from clipboard
+lvim.keys.visual_mode["<leader>y"] = '"+y'
 
 -- -- Change theme settings
 lvim.colorscheme = "nord"
@@ -82,7 +94,18 @@ lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
 -- Automatically install missing parsers when entering buffer
-lvim.builtin.treesitter.auto_install = true
+lvim.builtin.treesitter.auto_install = false
+local cmp_nvim_lsp = require "cmp_nvim_lsp"
+
+require("lspconfig").clangd.setup {
+  on_attach = on_attach,
+  capabilities = cmp_nvim_lsp.default_capabilities(),
+  cmd = {
+    "clangd",
+    "--offset-encoding=utf-16",
+  },
+}
+
 
 -- lvim.builtin.treesitter.ignore_install = { "haskell" }
 
@@ -91,7 +114,7 @@ lvim.builtin.treesitter.ensure_installed = { "comment", "markdown_inline", "rege
 -- -- generic LSP settings <https://www.lunarvim.org/docs/configuration/language-features/language-servers>
 
 -- --- disable automatic installation of servers
--- lvim.lsp.installer.setup.automatic_installation = false
+lvim.lsp.installer.setup.automatic_installation = false
 
 -- ---configure a server manually. IMPORTANT: Requires `:LvimCacheReset` to take effect
 -- ---see the full default list `:lua =lvim.lsp.automatic_configuration.skipped_servers`

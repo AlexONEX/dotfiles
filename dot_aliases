@@ -106,6 +106,7 @@ alias ggg="git graphgpg"
 alias gco="git checkout"
 alias gcs="git commit -S -m"
 alias gpr="hub pull-request"
+alias autocommit="./home/alex/.local/bin/autocommit"
 
 # get error messages from journalctl
 alias jctl="journalctl -p 3 -xb"
@@ -117,7 +118,6 @@ alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 # passowrd manager 
 alias pass otp="pass otp -c"
 alias pass="pass -c"
-
 
 # switch between shells
 alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
