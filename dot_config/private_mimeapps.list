@@ -39,7 +39,7 @@ application/zip=org.gnome.FileRoller.desktop;userapp-extract-2B3N21.desktop;
 audio/x-wav=vlc.desktop;
 image/gif=org.nomacs.ImageLounge.desktop;
 image/jpeg=gimp.desktop;org.nomacs.ImageLounge.desktop;feh.desktop;
-image/png=org.nomacs.ImageLounge.desktop;
+image/png=org.nomacs.ImageLounge.desktop;gimp.desktop;
 image/svg+xml=nvim.desktop;
 image/vnd.microsoft.icon=org.nomacs.ImageLounge.desktop;
 inode/directory=userapp-vlc-MVLA21.desktop;
@@ -71,6 +71,8 @@ video/x-msvideo=vlc.desktop;
 x-scheme-handler/http=xfce4-web-browser.desktop;
 x-scheme-handler/https=xfce4-web-browser.desktop;
 x-scheme-handler/mailto=xfce4-mail-reader.desktop;
+text/html=thorium-browser.desktop;
+image/webp=gimp.desktop;
 
 [Default Applications]
 application/pdf=org.pwmt.zathura-pdf-mupdf.desktop;

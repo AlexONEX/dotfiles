@@ -53,7 +53,7 @@ lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["<C-v>"] = ":vsplit<cr>"
 lvim.keys.normal_mode["<C-h>"] = ":split<cr>"
 
-lvim.keys.normal_mode["<C-w>"] = ":bd<cr>"
+--lvim.keys.normal_mode["<C-W>"] = ":bd<cr>"
 
 lvim.keys.normal_mode["<leader>pv"] = vim.cmd.Ex
 
@@ -182,7 +182,7 @@ lvim.plugins = {
             jump_next = "]]",
             accept = "<CR>",
             refresh = "gr",
-            open = "<M-CR>"
+            --open = "<M-CR>"
           },
           layout = {
             position = "bottom", -- | top | left | right

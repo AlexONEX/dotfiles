@@ -13,8 +13,6 @@ alias nvimbackup='tar -czvf nvimbackup.tar.gz ~/.config/nvim ~/.local/share/nvim
 
 alias uAndroid='adb shell pm uninstall -k --user 0'
 
-# Create a diretory with a name with spaces and cd into it
-alias mk='mkdir '@' && cd '@''
 alias cd..='cd ..'
 alias ..='cd..'
 # Alias to compress folders
@@ -116,7 +114,7 @@ alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
 alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 
 # passowrd manager 
-alias pass otp="pass otp -c"
+#alias pass otp="pass otp -c"
 alias pass="pass -c"
 
 # switch between shells
