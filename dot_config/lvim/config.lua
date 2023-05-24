@@ -49,6 +49,9 @@ vim.keymap.set("n", "<leader><leader>", function()
   vim.cmd("so")
 end)
 
+-- Define C-y as redo
+vim.keymap.set("n", "<C-y>", "<C-r>")
+
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["<C-v>"] = ":vsplit<cr>"
 lvim.keys.normal_mode["<C-h>"] = ":split<cr>"

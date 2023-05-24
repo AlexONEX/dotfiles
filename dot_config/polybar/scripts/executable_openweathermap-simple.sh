@@ -18,8 +18,6 @@ get_icon() {
         11n) icon="";;
         13d) icon="";;
         13n) icon="";;
-        50d) icon="";;
-        50n) icon="";;
         *) icon="";;
    esac
 
