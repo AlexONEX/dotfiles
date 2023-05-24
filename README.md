@@ -3,7 +3,7 @@ My Doftiles managed by chezmoi
 Install the required dependencies for each application:
 
 Alacritty: [Install Alacritty using your package manager](https://alacritty.org/) <br>
-EasyEffects: Install EasyEffects using your package manager<br>
+EasyEffects: [Install EasyEffects using your package manager](https://github.com/wwmm/easyeffects#Installation)<br>
 i3 Window Manager: [Follow the installation instructions](https://i3wm.org/downloads/) <br>
 Flameshot [Follow the instructions](https://flameshot.org/#download) <br>
 LunarVim: [Install LunarVim by following the instructions from its repository](https://www.lunarvim.org/docs/installation)<br>
