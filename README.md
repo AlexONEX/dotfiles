@@ -2,15 +2,15 @@
 My Doftiles managed by chezmoi
 Install the required dependencies for each application:
 
-Alacritty: [Install Alacritty using your package manager.](https://alacritty.org/)
-EasyEffects: Install EasyEffects using your package manager.
-i3 Window Manager: [Follow the installation instructions](https://i3wm.org/downloads/)
-Flameshot [Follow the instructions](https://flameshot.org/#download)
-LunarVim: [Install LunarVim by following the instructions from its repository](https://www.lunarvim.org/docs/installation).
-Polybar: [Install Polybar using your package manager](https://polybar.github.io/)
-Ranger: [Install Ranger using your package manager](https://ranger.github.io/)
-Spicetify: [Install Spicetify using the instructions provided in its repository.](https://spicetify.app/docs/advanced-usage/installation/)
-Zathura: [Install Zathura using your package manager.](https://github.com/pwmt/zathura)
+Alacritty: [Install Alacritty using your package manager.](https://alacritty.org/) <br>
+EasyEffects: Install EasyEffects using your package manager. <br>
+i3 Window Manager: [Follow the installation instructions](https://i3wm.org/downloads/) <br>
+Flameshot [Follow the instructions](https://flameshot.org/#download) <br>
+LunarVim: [Install LunarVim by following the instructions from its repository] (https://www.lunarvim.org/docs/installation). <br>
+Polybar: [Install Polybar using your package manager](https://polybar.github.io/) <br>
+Ranger: [Install Ranger using your package manager](https://ranger.github.io/)<br>
+Spicetify: [Install Spicetify using the instructions provided in its repository.](https://spicetify.app/docs/advanced-usage/installation/)<br>
+Zathura: [Install Zathura using your package manager.](https://github.com/pwmt/zathura)<br>
 
 ## Screenshots
 ![image](https://github.com/AlexONEX/dotfiles/assets/22077128/ce76e1cd-393a-411f-b9d3-463ea431de34)
