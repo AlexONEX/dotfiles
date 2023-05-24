@@ -1,5 +1,5 @@
 # dotfiles
-My Doftiles managed by chezmoi
+My Doftiles managed by chezmoi <br>
 Install the required dependencies for each application:
 
 Alacritty: [Install Alacritty using your package manager.](https://alacritty.org/)
@@ -19,9 +19,3 @@ Zathura: [Install Zathura using your package manager.](https://github.com/pwmt/z
 
 License
 This repository is licensed under the MIT License. Feel free to use and modify the dotfiles as you see fit.
-
-
-
-
-
-
