@@ -2,6 +2,8 @@
 alias c='clear'
 alias e='$EDITOR'
 alias dsize='du -hsx * | sort -rh'
+alias b="WD=\$(pwd);cd ~/OneDrive/Libraries/myLibrary/;zathura \"\$(fzf)\";cd \$WD"
+
 alias calibre='fzf-calibre'
 alias open='handlr open'
 alias vim='lvim'
@@ -10,7 +12,6 @@ alias cat='bat'
 alias clipboard='roficlip'
 # Backup nvim config and .local/share/nvim in a tar.gz file
 alias nvimbackup='tar -czvf nvimbackup.tar.gz ~/.config/nvim ~/.local/share/nvim'
-
 alias uAndroid='adb shell pm uninstall -k --user 0'
 
 alias cd..='cd ..'
@@ -24,6 +25,7 @@ alias listpkgs='pacman -Qqe > pkglist.txt'
 alias listaur='paru -Qqe > aurlist.txt'
 alias installpkgs='sudo paru -S - < pkglist.txt'
 alias uninstallpks='pacman -Qtdq | sudo pacman -Rnsc' 
+alias uSpicetifyNorc='curl -fsSL https://raw.githubusercontent.com/Tetrax-10/Nord-Spotify/master/install-scripts/uninstall.sh | sh'
 
 alias j='jump'
 alias aliases='vim ~/.aliases'
@@ -40,10 +42,15 @@ alias rpolybar='launch.sh'
 alias su='sudo '
 alias stopB='sudo systemctl stop bluetooth.service'
 alias startB='sudo systemctl start bluetooth.service && bluetoothctl power on && bluetoothctl'
+alias stopJacket='sudo systemctl stop jackett.service'
+alias startJacket='sudo systemctl start jackett.service'
 
 # MEDIA
 alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
 alias ytp='yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"'
+#yta-best-mp3
+alias yta-best-mp3='yt-dlp --extract-audio --audio-format "mp3" --audio-quality 0 --output "%(title)s.%(ext)s"'
+alias ytp-abest-mp3='yt-dlp --extract-audio --audio-format "mp3" --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist '
 alias yta-best='yt-dlp --extract-audio --audio-format "wav"'
 alias ytp-abest='yt-dlp --extract-audio --audio-format "wav" --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist '
 alias ytv-best="yt-dlp -f bestvideo+bestaudio "
