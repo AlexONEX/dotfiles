@@ -233,6 +233,12 @@ font pango:CaskaydiaCove NF Regular 11
 # USER APPLICATIONS TO START AT BOOT
 exec --no-startup-id xfce4-clipman 
 
+# QbitTorrent
+exec --no-startup-id qb-start 
+
+# Jackett
+#exec --no-startup-id /usr/lib/jackett/jackett
+
 # Autotiling
 exec_always --no-startup-id autotiling
 
@@ -316,7 +322,7 @@ bindsym $mod+m exec --no-startup-id betterbird;focus
 bindsym $mod+Shift+m exec --no-startup-id sayonara;focus
 
 # calibre
-bindsym $mod+c exec --no-startup-id alacritty -e fzf-calibre;focus
+bindsym $mod+c exec --no-startup-id alacritty -e /home/alex/.local/bin/fzf-calibre;focus
 
 ################# screenshots
 bindsym Print exec --no-startup-id flameshot gui
