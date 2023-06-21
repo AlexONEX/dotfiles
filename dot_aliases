@@ -3,6 +3,8 @@ alias c='clear'
 alias e='$EDITOR'
 alias dsize='du -hsx * | sort -rh'
 alias b="WD=\$(pwd);cd ~/OneDrive/Libraries/myLibrary/;zathura \"\$(fzf)\";cd \$WD"
+alias tocp='xclip -sel c'
+#alias for kalc (tui calculator)
 
 alias calibre='fzf-calibre'
 alias open='handlr open'
@@ -27,7 +29,6 @@ alias installpkgs='sudo paru -S - < pkglist.txt'
 alias uninstallpks='pacman -Qtdq | sudo pacman -Rnsc' 
 alias uSpicetifyNorc='curl -fsSL https://raw.githubusercontent.com/Tetrax-10/Nord-Spotify/master/install-scripts/uninstall.sh | sh'
 
-alias j='jump'
 alias aliases='vim ~/.aliases'
 alias pullAndroid='cd $HOME/Pictures/Android && adb pull /storage/emulated/0/Pictures && adb pull /storage/emulated/0/Dcim'
 alias r='source ~/.zshrc'
@@ -136,13 +137,21 @@ alias disks='echo "╓───── m o u n t . p o i n t s"; \
 			 echo "╓───── d i s k . u s a g e";\
 			 echo "╙────────────────────────────────────── ─ ─ "; \
 			 df -h;'
-
-function docclean() {
-	sudo docker rm $(sudo docker ps -a -q)
-	sudo docker rmi $(sudo docker images -q)
+function docstop(){
+      docker stop $(docker ps -aq)
 }
 
-alias docstats="sudo docker ps -q | xargs  docker stats --no-stream"
+function docstart(){
+      docker start $(docker ps -aq)
+}
+
+function docclean() {
+  docker stop $(sudo docker ps -aq) 
+	docker rm $(sudo docker ps -a -q)
+	docker rmi $(sudo docker images -q)
+}
+
+alias docstats="docker ps -q | xargs  docker stats --no-stream"
 
 function t() {
 	X=$#

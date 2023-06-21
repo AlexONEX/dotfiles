@@ -45,12 +45,10 @@ fi
 plugins=(
 	git
   jump  
+  poetry
   zsh-syntax-highlighting
 	zsh-autosuggestions
 )
-
-alias j="jump"
-export MARKPATH=$HOME/.marks
 
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='lvim'
