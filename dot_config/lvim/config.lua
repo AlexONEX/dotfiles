@@ -35,43 +35,53 @@ lvim.format_on_save = {
   pattern = "*.lua",
   timeout = 1000,
 }
+--inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+vim.api.nvim_set_keymap("i", "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u",
+  { noremap = true, silent = true })
+
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
 -- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
 -- Remove binding to enable copilot completion
-lvim.lsp.buffer_mappings.normal_mode['<Tab>'] = nil
 lvim.leader = "space"
 
 -- Normal Mode
--- Source current file "so" using leader leader
+-- Source current file
 vim.keymap.set("n", "<leader><leader>", function()
   vim.cmd("so")
 end)
 
+-- Close current buffer
+vim.keymap.set("n", "<leader>bd", function()
+  vim.cmd("bd")
+end)
+
 -- Define C-y as redo
 vim.keymap.set("n", "<C-y>", "<C-r>")
+-- Control+f to find
+vim.keymap.set("n", "<C-r>", "<cmd>Telescope find_files<CR>")
+-- Control+f to find word
+vim.keymap.set("n", "<C-f>", "<cmd>Telescope live_grep<CR>")
+
+-- Ctrl+a to select all
+vim.keymap.set("n", "<C-a>", "ggVG")
 
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["<C-v>"] = ":vsplit<cr>"
 lvim.keys.normal_mode["<C-h>"] = ":split<cr>"
 
---lvim.keys.normal_mode["<C-W>"] = ":bd<cr>"
-
 lvim.keys.normal_mode["<leader>pv"] = vim.cmd.Ex
-
-
 lvim.keys.normal_mode["<leader>y"] = '"+y'
 lvim.keys.normal_mode["<leader>p"] = '"+p'
 
 lvim.keys.normal_mode["n"] = "mzJ`z"
 lvim.keys.normal_mode["<C-d>"] = "<C-d>zz"
 lvim.keys.normal_mode["<C-u>"] = "<C-u>zz"
-lvim.keys.normal_mode["n"] = "nzzzv"
 lvim.keys.normal_mode["N"] = "Nzzzv"
+lvim.keys.normal_mode["n"] = "nzzzv"
 
 lvim.keys.normal_mode["Q"] = "<nop>"
-lvim.keys.normal_mode["<leader>f"] = "<cmd>lua vim.lsp.buf.formatting()<CR>"
 
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
@@ -87,7 +97,11 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 -- Copy to clipboard and paste from clipboard
 lvim.keys.visual_mode["<leader>y"] = '"+y'
 
--- -- Change theme settings
+-- Terminal applications
+vim.keymap.set("n", "<leader>gg", "<cmd>LazyGit<CR>")
+vim.keymap.set("n", "<leader>dd", "<cmd>LazyDocker<CR>")
+
+-- Set theme settings
 lvim.colorscheme = "nord"
 
 lvim.builtin.alpha.active = true
@@ -108,7 +122,6 @@ require("lspconfig").clangd.setup {
     "--offset-encoding=utf-16",
   },
 }
-
 
 -- lvim.builtin.treesitter.ignore_install = { "haskell" }
 
@@ -170,7 +183,6 @@ formatters.setup {
 -- -- Additional Plugins <https://www.lunarvim.org/docs/configuration/plugins/user-plugins>
 lvim.plugins = {
   "shaunsingh/nord.nvim",
-  -- "github/copilot.vim",
   {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
@@ -221,6 +233,39 @@ lvim.plugins = {
       })
     end,
   },
+  {
+    "sirver/ultisnips",
+    event = "InsertEnter",
+    config = function()
+      vim.g.UltiSnipsExpandTrigger = "<tab>"
+      vim.g.UltiSnipsJumpForwardTrigger = "<tab>"
+      vim.g.UltiSnipsJumpBackwardTrigger = "<s-tab>"
+    end,
+  },
+  {
+    "lervag/vimtex",
+    event = "BufRead",
+    config = function()
+      vim.g.vimtex_view_method = "zathura"
+      vim.g.vimtex_quickfix_mode = 0
+      vim.g.vimtex_compiler_progname = "nvr"
+      vim.g.tex_conceal = "abdmg"
+      vim.g.vimtex_compiler_latexmk = {
+        build_dir = "build",
+        callback = 1,
+        continuous = 1,
+        executable = "latexmk",
+        hooks = {},
+        options = {
+          "-verbose",
+          "-file-line-error",
+          "-synctex=1",
+          "-interaction=nonstopmode",
+          "-outdir=build",
+        },
+      }
+    end,
+  }
 }
 
 -- -- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
