@@ -45,9 +45,8 @@ fi
 plugins=(
 	git
   jump  
-  poetry
-  zsh-syntax-highlighting
 	zsh-autosuggestions
+  zsh-syntax-highlighting
 )
 
 if [[ -n $SSH_CONNECTION ]]; then
