@@ -1,24 +1,29 @@
 # SHORTCUTS
+alias openbb='docker attach openbb-openbb-1'
+alias dotadd='chezmoi add .zshrc .aliases && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura'
+alias piracy='docker start plex-server jackett lidarr sonarr deluge radarr'
+alias tocp='xclip -sel c'
+alias calibre='fzf-calibre'
+
+alias dsize='du -hsx * | sort -rh'
+alias neofetch='fastfetch'
+
+alias open='handlr open'
 alias c='clear'
 alias e='$EDITOR'
-alias dsize='du -hsx * | sort -rh'
 alias b="WD=\$(pwd);cd ~/OneDrive/Libraries/myLibrary/;zathura \"\$(fzf)\";cd \$WD"
-alias tocp='xclip -sel c'
-#alias for kalc (tui calculator)
-
-alias calibre='fzf-calibre'
-alias open='handlr open'
 alias vim='lvim'
 alias nvim='lvim'
 alias cat='bat'
-alias clipboard='roficlip'
 # Backup nvim config and .local/share/nvim in a tar.gz file
 alias nvimbackup='tar -czvf nvimbackup.tar.gz ~/.config/nvim ~/.local/share/nvim'
 alias uAndroid='adb shell pm uninstall -k --user 0'
 
+#Alias cd
 alias cd..='cd ..'
 alias ..='cd..'
-# Alias to compress folders
+
+# Alias compress folders
 alias zipf='zip -r'
 alias u='paru -Syu'
 alias i='paru'
@@ -43,12 +48,11 @@ alias rpolybar='launch.sh'
 alias su='sudo '
 alias stopB='sudo systemctl stop bluetooth.service'
 alias startB='sudo systemctl start bluetooth.service && bluetoothctl power on && bluetoothctl'
-alias stopJacket='sudo systemctl stop jackett.service'
-alias startJacket='sudo systemctl start jackett.service'
 
 # MEDIA
 alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
 alias ytp='yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"'
+
 #yta-best-mp3
 alias yta-best-mp3='yt-dlp --extract-audio --audio-format "mp3" --audio-quality 0 --output "%(title)s.%(ext)s"'
 alias ytp-abest-mp3='yt-dlp --extract-audio --audio-format "mp3" --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist '
@@ -76,15 +80,9 @@ alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias g="grep --color=auto -i"
 
-# confirm before overwriting something
-alias cp="cp -i"
-alias mv='mv -i'
-alias rm='rm -i'
-
 # adding flags
 alias df='df -h'                          # human-readable sizes
 alias free='free -m'                      # show sizes in MB
-alias ncmpcpp='ncmpcpp ncmpcpp_directory=$HOME/.config/ncmpcpp/'
 alias mocp='mocp -M "$XDG_CONFIG_HOME"/moc -O MOCDir="$XDG_CONFIG_HOME"/moc'
 
 # ps
@@ -112,7 +110,6 @@ alias ggg="git graphgpg"
 alias gco="git checkout"
 alias gcs="git commit -S -m"
 alias gpr="hub pull-request"
-alias autocommit="./home/alex/.local/bin/autocommit"
 
 # get error messages from journalctl
 alias jctl="journalctl -p 3 -xb"
@@ -121,15 +118,9 @@ alias jctl="journalctl -p 3 -xb"
 alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
 alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 
-# passowrd manager 
-#alias pass otp="pass otp -c"
-alias pass="pass -c"
-
 # switch between shells
 alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
 alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
-
-
 
 alias disks='echo "╓───── m o u n t . p o i n t s"; \
 			 echo "╙────────────────────────────────────── ─ ─ "; \
@@ -137,6 +128,7 @@ alias disks='echo "╓───── m o u n t . p o i n t s"; \
 			 echo "╓───── d i s k . u s a g e";\
 			 echo "╙────────────────────────────────────── ─ ─ "; \
 			 df -h;'
+
 function docstop(){
       docker stop $(docker ps -aq)
 }
@@ -157,10 +149,6 @@ function t() {
 	X=$#
 	[[ $X -eq 0 ]] || X=X
 	tmux new-session -A -s $X
-}
-
-function pdf {
-	zathura "$*" &>/dev/null
 }
 
 function gitforge() {
