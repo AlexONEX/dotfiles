@@ -52,6 +52,11 @@ vim.keymap.set("n", "<leader><leader>", function()
   vim.cmd("so")
 end)
 
+--vim.api.nvim_set_keymap("i", "<M-r>", "!:g++ -Wall % && ./a.out<CR>",
+--  { noremap = true, silent = true })
+vim.keymap.set("i", "<C-f>", "!:g++ -Wall % && ./a.out<CR>")
+vim.keymap.set("n", "<C-f>", "!:g++ -Wall % && ./a.out<CR>")
+
 -- Close current buffer
 vim.keymap.set("n", "<leader>bd", function()
   vim.cmd("bd")
@@ -62,7 +67,7 @@ vim.keymap.set("n", "<C-y>", "<C-r>")
 -- Control+f to find
 vim.keymap.set("n", "<C-r>", "<cmd>Telescope find_files<CR>")
 -- Control+f to find word
-vim.keymap.set("n", "<C-f>", "<cmd>Telescope live_grep<CR>")
+--vim.keymap.set("n", "<C-f>", "<cmd>Telescope live_grep<CR>")
 
 -- Ctrl+a to select all
 vim.keymap.set("n", "<C-a>", "ggVG")
