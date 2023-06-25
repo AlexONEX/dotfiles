@@ -10,10 +10,8 @@ alias neofetch='fastfetch'
 
 alias open='handlr open'
 alias c='clear'
-alias e='$EDITOR'
+alias e='lvim'
 alias b="WD=\$(pwd);cd ~/OneDrive/Libraries/myLibrary/;zathura \"\$(fzf)\";cd \$WD"
-alias vim='lvim'
-alias nvim='lvim'
 alias cat='bat'
 # Backup nvim config and .local/share/nvim in a tar.gz file
 alias nvimbackup='tar -czvf nvimbackup.tar.gz ~/.config/nvim ~/.local/share/nvim'
@@ -47,7 +45,7 @@ alias rpolybar='launch.sh'
 #Sudo
 alias su='sudo '
 alias stopB='sudo systemctl stop bluetooth.service'
-alias startB='sudo systemctl enable bluetooth.service && bluetoothctl power on && bluetoothctl'
+alias startB='sudo systemctl start bluetooth.service && bluetoothctl power on && bluetoothctl'
 
 # MEDIA
 alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
