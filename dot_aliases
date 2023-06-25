@@ -47,7 +47,7 @@ alias rpolybar='launch.sh'
 #Sudo
 alias su='sudo '
 alias stopB='sudo systemctl stop bluetooth.service'
-alias startB='sudo systemctl start bluetooth.service && bluetoothctl power on && bluetoothctl'
+alias startB='sudo systemctl enable bluetooth.service && bluetoothctl power on && bluetoothctl'
 
 # MEDIA
 alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
