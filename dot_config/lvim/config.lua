@@ -1,4 +1,5 @@
 -- define function RunFile() to run current file according to its extension
+vim.g.python3_host_prog = '/usr/bin/python3'
 function RunFile()
   if vim.bo.filetype == 'python' then
     vim.cmd('split | term python %')
@@ -272,42 +273,26 @@ lvim.plugins = {
   },
   {
     "sirver/ultisnips",
-    event = "InsertEnter",
+    event = "BufRead",
     config = function()
       vim.g.UltiSnipsExpandTrigger = "<tab>"
       vim.g.UltiSnipsJumpForwardTrigger = "<tab>"
       vim.g.UltiSnipsJumpBackwardTrigger = "<s-tab>"
+      vim.g.UltiSnipsSnippetDirectories = { "/home/alex/.config/lvim/UltiSnips" }
     end,
   },
   {
+    -- texlive-latex/basic/latexextra
     "lervag/vimtex",
-    event = "BufRead",
     config = function()
+      vim.cmd("call vimtex#init()")
       vim.g.vimtex_view_method = "zathura"
+      vim.g.vimtex_compiler_method = "latexmk"
+      vim.g.vimtex_quickfix_enabled = 1
+      vim.g.vimtex_syntax_enabled = 1
       vim.g.vimtex_quickfix_mode = 0
-      vim.g.vimtex_compiler_progname = "nvr"
-      vim.g.vimtex_conceal = {
-        math = 1,
-        item = 1,
-      }
-      vim.g.tex_flavor = "latex"
-      vim.g.tex_conceal = "abdmg"
-      vim.g.vimtex_compiler_latexmk = {
-        build_dir = "build",
-        callback = 1,
-        continuous = 1,
-        executable = "latexmk",
-        hooks = {},
-        options = {
-          "-verbose",
-          "-file-line-error",
-          "-synctex=1",
-          "-interaction=nonstopmode",
-          "-outdir=build",
-        },
-      }
     end,
-  }
+  },
 }
 
 -- -- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
