@@ -1,3 +1,30 @@
+-- define function RunFile() to run current file according to its extension
+function RunFile()
+  if vim.bo.filetype == 'python' then
+    vim.cmd('split | term python %')
+  elseif vim.bo.filetype == 'c' then
+    vim.cmd('!gcc && ./a.out')
+  elseif vim.bo.filetype == 'cpp' then
+    vim.cmd('!g++ && ./a.out')
+  elseif vim.bo.filetype == 'java' then
+    vim.cmd('!javac && java')
+  elseif vim.bo.filetype == 'sh' then
+    vim.cmd('!sh')
+  elseif vim.bo.filetype == 'lua' then
+    vim.cmd('!lua')
+  elseif vim.bo.filetype == 'javascript' then
+    vim.cmd('!node')
+  elseif vim.bo.filetype == 'html' then
+    vim.cmd('!thorium-browser')
+  elseif vim.bo.filetype == 'css' then
+    vim.cmd('!thorium-browser')
+  elseif vim.bo.filetype == 'markdown' then
+    vim.cmd('!thorium-browser')
+  else
+    vim.api.nvim_echo({ { 'filetype ' .. vim.bo.filetype .. ' is not supported', 'ErrorMsg' } }, true, {})
+  end
+end
+
 -- vim options
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
@@ -35,12 +62,9 @@ lvim.format_on_save = {
   pattern = "*.lua",
   timeout = 1000,
 }
---inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
-vim.api.nvim_set_keymap("i", "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u",
+-- Keybind for spell checking
+vim.api.nvim_set_keymap("n", "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u",
   { noremap = true, silent = true })
-
--- to disable icons and use a minimalist setup, uncomment the following
--- lvim.use_icons = false
 
 -- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
 -- Remove binding to enable copilot completion
@@ -48,14 +72,11 @@ lvim.leader = "space"
 
 -- Normal Mode
 -- Source current file
-vim.keymap.set("n", "<leader><leader>", function()
-  vim.cmd("so")
-end)
+vim.api.nvim_set_keymap("n", "<leader>so", ":source %<CR>",
+  { noremap = true, silent = true })
 
---vim.api.nvim_set_keymap("i", "<M-r>", "!:g++ -Wall % && ./a.out<CR>",
---  { noremap = true, silent = true })
-vim.keymap.set("i", "<C-f>", "!:g++ -Wall % && ./a.out<CR>")
-vim.keymap.set("n", "<C-f>", "!:g++ -Wall % && ./a.out<CR>")
+vim.api.nvim_set_keymap("n", "<C-x>", ":lua RunFile()<CR>",
+  { noremap = true, silent = true })
 
 -- Close current buffer
 vim.keymap.set("n", "<leader>bd", function()
