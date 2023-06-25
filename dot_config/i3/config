@@ -28,6 +28,9 @@ set $right semicolon
 # current displays
 exec --no-startup-id xrandr --output DP0 --right-of HDMI-0 --auto
 
+# execute command to stop all dockers
+exec --no-startup-id docker stop $(docker ps -aq)
+
 # setting variables for later use
 # use xrandr and/or arandr to know the names of your monitors
 # use this line to tell which monitor is on the right
