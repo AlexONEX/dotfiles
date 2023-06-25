@@ -1,9 +1,10 @@
 export TERM="xterm-256color"
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 # Export editor as lvim if available else nvim
-export EDITOR="lvim"
-export VISUAL= EDITOR
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export WORKON_HOME=$HOME/.virtualenvs
+
+source /usr/bin/virtualenvwrapper.sh
 
 zstyle ':omz:update' mode auto      # update automatically without asking
 zstyle ':omz:update' frequency 13
