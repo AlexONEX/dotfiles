@@ -55,6 +55,9 @@ vim.opt.isfname:append("@-@")
 vim.opt.updatetime = 50
 vim.opt.colorcolumn = "80"
 
+-- to disable icons and use a minimalist setup, uncomment the following
+-- lvim.use_icons = false
+
 -- general
 lvim.log.level = "info"
 lvim.format_on_save = {
@@ -92,22 +95,21 @@ vim.keymap.set("n", "<C-r>", "<cmd>Telescope find_files<CR>")
 
 -- Ctrl+a to select all
 vim.keymap.set("n", "<C-a>", "ggVG")
+vim.keymap.set('n', '<C-s>', ':w<CR>', { silent = true })
+vim.keymap.set('n', '<C-v>', ':vsplit<CR>', { silent = true })
+vim.keymap.set('n', '<C-h>', ':split<CR>', { silent = true })
 
-lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
-lvim.keys.normal_mode["<C-v>"] = ":vsplit<cr>"
-lvim.keys.normal_mode["<C-h>"] = ":split<cr>"
+vim.keymap.set('n', '<leader>pv', ':Ex<CR>')
+vim.keymap.set('n', '<leader>y', '"+y')
+vim.keymap.set('n', '<leader>p', '"+p')
 
-lvim.keys.normal_mode["<leader>pv"] = vim.cmd.Ex
-lvim.keys.normal_mode["<leader>y"] = '"+y'
-lvim.keys.normal_mode["<leader>p"] = '"+p'
+vim.keymap.set('n', 'n', "mzJ`z")
+vim.keymap.set('n', '<C-d>', "<C-d>zz")
+vim.keymap.set('n', '<C-u>', "<C-u>zz")
+vim.keymap.set('n', 'N', "Nzzzv")
+vim.keymap.set('n', 'n', "nzzzv")
 
-lvim.keys.normal_mode["n"] = "mzJ`z"
-lvim.keys.normal_mode["<C-d>"] = "<C-d>zz"
-lvim.keys.normal_mode["<C-u>"] = "<C-u>zz"
-lvim.keys.normal_mode["N"] = "Nzzzv"
-lvim.keys.normal_mode["n"] = "nzzzv"
-
-lvim.keys.normal_mode["Q"] = "<nop>"
+vim.keymap.set('n', 'Q', "<nop>")
 
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
@@ -137,8 +139,17 @@ lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
 -- Automatically install missing parsers when entering buffer
-lvim.builtin.treesitter.auto_install = false
+lvim.builtin.treesitter.auto_install = true
 local cmp_nvim_lsp = require "cmp_nvim_lsp"
+
+local on_attach = function(client, bufnr)
+  require("lsp_signature").on_attach()
+  require("lsp-status").on_attach(client)
+  require("completion").on_attach(client, bufnr)
+  -- Set up keybindings specific to the LSP client
+  vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", { silent = true })
+  print("'" .. client.name .. "' server attached")
+end
 
 require("lspconfig").clangd.setup {
   on_attach = on_attach,
@@ -275,6 +286,11 @@ lvim.plugins = {
       vim.g.vimtex_view_method = "zathura"
       vim.g.vimtex_quickfix_mode = 0
       vim.g.vimtex_compiler_progname = "nvr"
+      vim.g.vimtex_conceal = {
+        math = 1,
+        item = 1,
+      }
+      vim.g.tex_flavor = "latex"
       vim.g.tex_conceal = "abdmg"
       vim.g.vimtex_compiler_latexmk = {
         build_dir = "build",
