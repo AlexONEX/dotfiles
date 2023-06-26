@@ -1,5 +1,6 @@
--- define function RunFile() to run current file according to its extension
 vim.g.python3_host_prog = '/usr/bin/python3'
+
+-- define function RunFile() to run current file according to its extension
 function RunFile()
   if vim.bo.filetype == 'python' then
     vim.cmd('split | term python %')
@@ -67,8 +68,14 @@ lvim.format_on_save = {
   timeout = 1000,
 }
 -- Keybind for spell checking
-vim.api.nvim_set_keymap("n", "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u",
+vim.api.nvim_set_keymap("n", "<M-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u",
   { noremap = true, silent = true })
+
+-- Keybind for enabling spell checking
+vim.api.nvim_set_keymap("n", "<M-k>", ":setlocal spell!<CR>",
+  { noremap = true, silent = true })
+
+vim.opt.spelllang = "en_us"
 
 -- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
 -- Remove binding to enable copilot completion
@@ -124,7 +131,7 @@ vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
 -- Copy to clipboard and paste from clipboard
-lvim.keys.visual_mode["<leader>y"] = '"+y'
+vim.keymap.set("v", "<leader>y", '"+y')
 
 -- Terminal applications
 vim.keymap.set("n", "<leader>gg", "<cmd>LazyGit<CR>")
@@ -138,6 +145,7 @@ lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+lvim.builtin.luasnip.sources.snippets = false
 
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true

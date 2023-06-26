@@ -1,6 +1,6 @@
 # SHORTCUTS
 alias openbb='docker attach openbb-openbb-1'
-alias dotadd='chezmoi add .zshrc .aliases && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura'
+alias dotadd='cd $HOME && chezmoi add .zshrc .aliases && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura'
 alias piracy='docker start plex-server jackett lidarr sonarr deluge radarr'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
@@ -10,7 +10,7 @@ alias neofetch='fastfetch'
 
 alias open='handlr open'
 alias c='clear'
-alias e='lvim'
+alias vim='lvim'
 alias b="WD=\$(pwd);cd ~/OneDrive/Libraries/myLibrary/;zathura \"\$(fzf)\";cd \$WD"
 alias cat='bat'
 # Backup nvim config and .local/share/nvim in a tar.gz file
