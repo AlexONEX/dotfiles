@@ -145,7 +145,7 @@ lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
-lvim.builtin.luasnip.sources.snippets = false
+lvim.builtin.luasnip.sources.friendly_snippets = true
 
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
@@ -277,16 +277,6 @@ lvim.plugins = {
         copilot_node_command = 'node', -- Node.js version must be > 16.x
         server_opts_overrides = {},
       })
-    end,
-  },
-  {
-    "sirver/ultisnips",
-    event = "BufRead",
-    config = function()
-      vim.g.UltiSnipsExpandTrigger = "<tab>"
-      vim.g.UltiSnipsJumpForwardTrigger = "<tab>"
-      vim.g.UltiSnipsJumpBackwardTrigger = "<s-tab>"
-      vim.g.UltiSnipsSnippetDirectories = { "/home/alex/.config/lvim/UltiSnips" }
     end,
   },
   {
