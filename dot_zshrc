@@ -45,7 +45,6 @@ fi
 
 plugins=(
 	git
-  jump  
 	zsh-autosuggestions
   zsh-syntax-highlighting
 )

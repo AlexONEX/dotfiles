@@ -1,32 +1,3 @@
-vim.g.python3_host_prog = '/usr/bin/python3'
-
--- define function RunFile() to run current file according to its extension
-function RunFile()
-  if vim.bo.filetype == 'python' then
-    vim.cmd('split | term python %')
-  elseif vim.bo.filetype == 'c' then
-    vim.cmd('!gcc && ./a.out')
-  elseif vim.bo.filetype == 'cpp' then
-    vim.cmd('!g++ && ./a.out')
-  elseif vim.bo.filetype == 'java' then
-    vim.cmd('!javac && java')
-  elseif vim.bo.filetype == 'sh' then
-    vim.cmd('!sh')
-  elseif vim.bo.filetype == 'lua' then
-    vim.cmd('!lua')
-  elseif vim.bo.filetype == 'javascript' then
-    vim.cmd('!node')
-  elseif vim.bo.filetype == 'html' then
-    vim.cmd('!thorium-browser')
-  elseif vim.bo.filetype == 'css' then
-    vim.cmd('!thorium-browser')
-  elseif vim.bo.filetype == 'markdown' then
-    vim.cmd('!thorium-browser')
-  else
-    vim.api.nvim_echo({ { 'filetype ' .. vim.bo.filetype .. ' is not supported', 'ErrorMsg' } }, true, {})
-  end
-end
-
 -- vim options
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
@@ -57,6 +28,9 @@ vim.opt.isfname:append("@-@")
 vim.opt.updatetime = 50
 vim.opt.colorcolumn = "80"
 
+vim.g.python3_host_prog = '/usr/bin/python3'
+vim.opt.spelllang = "en_us"
+
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
@@ -67,76 +41,6 @@ lvim.format_on_save = {
   pattern = "*.lua",
   timeout = 1000,
 }
--- Keybind for spell checking
-vim.api.nvim_set_keymap("n", "<M-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u",
-  { noremap = true, silent = true })
-
--- Keybind for enabling spell checking
-vim.api.nvim_set_keymap("n", "<M-k>", ":setlocal spell!<CR>",
-  { noremap = true, silent = true })
-
-vim.opt.spelllang = "en_us"
-
--- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
--- Remove binding to enable copilot completion
-lvim.leader = "space"
-
--- Normal Mode
--- Source current file
-vim.api.nvim_set_keymap("n", "<leader>so", ":source %<CR>",
-  { noremap = true, silent = true })
-
-vim.api.nvim_set_keymap("n", "<C-x>", ":lua RunFile()<CR>",
-  { noremap = true, silent = true })
-
--- Close current buffer
-vim.keymap.set("n", "<leader>bd", function()
-  vim.cmd("bd")
-end)
-
--- Define C-y as redo
-vim.keymap.set("n", "<C-y>", "<C-r>")
--- Control+f to find
-vim.keymap.set("n", "<C-r>", "<cmd>Telescope find_files<CR>")
--- Control+f to find word
---vim.keymap.set("n", "<C-f>", "<cmd>Telescope live_grep<CR>")
-
--- Ctrl+a to select all
-vim.keymap.set("n", "<C-a>", "ggVG")
-vim.keymap.set('n', '<C-s>', ':w<CR>', { silent = true })
-vim.keymap.set('n', '<C-v>', ':vsplit<CR>', { silent = true })
-vim.keymap.set('n', '<C-h>', ':split<CR>', { silent = true })
-
-vim.keymap.set('n', '<leader>pv', ':Ex<CR>')
-vim.keymap.set('n', '<leader>y', '"+y')
-vim.keymap.set('n', '<leader>p', '"+p')
-
-vim.keymap.set('n', 'n', "mzJ`z")
-vim.keymap.set('n', '<C-d>', "<C-d>zz")
-vim.keymap.set('n', '<C-u>', "<C-u>zz")
-vim.keymap.set('n', 'N', "Nzzzv")
-vim.keymap.set('n', 'n', "nzzzv")
-
-vim.keymap.set('n', 'Q', "<nop>")
-
-vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
-vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
-vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
-
-vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
-vim.keymap.set("n", "<leader>vpp", "<cmd>e ~/.config/lvim/config.lua<CR>")
-
--- Visual
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
-
--- Copy to clipboard and paste from clipboard
-vim.keymap.set("v", "<leader>y", '"+y')
-
--- Terminal applications
-vim.keymap.set("n", "<leader>gg", "<cmd>LazyGit<CR>")
-vim.keymap.set("n", "<leader>dd", "<cmd>LazyDocker<CR>")
-
 -- Set theme settings
 lvim.colorscheme = "nord"
 
@@ -146,6 +50,34 @@ lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 lvim.builtin.luasnip.sources.friendly_snippets = true
+lvim.builtin.luasnip.snippets_dir = os.getenv("HOME") .. "/.config/lvim/snippets"
+
+-- loacal Functions
+function RunFile()
+  if vim.bo.filetype == 'python' then
+    vim.cmd('split | term python %')
+  elseif vim.bo.filetype == 'c' then
+    vim.cmd('!gcc && ./a.out')
+  elseif vim.bo.filetype == 'cpp' then
+    vim.cmd('!g++ && ./a.out')
+  elseif vim.bo.filetype == 'java' then
+    vim.cmd('!javac && java')
+  elseif vim.bo.filetype == 'sh' then
+    vim.cmd('!sh')
+  elseif vim.bo.filetype == 'lua' then
+    vim.cmd('!lua')
+  elseif vim.bo.filetype == 'javascript' then
+    vim.cmd('!node')
+  elseif vim.bo.filetype == 'html' then
+    vim.cmd('!thorium-browser')
+  elseif vim.bo.filetype == 'css' then
+    vim.cmd('!thorium-browser')
+  elseif vim.bo.filetype == 'markdown' then
+    vim.cmd('!thorium-browser')
+  else
+    vim.api.nvim_echo({ { 'filetype ' .. vim.bo.filetype .. ' is not supported', 'ErrorMsg' } }, true, {})
+  end
+end
 
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
@@ -227,6 +159,7 @@ formatters.setup {
 -- }
 
 -- -- Additional Plugins <https://www.lunarvim.org/docs/configuration/plugins/user-plugins>
+lvim.builtin.luasnip.snippets_dir = "~/.config/lvim/snippets"
 lvim.plugins = {
   "shaunsingh/nord.nvim",
   {
@@ -301,3 +234,71 @@ vim.api.nvim_create_autocmd("FileType", {
     require("nvim-treesitter.highlight").attach(0, "bash")
   end,
 })
+
+-- Keybind for spell checking
+vim.api.nvim_set_keymap("n", "<M-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u",
+  { noremap = true, silent = true })
+
+-- Keybind for enabling spell checking
+vim.api.nvim_set_keymap("n", "<M-k>", ":setlocal spell!<CR>",
+  { noremap = true, silent = true })
+
+-- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
+-- Remove binding to enable copilot completion
+lvim.leader = "space"
+
+-- Normal Mode
+-- Source current file
+vim.api.nvim_set_keymap("n", "<C-x>", ":lua RunFile()<CR>",
+  { noremap = true, silent = true })
+
+-- Close current buffer
+vim.keymap.set("n", "<leader>bd", function()
+  vim.cmd("bd")
+end)
+
+-- close current split
+vim.keymap.set("n", "<leader>q", function()
+  vim.cmd("q")
+end)
+
+-- Define C-y as redo
+vim.keymap.set("n", "<C-y>", "<C-r>")
+vim.keymap.set("n", "<C-r>", "<cmd>Telescope find_files<CR>")
+--vim.keymap.set("n", "<C-f>", "<cmd>Telescope live_grep<CR>")
+
+-- Ctrl+a to select all
+vim.keymap.set("n", "<C-a>", "ggVG")
+vim.keymap.set('n', '<C-s>', ':w<CR>', { silent = true })
+vim.keymap.set('n', '<C-v>', ':vsplit<CR>', { silent = true })
+vim.keymap.set('n', '<C-h>', ':split<CR>', { silent = true })
+
+vim.keymap.set('n', '<leader>pv', ':Ex<CR>')
+-- clipboard
+vim.keymap.set('n', '<leader>y', '"+y')
+vim.keymap.set('n', '<leader>p', '"+p')
+
+vim.keymap.set('n', 'n', "mzJ`z")
+vim.keymap.set('n', '<C-d>', "<C-d>zz")
+vim.keymap.set('n', '<C-u>', "<C-u>zz")
+vim.keymap.set('n', 'N', "Nzzzv")
+vim.keymap.set('n', 'n', "nzzzv")
+
+vim.keymap.set('n', 'Q', "<nop>")
+
+vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
+vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
+vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
+
+vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
+vim.keymap.set("n", "<leader>vpp", "<cmd>e ~/.config/lvim/config.lua<CR>")
+
+vim.keymap.set("n", "<leader>v", "<cmd>vs<CR>")
+vim.keymap.set("n", "<leader>h", "<cmd>sp<CR>")
+
+-- Visual
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+
+-- Copy to clipboard and paste from clipboard
+vim.keymap.set("v", "<leader>y", '"+y')

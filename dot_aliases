@@ -1,4 +1,5 @@
 # SHORTCUTS
+alias j='jump'
 alias openbb='docker attach openbb-openbb-1'
 alias dotadd='cd $HOME && chezmoi add .zshrc .aliases && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura'
 alias piracy='docker start plex-server jackett lidarr sonarr deluge radarr'
@@ -29,7 +30,7 @@ alias purge='sudo pacman -Rnsc'
 alias listpkgs='pacman -Qqe > pkglist.txt'
 alias listaur='paru -Qqe > aurlist.txt'
 alias installpkgs='sudo paru -S - < pkglist.txt'
-alias uninstallpks='pacman -Qtdq | sudo pacman -Rnsc' 
+alias unused='pacman -Qqd | sudo pacman -Rsu -'
 alias uSpicetifyNorc='curl -fsSL https://raw.githubusercontent.com/Tetrax-10/Nord-Spotify/master/install-scripts/uninstall.sh | sh'
 
 alias aliases='vim ~/.aliases'
