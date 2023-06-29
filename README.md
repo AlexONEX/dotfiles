@@ -3,14 +3,14 @@ My Doftiles managed by chezmoi <br>
 Install the required dependencies for each application:
 
 [Alacritty](https://alacritty.org/)<br>
-EasyEffects: [Install EasyEffects using your package manager](https://github.com/wwmm/easyeffects#Installation)<br>
-i3 Window Manager: [Follow the installation instructions](https://i3wm.org/downloads/)<br>
-Flameshot [Follow the instructions](https://flameshot.org/#download)<br>
-LunarVim: [Install LunarVim by following the instructions from its repository](https://www.lunarvim.org/docs/installation)<br>
-Polybar: [Install Polybar using your package manager](https://polybar.github.io/)<br>
-Ranger: [Install Ranger using your package manager](https://ranger.github.io/)<br>
-Spicetify: [Install Spicetify using the instructions provided in its repository.](https://spicetify.app/docs/advanced-usage/installation/)<br>
-Zathura: [Install Zathura using your package manager.](https://github.com/pwmt/zathura)
+[EasyEffects](https://github.com/wwmm/easyeffects#Installation)<br>
+[i3 Window Manager](https://i3wm.org/downloads/)<br>
+[Flameshot](https://flameshot.org/#download)<br>
+[LunarVim](https://www.lunarvim.org/docs/installation)<br>
+[Polybar](https://polybar.github.io/)<br>
+[Ranger](https://ranger.github.io/)<br>
+[Spicetify](https://spicetify.app/docs/advanced-usage/installation/)<br>
+[Zathura](https://github.com/pwmt/zathura)
 
 ## Screenshots
 ![image](https://github.com/AlexONEX/dotfiles/assets/22077128/ce76e1cd-393a-411f-b9d3-463ea431de34)
