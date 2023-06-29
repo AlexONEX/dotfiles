@@ -1,7 +1,5 @@
 # dotfiles
 My Doftiles managed by chezmoi <br>
-Install the required dependencies for each application:
-
 [Alacritty](https://alacritty.org/)<br>
 [EasyEffects](https://github.com/wwmm/easyeffects#Installation)<br>
 [i3 Window Manager](https://i3wm.org/downloads/)<br>
