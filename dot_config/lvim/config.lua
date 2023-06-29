@@ -302,3 +302,6 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
 -- Copy to clipboard and paste from clipboard
 vim.keymap.set("v", "<leader>y", '"+y')
+
+--exit window on escape
+vim.keymap.set("n", "q", "<cmd>q!<CR>")

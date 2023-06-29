@@ -1,8 +1,9 @@
 # SHORTCUTS
 alias a='$EDITOR $ZSH/.aliases'
 alias j='goto'
+alias zplugins='ls $ZPLUGINDIR'
 alias openbb='docker attach openbb-openbb-1'
-alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/.aliases && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura'
+alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/.aliases .marks/ && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura'
 alias piracy='docker start plex-server jackett lidarr sonarr deluge radarr'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
