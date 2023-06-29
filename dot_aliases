@@ -1,7 +1,7 @@
 # SHORTCUTS
 alias j='jump'
 alias openbb='docker attach openbb-openbb-1'
-alias dotadd='cd $HOME && chezmoi add .zshrc .aliases && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura'
+alias dotsadd='cd $HOME && chezmoi add .zshrc .aliases && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura'
 alias piracy='docker start plex-server jackett lidarr sonarr deluge radarr'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
@@ -129,11 +129,29 @@ alias disks='echo "╓───── m o u n t . p o i n t s"; \
 			 df -h;'
 
 function docstop(){
-      docker stop $(docker ps -aq)
+      docker stop $(docker ps -aq) 
 }
 
 function docstart(){
       docker start $(docker ps -aq)
+}
+
+function dockerservice() {
+  #if service is running, stop it
+  #else start it
+  if [[ $(docker info | grep "Server Version") ]]; then
+    echo "Docker is running, stopping service..."
+    sudo systemctl stop docker.service
+  else
+    echo "Docker is not running, starting service..."
+    sudo systemctl start docker.service
+  fi 
+}
+
+function docker-clean() {
+  docker stop $(sudo docker ps -aq) 
+  docker rm $(sudo docker ps -a -q)
+  docker rmi $(sudo docker images -q)
 }
 
 function docclean() {
