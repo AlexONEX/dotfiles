@@ -22,6 +22,7 @@ repos=(
   marlonrichert/zsh-autocomplete
   martvdmoosdijk/zsh-marks
   romkatv/powerlevel10k
+  smeagol74/zsh-fzf-pass
   zsh-users/zsh-autosuggestions
   zsh-users/zsh-syntax-highlighting
   )

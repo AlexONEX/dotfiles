@@ -45,9 +45,8 @@ alias wttr='curl -4 wttr.in'
 alias rpolybar='launch.sh'
 
 #Sudo
-alias su='sudo '
 alias stopB='sudo systemctl stop bluetooth.service'
-alias startB='sudo systemctl start bluetooth.service && bluetoothctl power on && bluetoothctl'
+alias sb='sudo systemctl start bluetooth.service && bluetoothctl power on && bluetoothctl'
 
 # MEDIA
 alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
@@ -97,7 +96,7 @@ alias merge='xrdb -merge ~/.Xresources'
 
 # git
 # source: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
-alias g="git"
+alias g="gitui"
 alias gss="git status -s"
 alias gcc="git clone"
 alias gc="git commit"
@@ -135,6 +134,9 @@ alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 # switch between shells
 alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
 alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
+
+#pass stuff
+alias p="pass -c"
 
 alias disks='echo "╓───── m o u n t . p o i n t s"; \
 			 echo "╙────────────────────────────────────── ─ ─ "; \
