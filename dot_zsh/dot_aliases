@@ -97,7 +97,7 @@ alias merge='xrdb -merge ~/.Xresources'
 
 # git
 # source: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
-alias g="git"
+alias g="gitui"
 alias gss="git status -s"
 alias gcc="git clone"
 alias gc="git commit"

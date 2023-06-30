@@ -250,8 +250,11 @@ vim.api.nvim_set_keymap("n", "<M-k>", ":setlocal spell!<CR>",
 lvim.leader = "space"
 
 -- Normal Mode
--- Source current file
 vim.api.nvim_set_keymap("n", "<C-x>", ":lua RunFile()<CR>",
+  { noremap = true, silent = true })
+
+-- Source current file
+vim.api.nvim_set_keymap("n", "<leader>so", ":luafile %<CR>",
   { noremap = true, silent = true })
 
 -- Close current buffer
@@ -267,7 +270,7 @@ end)
 -- Define C-y as redo
 vim.keymap.set("n", "<C-y>", "<C-r>")
 vim.keymap.set("n", "<C-r>", "<cmd>Telescope find_files<CR>")
---vim.keymap.set("n", "<C-f>", "<cmd>Telescope live_grep<CR>")
+vim.keymap.set("n", "<C-f>", "<cmd>Telescope live_grep<CR>")
 
 -- Ctrl+a to select all
 vim.keymap.set("n", "<C-a>", "ggVG")
