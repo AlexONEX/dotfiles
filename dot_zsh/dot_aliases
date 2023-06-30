@@ -3,7 +3,8 @@ alias a='$EDITOR $ZSH/.aliases'
 alias j='goto'
 alias zplugins='ls $ZPLUGINDIR'
 alias openbb='docker attach openbb-openbb-1'
-alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/.aliases .marks/ && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura'
+alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/.aliases .marks/ && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura mimeapps.list'
+'
 alias piracy='docker start plex-server jackett lidarr sonarr deluge radarr'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
@@ -100,6 +101,7 @@ alias merge='xrdb -merge ~/.Xresources'
 # source: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
 alias g="git"
 alias gss="git status -s"
+alias gcc="git clone"
 alias gc="git commit"
 alias gd='git diff'
 alias ga='git add'

@@ -1,6 +1,7 @@
 -- vim options
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
+--set tab to 4 spaces
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 
@@ -14,7 +15,7 @@ vim.opt.wrap = false
 
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undodir = os.getenv("HOME") .. "/.config/lvim/undodir"
 vim.opt.undofile = true
 
 vim.opt.hlsearch = false
@@ -46,6 +47,7 @@ lvim.colorscheme = "nord"
 
 lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "dashboard"
+lvim.builtin.dap.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false

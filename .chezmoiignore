@@ -1,0 +1,2 @@
+#ignore dir in dot_config/lvim/undodir
+dot_config/lvim/undodir/*
