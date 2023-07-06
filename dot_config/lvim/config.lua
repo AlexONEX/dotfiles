@@ -217,6 +217,7 @@ lvim.plugins = {
   {
     -- texlive-latex/basic/latexextra
     "lervag/vimtex",
+    ft = "tex",
     config = function()
       vim.cmd("call vimtex#init()")
       vim.g.vimtex_view_method = "zathura"
@@ -226,6 +227,7 @@ lvim.plugins = {
       vim.g.vimtex_quickfix_mode = 0
     end,
   },
+  "mbbill/undotree",
 }
 
 -- -- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
@@ -236,6 +238,10 @@ vim.api.nvim_create_autocmd("FileType", {
     require("nvim-treesitter.highlight").attach(0, "bash")
   end,
 })
+
+
+-- add /usr/include/c++/13.1.1/ to path
+
 
 -- Keybind for spell checking
 vim.api.nvim_set_keymap("n", "<M-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u",
@@ -310,3 +316,6 @@ vim.keymap.set("v", "<leader>y", '"+y')
 
 --exit window on escape
 vim.keymap.set("n", "q", "<cmd>q!<CR>")
+
+-- undo tree toogle on u
+vim.keymap.set("n", "<C-y>", "<cmd>UndotreeToggle<CR>")

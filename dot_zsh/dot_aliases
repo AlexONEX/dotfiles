@@ -53,8 +53,14 @@ alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/s
 alias ytp='yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"'
 
 #yta-best-mp3
-alias yta-best-mp3='yt-dlp --extract-audio --audio-format "mp3" --audio-quality 0 --output "%(title)s.%(ext)s"'
-alias ytp-abest-mp3='yt-dlp --extract-audio --audio-format "mp3" --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist '
+function yta(){
+    yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" "$1"
+}
+
+function ytpa(){
+    yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist "$1"
+}
+
 alias yta-best='yt-dlp --extract-audio --audio-format "wav"'
 alias ytp-abest='yt-dlp --extract-audio --audio-format "wav" --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist '
 alias ytv-best="yt-dlp -f bestvideo+bestaudio "
@@ -155,27 +161,19 @@ function docstart(){
 }
 
 function dockerservice() {
-  #if service is running, stop it
-  #else start it
-  if [[ $(docker info | grep "Server Version") ]]; then
-    echo "Docker is running, stopping service..."
-    sudo systemctl stop docker.service
-  else
-    echo "Docker is not running, starting service..."
+  if ! systemctl is-active --quiet docker; then
+    echo "Starting docker service"
     sudo systemctl start docker.service
-  fi 
+  else
+    echo "Stopping docker service"
+    sudo systemctl stop docker.service
+  fi
 }
 
 function docker-clean() {
   docker stop $(sudo docker ps -aq) 
   docker rm $(sudo docker ps -a -q)
   docker rmi $(sudo docker images -q)
-}
-
-function docclean() {
-  docker stop $(sudo docker ps -aq) 
-	docker rm $(sudo docker ps -a -q)
-	docker rmi $(sudo docker images -q)
 }
 
 alias docstats="docker ps -q | xargs  docker stats --no-stream"
