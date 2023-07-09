@@ -1,7 +1,7 @@
 # SHORTCUTS
 alias j='jump'
 alias openbb='docker attach openbb-openbb-1'
-alias dotsadd='cd $HOME && chezmoi add .zshrc .aliases && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura'
+alias dotsadd='cd $HOME && chezmoi add .zshrc .aliases && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot polybar spicetify zathura'
 alias piracy='docker start plex-server jackett lidarr sonarr deluge radarr'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
@@ -11,7 +11,7 @@ alias neofetch='fastfetch'
 
 alias open='handlr open'
 alias c='clear'
-alias vim='lvim'
+alias vim='nvim'
 alias b="WD=\$(pwd);cd ~/OneDrive/Libraries/myLibrary/;zathura \"\$(fzf)\";cd \$WD"
 alias cat='bat'
 # Backup nvim config and .local/share/nvim in a tar.gz file
@@ -36,7 +36,6 @@ alias uSpicetifyNorc='curl -fsSL https://raw.githubusercontent.com/Tetrax-10/Nor
 alias aliases='vim ~/.aliases'
 alias pullAndroid='cd $HOME/Pictures/Android && adb pull /storage/emulated/0/Pictures && adb pull /storage/emulated/0/Dcim'
 alias r='source ~/.zshrc'
-alias network='nmtui'
 alias version='lsb_release -a'
 alias kernel='uname -r'
 alias localip='ip -brief -color address'
@@ -127,6 +126,9 @@ alias disks='echo "╓───── m o u n t . p o i n t s"; \
 			 echo "╓───── d i s k . u s a g e";\
 			 echo "╙────────────────────────────────────── ─ ─ "; \
 			 df -h;'
+
+alias pullCloud="rclone copy GoogleDrive: /home/alex/GoogleDrive && rclone copy OneDrive: /home/alex/Onedrive"
+alias pushCloud="rclone sync /home/alex/GoogleDrive: GoogleDrive && rclone sync /home/alex/OneDrive: Onedrive"
 
 function docstop(){
       docker stop $(docker ps -aq) 
