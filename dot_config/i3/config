@@ -263,9 +263,6 @@ exec --no-startup-id nm-applet
 # num lock activated
 exec_always --no-startup-id numlockx on
 
-# volume
-exec --no-startup-id volumeicon
-
 # Conky
 # exec --no-startup-id conky -c ~/.config/i3/system-overview
 
@@ -379,10 +376,10 @@ bindsym mod1+Shift+t exec --no-startup-id variety -t && wal -i $(cat $HOME/.conf
 bindsym mod1+Shift+u exec --no-startup-id wal -i $(cat $HOME/.config/variety/wallpaper/wallpaper.jpg.txt)
 
 ################# audio settings
-bindsym XF86AudioRaiseVolume exec --no-startup-id "amixer -D pulse sset Master '2%+'"
-bindsym XF86AudioLowerVolume exec --no-startup-id "amixer -D pulse sset Master '2%-'"
-bindsym XF86AudioMute exec --no-startup-id "amixer -D pulse set Master toggle"
-# https://github.com/acrisci/playerctl/
+bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 5 
+bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 5 
+bindsym XF86AudioMute exec --no-startup-id pamixer -t
+
 bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
 bindsym XF86AudioNext exec --no-startup-id playerctl next
 bindsym XF86AudioPrev exec --no-startup-id playerctl previous

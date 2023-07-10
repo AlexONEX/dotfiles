@@ -1,10 +1,11 @@
 # SHORTCUTS
 alias r='source ~/.zshrc'
+alias rf='rm -rf'
 alias a='$EDITOR $ZSH/.aliases'
 alias j='goto'
 alias zplugins='ls $ZPLUGINDIR'
 alias openbb='docker attach openbb-openbb-1'
-alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/.aliases .marks/ && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot lvim polybar spicetify zathura mimeapps.list'
+alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/.aliases .marks/ && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot nvim polybar spicetify zathura mimeapps.list'
 alias piracy='docker start plex-server jackett lidarr sonarr deluge radarr'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
@@ -14,7 +15,7 @@ alias neofetch='fastfetch'
 
 alias open='handlr open'
 alias c='clear'
-alias vim='lvim'
+alias vim='nvim'
 alias b="WD=\$(pwd);cd ~/OneDrive/Libraries/myLibrary/;zathura \"\$(fzf)\";cd \$WD"
 alias cat='bat'
 # Backup nvim config and .local/share/nvim in a tar.gz file

@@ -41,7 +41,7 @@ export TERM="xterm-256color"
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 export WORKON_HOME=$HOME/.virtualenvs
 
-export EDITOR=lvim
+export EDITOR=nvim
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export VISUAL=/bin/vim
 export DOTFILES=$HOME/.local/share/chezmoi/
