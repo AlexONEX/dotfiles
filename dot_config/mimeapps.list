@@ -1,12 +1,14 @@
 [Added Associations]
-application/epub+zip=org.pwmt.zathura-pdf-mupdf.desktop;
-application/pdf=thorium-browser.desktop;org.pwmt.zathura-pdf-mupdf.desktop;
+application/pdf=thorium-browser.desktop;
 image/jpeg=feh.desktop;
 text/html=thorium-browser.desktop;
 text/plain=Alacritty.desktop;vim.desktop;
 
 [Default Applications]
-application/pdf=org.pwmt.zathura-pdf-mupdf.desktop;
+application/epub=org.pwmt.zathura.desktop;
+application/epub+zip=org.pwmt.zathura-pdf-mupdf.desktop;
+application/pdf=org.pwmt.zathura.desktop;
 application/xhtml+xml=thorium-browser.desktop;
+text/*=nvim.desktop;
 x-scheme-handler/magnet=thorium-browser.desktop;
 x-scheme-handler/mailto=thorium-browser.desktop;

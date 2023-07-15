@@ -5,10 +5,7 @@ set selection-clipboard clipboard
 set window-title-basename "true"
 set selection-clipboard "clipboard"
 
-#
 # Dracula color theme
-#
-
 set notification-error-bg       "#ff5555" # Red
 set notification-error-fg       "#f8f8f2" # Foreground
 set notification-warning-bg     "#ffb86c" # Orange
@@ -45,14 +42,10 @@ set render-loading-bg           "#f8f8f2" # Foreground
 
 #
 # Recolor mode settings
-#
-
 set recolor-lightcolor          "#282a36" # Background
 set recolor-darkcolor           "#f8f8f2" # Foreground
 
-#
 # Startup options
-#
 # Open document in fith-width mode by default
 set adjust-open "best-fit"
 
@@ -86,5 +79,3 @@ map m set mark
 unmap f
 map <C-n> toggle_statusbar
 # use arrow keys to navigate to next/previous pages
-
-

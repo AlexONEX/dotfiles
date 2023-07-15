@@ -9,16 +9,16 @@ change_color() {
 	# polybar
 	sed -i -e "s/background = #.*/background = $background/g" $PFILE
 	sed -i -e "s/background-alt = #.*/background-alt = $backgroundalt/g" $PFILE
-    sed -i -e "s/foreground = #.*/foreground = $foreground/g" $PFILE
+	sed -i -e "s/foreground = #.*/foreground = $foreground/g" $PFILE
 	sed -i -e "s/primary = #.*/primary = $primary/g" $PFILE
 	sed -i -e "s/underline = #.*/underline = $underline/g" $PFILE
 	sed -i -e "s/secondary = #.*/secondary = $secondary/g" $PFILE
 	sed -i -e "s/alert = #.*/alert = $alert/g" $PFILE
-    sed -i -e "s/disabled = #.*/disabled = #$disabled/g" $PFILE
+	sed -i -e "s/disabled = #.*/disabled = #$disabled/g" $PFILE
 	sed -i -e "s/resize = #.*/resize = $resize/g" $PFILE
 	sed -i -e "s/border = #.*/border = $border/g" $PFILE
 	sed -i -e "s/spotify = #.*/spotify = $spotify/g" $PFILE
-	
+
 	polybar-msg cmd restart
 
 	#rofi
@@ -31,12 +31,11 @@ change_wall() {
 	feh --bg-fill "$WDIR/$file"
 }
 
-
 status=$(jq -r .status $JFILE)
 echo $status
 if [[ $status = true ]]; then
 	#white theme
-    echo "$( jq '.status = "false"' $JFILE )" > $JFILE
+	echo "$(jq '.status = "false"' $JFILE)" >$JFILE
 	background="#AA282A2E"
 	backgroundalt="#BB373B41"
 	foreground="#C5C8C6"
@@ -54,7 +53,7 @@ if [[ $status = true ]]; then
 	change_wall
 else
 	#dark theme
-    echo "$( jq '.status = "true"' $JFILE )" > $JFILE
+	echo "$(jq '.status = "true"' $JFILE)" >$JFILE
 	background="#88282A2E"
 	backgroundalt="#BB373B41"
 	foreground="#C5C8C6"
