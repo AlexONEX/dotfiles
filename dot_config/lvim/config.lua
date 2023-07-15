@@ -1,6 +1,7 @@
 -- vim options
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
+
 --set tab to 4 spaces
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
@@ -15,7 +16,7 @@ vim.opt.wrap = false
 
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.config/lvim/undodir"
+vim.opt.undodir = os.getenv("HOME") .. "/.config/nvim/undodir"
 vim.opt.undofile = true
 
 vim.opt.hlsearch = false
@@ -29,7 +30,7 @@ vim.opt.isfname:append("@-@")
 vim.opt.updatetime = 50
 vim.opt.colorcolumn = "80"
 
-vim.g.python3_host_prog = '/usr/bin/python3'
+vim.g.python3_host_prog = "/usr/bin/python3"
 vim.opt.spelllang = "en_us"
 
 -- to disable icons and use a minimalist setup, uncomment the following
@@ -38,9 +39,9 @@ vim.opt.spelllang = "en_us"
 -- general
 lvim.log.level = "info"
 lvim.format_on_save = {
-  enabled = true,
-  pattern = "*.lua",
-  timeout = 1000,
+	enabled = true,
+	pattern = "*.lua",
+	timeout = 1000,
 }
 -- Set theme settings
 lvim.colorscheme = "nord"
@@ -54,54 +55,54 @@ lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 lvim.builtin.luasnip.sources.friendly_snippets = true
 lvim.builtin.luasnip.snippets_dir = os.getenv("HOME") .. "/.config/lvim/snippets"
 
--- loacal Functions
+-- local Functions
 function RunFile()
-  if vim.bo.filetype == 'python' then
-    vim.cmd('split | term python %')
-  elseif vim.bo.filetype == 'c' then
-    vim.cmd('!gcc && ./a.out')
-  elseif vim.bo.filetype == 'cpp' then
-    vim.cmd('!g++ && ./a.out')
-  elseif vim.bo.filetype == 'java' then
-    vim.cmd('!javac && java')
-  elseif vim.bo.filetype == 'sh' then
-    vim.cmd('!sh')
-  elseif vim.bo.filetype == 'lua' then
-    vim.cmd('!lua')
-  elseif vim.bo.filetype == 'javascript' then
-    vim.cmd('!node')
-  elseif vim.bo.filetype == 'html' then
-    vim.cmd('!thorium-browser')
-  elseif vim.bo.filetype == 'css' then
-    vim.cmd('!thorium-browser')
-  elseif vim.bo.filetype == 'markdown' then
-    vim.cmd('!thorium-browser')
-  else
-    vim.api.nvim_echo({ { 'filetype ' .. vim.bo.filetype .. ' is not supported', 'ErrorMsg' } }, true, {})
-  end
+	if vim.bo.filetype == "python" then
+		vim.cmd("split | term python %")
+	elseif vim.bo.filetype == "c" then
+		vim.cmd("!gcc && ./a.out")
+	elseif vim.bo.filetype == "cpp" then
+		vim.cmd("!g++ && ./a.out")
+	elseif vim.bo.filetype == "java" then
+		vim.cmd("!javac && java")
+	elseif vim.bo.filetype == "sh" then
+		vim.cmd("!sh")
+	elseif vim.bo.filetype == "lua" then
+		vim.cmd("!lua")
+	elseif vim.bo.filetype == "javascript" then
+		vim.cmd("!node")
+	elseif vim.bo.filetype == "html" then
+		vim.cmd("!thorium-browser")
+	elseif vim.bo.filetype == "css" then
+		vim.cmd("!thorium-browser")
+	elseif vim.bo.filetype == "markdown" then
+		vim.cmd("!thorium-browser")
+	else
+		vim.api.nvim_echo({ { "filetype " .. vim.bo.filetype .. " is not supported", "ErrorMsg" } }, true, {})
+	end
 end
 
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
-local cmp_nvim_lsp = require "cmp_nvim_lsp"
+local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
 local on_attach = function(client, bufnr)
-  require("lsp_signature").on_attach()
-  require("lsp-status").on_attach(client)
-  require("completion").on_attach(client, bufnr)
-  -- Set up keybindings specific to the LSP client
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", { silent = true })
-  print("'" .. client.name .. "' server attached")
+	require("lsp_signature").on_attach()
+	require("lsp-status").on_attach(client)
+	require("completion").on_attach(client, bufnr)
+	-- Set up keybindings specific to the LSP client
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", { silent = true })
+	print("'" .. client.name .. "' server attached")
 end
 
-require("lspconfig").clangd.setup {
-  on_attach = on_attach,
-  capabilities = cmp_nvim_lsp.default_capabilities(),
-  cmd = {
-    "clangd",
-    "--offset-encoding=utf-16",
-  },
-}
+require("lspconfig").clangd.setup({
+	on_attach = on_attach,
+	capabilities = cmp_nvim_lsp.default_capabilities(),
+	cmd = {
+		"clangd",
+		"--offset-encoding=utf-16",
+	},
+})
 
 -- lvim.builtin.treesitter.ignore_install = { "haskell" }
 
@@ -135,15 +136,15 @@ lvim.lsp.installer.setup.automatic_installation = false
 -- end
 
 -- -- linters, formatters and code actions <https://www.lunarvim.org/docs/configuration/language-features/linting-and-formatting>
-local formatters = require "lvim.lsp.null-ls.formatters"
-formatters.setup {
-  --   { command = "stylua" },
-  {
-    command = "prettier",
-    extra_args = { "--print-width", "100" },
-    filetypes = { "typescript", "typescriptreact" },
-  },
-}
+local formatters = require("lvim.lsp.null-ls.formatters")
+formatters.setup({
+	--   { command = "stylua" },
+	{
+		command = "prettier",
+		extra_args = { "--print-width", "100" },
+		filetypes = { "typescript", "typescriptreact" },
+	},
+})
 -- local linters = require "lvim.lsp.null-ls.linters"
 -- linters.setup {
 --   { command = "flake8", filetypes = { "python" } },
@@ -163,114 +164,108 @@ formatters.setup {
 -- -- Additional Plugins <https://www.lunarvim.org/docs/configuration/plugins/user-plugins>
 lvim.builtin.luasnip.snippets_dir = "~/.config/lvim/snippets"
 lvim.plugins = {
-  "shaunsingh/nord.nvim",
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "VeryLazy",
-    config = function()
-      require("copilot").setup({
-        panel = {
-          enabled = true,
-          auto_refresh = false,
-          keymap = {
-            jump_prev = "[[",
-            jump_next = "]]",
-            accept = "<CR>",
-            refresh = "gr",
-            --open = "<M-CR>"
-          },
-          layout = {
-            position = "bottom", -- | top | left | right
-            ratio = 0.4
-          },
-        },
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-          debounce = 75,
-          keymap = {
-            accept = "<M-l>",
-            accept_word = false,
-            accept_line = false,
-            next = "<M-]>",
-            prev = "<M-[>",
-            dismiss = "<C-]>",
-          },
-        },
-        filetypes = {
-          yaml = false,
-          markdown = false,
-          help = false,
-          gitcommit = false,
-          gitrebase = false,
-          hgcommit = false,
-          svn = false,
-          cvs = false,
-          ["."] = false,
-        },
-        copilot_node_command = 'node', -- Node.js version must be > 16.x
-        server_opts_overrides = {},
-      })
-    end,
-  },
-  {
-    -- texlive-latex/basic/latexextra
-    "lervag/vimtex",
-    ft = "tex",
-    config = function()
-      vim.cmd("call vimtex#init()")
-      vim.g.vimtex_view_method = "zathura"
-      vim.g.vimtex_compiler_method = "latexmk"
-      vim.g.vimtex_quickfix_enabled = 1
-      vim.g.vimtex_syntax_enabled = 1
-      vim.g.vimtex_quickfix_mode = 0
-    end,
-  },
-  "mbbill/undotree",
+	"shaunsingh/nord.nvim",
+	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "VeryLazy",
+		config = function()
+			require("copilot").setup({
+				panel = {
+					enabled = true,
+					auto_refresh = false,
+					keymap = {
+						jump_prev = "[[",
+						jump_next = "]]",
+						accept = "<CR>",
+						refresh = "gr",
+						--open = "<M-CR>"
+					},
+					layout = {
+						position = "bottom", -- | top | left | right
+						ratio = 0.4,
+					},
+				},
+				suggestion = {
+					enabled = true,
+					auto_trigger = true,
+					debounce = 75,
+					keymap = {
+						accept = "<M-l>",
+						accept_word = false,
+						accept_line = false,
+						next = "<M-]>",
+						prev = "<M-[>",
+						dismiss = "<C-]>",
+					},
+				},
+				filetypes = {
+					yaml = false,
+					markdown = false,
+					help = false,
+					gitcommit = false,
+					gitrebase = false,
+					hgcommit = false,
+					svn = false,
+					cvs = false,
+					["."] = false,
+				},
+				copilot_node_command = "node", -- Node.js version must be > 16.x
+				server_opts_overrides = {},
+			})
+		end,
+	},
+	{
+		-- texlive-latex/basic/latexextra
+		"lervag/vimtex",
+		ft = "tex",
+		config = function()
+			vim.cmd("call vimtex#init()")
+			vim.g.vimtex_view_method = "zathura"
+			vim.g.vimtex_compiler_method = "latexmk"
+			vim.g.vimtex_quickfix_enabled = 1
+			vim.g.vimtex_syntax_enabled = 1
+			vim.g.vimtex_quickfix_mode = 0
+		end,
+	},
+	"mbbill/undotree",
 }
 
 -- -- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "zsh",
-  callback = function()
-    --     -- let treesitter use bash highlight for zsh files as well
-    require("nvim-treesitter.highlight").attach(0, "bash")
-  end,
+	pattern = "zsh",
+	callback = function()
+		--     -- let treesitter use bash highlight for zsh files as well
+		require("nvim-treesitter.highlight").attach(0, "bash")
+	end,
 })
-
 
 -- add /usr/include/c++/13.1.1/ to path
 
-
 -- Keybind for spell checking
-vim.api.nvim_set_keymap("n", "<M-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u",
-  { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<M-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u", { noremap = true, silent = true })
 
 -- Keybind for enabling spell checking
-vim.api.nvim_set_keymap("n", "<M-k>", ":setlocal spell!<CR>",
-  { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<M-k>", ":setlocal spell!<CR>", { noremap = true, silent = true })
 
 -- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
 -- Remove binding to enable copilot completion
 lvim.leader = "space"
 
 -- Normal Mode
-vim.api.nvim_set_keymap("n", "<C-x>", ":lua RunFile()<CR>",
-  { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-x>", ":lua RunFile()<CR>", { noremap = true, silent = true })
 
 -- Source current file
-vim.api.nvim_set_keymap("n", "<leader>so", ":luafile %<CR>",
-  { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>so", ":luafile %<CR>", { noremap = true, silent = true })
 
 -- Close current buffer
 vim.keymap.set("n", "<leader>bd", function()
-  vim.cmd("bd")
+	vim.cmd("bd")
 end)
 
 -- close current split
 vim.keymap.set("n", "<leader>q", function()
-  vim.cmd("q")
+	vim.cmd("q")
 end)
 
 -- Define C-y as redo
@@ -280,22 +275,22 @@ vim.keymap.set("n", "<C-f>", "<cmd>Telescope live_grep<CR>")
 
 -- Ctrl+a to select all
 vim.keymap.set("n", "<C-a>", "ggVG")
-vim.keymap.set('n', '<C-s>', ':w<CR>', { silent = true })
-vim.keymap.set('n', '<C-v>', ':vsplit<CR>', { silent = true })
-vim.keymap.set('n', '<C-h>', ':split<CR>', { silent = true })
+vim.keymap.set("n", "<C-s>", ":w<CR>", { silent = true })
+vim.keymap.set("n", "<C-v>", ":vsplit<CR>", { silent = true })
+vim.keymap.set("n", "<C-h>", ":split<CR>", { silent = true })
 
-vim.keymap.set('n', '<leader>pv', ':Ex<CR>')
+vim.keymap.set("n", "<leader>pv", ":Ex<CR>")
 -- clipboard
-vim.keymap.set('n', '<leader>y', '"+y')
-vim.keymap.set('n', '<leader>p', '"+p')
+vim.keymap.set("n", "<leader>y", '"+y')
+vim.keymap.set("n", "<leader>p", '"+p')
 
-vim.keymap.set('n', 'n', "mzJ`z")
-vim.keymap.set('n', '<C-d>', "<C-d>zz")
-vim.keymap.set('n', '<C-u>', "<C-u>zz")
-vim.keymap.set('n', 'N', "Nzzzv")
-vim.keymap.set('n', 'n', "nzzzv")
+vim.keymap.set("n", "n", "mzJ`z")
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
+vim.keymap.set("n", "N", "Nzzzv")
+vim.keymap.set("n", "n", "nzzzv")
 
-vim.keymap.set('n', 'Q', "<nop>")
+vim.keymap.set("n", "Q", "<nop>")
 
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")

@@ -104,37 +104,14 @@ bindsym $mod+Shift+8 move container to workspace 8; workspace 8
 bindsym $mod+Shift+9 move container to workspace 9; workspace 9
 bindsym $mod+Shift+0 move container to workspace 10; workspace 10
 
-################# menu's in arcolinux
+################# menu
 # dmenu
 bindsym $mod+d exec --no-startup-id dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'
 
-# start rofi themed
-#bindsym $mod+d exec --no-startup-id ~/.config/i3/launcher/launcher.sh
-
-# start rofi
-bindsym $mod+Shift+d exec --no-startup-id ~/.config/rofi/launchers/type-6/launcher.sh
-
 ################# how to exit, logoff, suspend, ...
 
-# Backup exit
-bindsym control+mod1+X mode "$mode_system"
-
-set $mode_system System (k) lock, (l) logout, (u) suspend, (h) hibernate, (r) reboot, (s) shutdown
-mode "$mode_system" {
-    bindsym k exec --no-startup-id ~/.config/i3/scripts/i3exit.sh lock, mode "default"
-    bindsym l exec --no-startup-id ~/.config/i3/scripts/i3exit.sh logout, mode "default"
-    bindsym u exec --no-startup-id ~/.config/i3/scripts/i3exit.sh suspend, mode "default"
-    bindsym h exec --no-startup-id ~/.config/i3/scripts/i3exit.sh hibernate, mode "default"
-    bindsym r exec --no-startup-id ~/.config/i3/scripts/i3exit.sh reboot, mode "default"
-    bindsym s exec --no-startup-id ~/.config/i3/scripts/i3exit.sh shutdown, mode "default"
-    # back to normal: Enter or Escape
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-
-# ArcoLinux Logout
+# Logout
 #bindsym $mod+Shift+e exec --no-startup-id archlinux-logout
-bindsym $mod+X exec --no-startup-id archlinux-logout
 
 ################# reload changed configuration
 bindsym $mod+Shift+r restart
@@ -278,6 +255,8 @@ exec --no-startup-id /usr/bin/easyeffects --gapplication-service &
 # use dunst
 exec --no-startup-id dunst &
 
+exec --no-startup-id spotify-listener &
+
 ################# applications keyboard shortcuts
 # ArchLinux Tweak Tool
 bindsym control+mod1+e exec --no-startup-id archlinux-tweak-tool
@@ -376,8 +355,8 @@ bindsym mod1+Shift+t exec --no-startup-id variety -t && wal -i $(cat $HOME/.conf
 bindsym mod1+Shift+u exec --no-startup-id wal -i $(cat $HOME/.config/variety/wallpaper/wallpaper.jpg.txt)
 
 ################# audio settings
-bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 5 
-bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 5 
+bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 2 
+bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 2 
 bindsym XF86AudioMute exec --no-startup-id pamixer -t
 
 bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
@@ -386,18 +365,17 @@ bindsym XF86AudioPrev exec --no-startup-id playerctl previous
 bindsym XF86AudioStop exec --no-startup-id playerctl stop
 
 ################# xbacklight
-bindsym XF86MonBrightnessDown exec light -U 0.5
-bindsym XF86MonBrightnessUp exec light -A 0.5
+bindsym XF86MonBrightnessDown exec light -U 0.125
+bindsym XF86MonBrightnessUp exec light -A 0.125
 
 ################# bar toggle
 #bindsym $mod+b bar mode toggle
 
 ################# border control
 hide_edge_borders both
-bindsym $mod+shift+b exec --no-startup-id i3-msg border toggle
+#bindsym $mod+shift+b exec --no-startup-id i3-msg border toggle
 
 # changing border style
-# super+t in arcolinux is starting terminal
 bindsym $mod+t border normal
 bindsym $mod+y border pixel 1
 bindsym $mod+u border none

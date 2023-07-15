@@ -43,11 +43,11 @@ alias version='lsb_release -a'
 alias kernel='uname -r'
 alias localip='ip -brief -color address'
 alias wttr='curl -4 wttr.in'
-alias rpolybar='launch.sh'
+alias rpolybar='~/.config/polybar/launch.sh'
 
 #Sudo
 alias stopB='sudo systemctl stop bluetooth.service'
-alias sb='sudo systemctl start bluetooth.service && bluetoothctl power on && bluetoothctl'
+alias startB='sudo systemctl start bluetooth.service && bluetoothctl'
 
 # MEDIA
 alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
