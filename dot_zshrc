@@ -9,6 +9,9 @@ if [ -f ~/.zsh/.aliases ]; then
     . ~/.zsh/.aliases
 fi
 
+
+source /usr/share/nvm/init-nvm.sh
+
 #source /usr/bin/virtualenvwrapper.sh
 #-------Plugin Management-------#
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.zsh}/plugins}

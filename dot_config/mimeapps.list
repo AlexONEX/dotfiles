@@ -5,6 +5,7 @@ text/html=thorium-browser.desktop;
 text/plain=Alacritty.desktop;vim.desktop;
 
 [Default Applications]
+applciation/epub+zip=org.pwmt.zathura-pdf-mupdf.desktop;
 application/epub=org.pwmt.zathura.desktop;
 application/epub+zip=org.pwmt.zathura-pdf-mupdf.desktop;
 application/pdf=org.pwmt.zathura.desktop;
