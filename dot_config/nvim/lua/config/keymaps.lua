@@ -1,5 +1,4 @@
 -- Keymaps are automatically loaded on the VeryLazy event
-<<<<<<< HEAD
 --
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 
@@ -49,7 +48,3 @@ function RunFile()
 end
 
 vim.api.nvim_set_keymap("n", "<C-x>", ":lua RunFile()<CR>", { noremap = true, silent = true })
-=======
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
->>>>>>> refs/remotes/origin/main
