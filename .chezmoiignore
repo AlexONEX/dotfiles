@@ -1,1 +1,5 @@
-dot_config/nvim/undodir
+#Neovim
+**/undodir/
+**/undodir/**/*
+**/yankring_history*.txt
+
