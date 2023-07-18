@@ -301,7 +301,7 @@ bindsym $mod+m exec --no-startup-id betterbird;focus
 bindsym $mod+Shift+m exec --no-startup-id sayonara;focus
 
 # calibre
-bindsym $mod+c exec --no-startup-id alacritty -e /home/alex/.local/bin/fzf-calibre;focus
+bindsym $mod+b exec --no-startup-id alacritty -e /home/alex/.local/bin/fzf-calibre;focus
 
 ################# screenshots
 bindsym Print exec --no-startup-id flameshot gui
@@ -436,4 +436,4 @@ mode "$mode_gaps_outer" {
 # if you want transparency on non-focused windows, ...
 #exec_always --no-startup-id picom --config ~/.config/i3/picom.conf
 
-bindsym control+mod1+o exec --no-startup-id ~/.config/i3/scripts/picom-toggle.sh
+bindsym control+o exec --no-startup-id ~/.config/i3/scripts/picom-toggle.sh
