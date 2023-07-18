@@ -1,5 +1,7 @@
 #Neovim
 **/undodir/
+**/lazy_lock*.json
 **/undodir/**/*
 **/yankring_history*.txt
+**/lazy_lock.json
 

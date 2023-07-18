@@ -48,3 +48,5 @@ function RunFile()
 end
 
 vim.api.nvim_set_keymap("n", "<C-x>", ":lua RunFile()<CR>", { noremap = true, silent = true })
+-- Spellcheck
+vim.api.nvim_set_keymap("i", "<C-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u", { noremap = true, silent = true })

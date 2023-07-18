@@ -34,4 +34,4 @@ vim.opt.updatetime = 50
 vim.opt.colorcolumn = "80"
 
 vim.g.python3_host_prog = "/usr/bin/python3"
-vim.opt.spelllang = "en_us"
+vim.opt.spelllang = "es"

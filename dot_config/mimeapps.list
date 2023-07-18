@@ -2,13 +2,16 @@
 application/pdf=thorium-browser.desktop;
 image/jpeg=feh.desktop;
 text/html=thorium-browser.desktop;
-text/plain=Alacritty.desktop;vim.desktop;
+text/plain=Alacritty.desktop;
 
 [Default Applications]
+applciation/epub+zip=org.pwmt.zathura-pdf-mupdf.desktop;
 application/epub=org.pwmt.zathura.desktop;
 application/epub+zip=org.pwmt.zathura-pdf-mupdf.desktop;
 application/pdf=org.pwmt.zathura.desktop;
 application/xhtml+xml=thorium-browser.desktop;
 text/*=nvim.desktop;
+video/mp4=vlc.desktop;
 x-scheme-handler/magnet=thorium-browser.desktop;
 x-scheme-handler/mailto=thorium-browser.desktop;
+x-scheme-handler/terminal=Alacritty.desktop;
