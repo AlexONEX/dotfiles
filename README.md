@@ -4,7 +4,7 @@ My Doftiles managed by chezmoi <br>
 [EasyEffects](https://github.com/wwmm/easyeffects#Installation)<br>
 [i3 Window Manager](https://i3wm.org/downloads/)<br>
 [Flameshot](https://flameshot.org/#download)<br>
-[LunarVim](https://www.lunarvim.org/docs/installation)<br>
+[Nvim](https://neovim.io/)<br>
 [Polybar](https://polybar.github.io/)<br>
 [Ranger](https://ranger.github.io/)<br>
 [Spicetify](https://spicetify.app/docs/advanced-usage/installation/)<br>
