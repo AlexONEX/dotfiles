@@ -1,0 +1,5 @@
+[user]
+	email = a.schwartzmann@hotmail.com
+	name = AlexONEX
+[core]
+	editor = nvim
