@@ -18,11 +18,10 @@ alias neofetch='fastfetch'
 alias open='handlr open'
 alias c='clear'
 alias vim='nvim'
-alias b="WD=\$(pwd);cd ~/OneDrive/Libraries/myLibrary/;zathura \"\$(fzf)\";cd \$WD"
 alias cat='bat'
+
 # Backup nvim config and .local/share/nvim in a tar.gz file
 alias nvimbackup='tar -czvf nvimbackup.tar.gz ~/.config/nvim ~/.local/share/nvim'
-alias uAndroid='adb shell pm uninstall -k --user 0'
 
 #Alias cd
 alias cd..='cd ..'
@@ -39,6 +38,7 @@ alias installpkgs='sudo paru -S - < pkglist.txt'
 alias unused='pacman -Qqd | sudo pacman -Rsu -'
 alias uSpicetifyNorc='curl -fsSL https://raw.githubusercontent.com/Tetrax-10/Nord-Spotify/master/install-scripts/uninstall.sh | sh'
 
+alias uAndroid='adb shell pm uninstall -k --user 0'
 alias pullAndroid='cd $HOME/Pictures/Android && adb pull /storage/emulated/0/Pictures && adb pull /storage/emulated/0/Dcim'
 alias network='nmtui'
 alias version='lsb_release -a'
@@ -54,20 +54,6 @@ alias startB='sudo systemctl start bluetooth.service && bluetoothctl'
 # MEDIA
 alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
 alias ytp='yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"'
-
-#yta-best-mp3
-function yta(){
-    yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" "$1"
-}
-
-function ytpa(){
-    yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist "$1"
-}
-
-alias yta-best='yt-dlp --extract-audio --audio-format "wav"'
-alias ytp-abest='yt-dlp --extract-audio --audio-format "wav" --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist '
-alias ytv-best="yt-dlp -f bestvideo+bestaudio "
-alias spotdl='spotdl --cookie-file /home/alex/Music/music.youtube.com_cookies.txt'
 
 # LS Stuff
 alias ls='exa -al --color=always --group-directories-first' # my preferred listing
@@ -109,7 +95,7 @@ alias g="gitui"
 alias gs="git status"
 alias gss="git status -s"
 alias gcc="git clone"
-alias gc="git commit -m"
+alias gc="git commit -m*."
 alias gd='git diff'
 alias ga='git add'
 alias gaa='git add --all'
@@ -147,6 +133,22 @@ alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
 
 #pass stuff
 alias p="pass -c"
+
+#yta-best-mp3
+function yta(){
+    yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" "$1"
+}
+
+function ytpa(){
+    yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist "$1"
+}
+
+alias yta-best='yt-dlp --extract-audio --audio-format "wav"'
+alias ytp-abest='yt-dlp --extract-audio --audio-format "wav" --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist '
+alias ytv-best="yt-dlp -f bestvideo+bestaudio "
+alias spotdl='spotdl --cookie-file /home/alex/Music/music.youtube.com_cookies.txt'
+
+
 
 alias disks='echo "╓───── m o u n t . p o i n t s"; \
 			 echo "╙────────────────────────────────────── ─ ─ "; \
