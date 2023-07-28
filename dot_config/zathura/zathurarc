@@ -78,4 +78,6 @@ map <C-r> rotate
 map m set mark
 unmap f
 map <C-n> toggle_statusbar
+set statusbar-basename true 
+set window-title-page true
 # use arrow keys to navigate to next/previous pages
