@@ -50,6 +50,7 @@ alias rpolybar='~/.config/polybar/launch.sh'
 #Sudo
 alias stopB='sudo systemctl stop bluetooth.service'
 alias startB='sudo systemctl start bluetooth.service && bluetoothctl'
+alias b='bluetoothctl'
 
 # MEDIA
 alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
