@@ -27,9 +27,9 @@ function RunFile()
   elseif vim.bo.filetype == "c" then
     vim.cmd("!gcc && ./a.out")
   elseif vim.bo.filetype == "cpp" then
-    vim.cmd("!g++ && ./a.out")
+    vim.cmd("!g++ -Wall % && ./a.out % && rm a.out")
   elseif vim.bo.filetype == "java" then
-    vim.cmd("!javac && java")
+    vim.cmd("!javac % && java")
   elseif vim.bo.filetype == "sh" then
     vim.cmd("!sh")
   elseif vim.bo.filetype == "lua" then
