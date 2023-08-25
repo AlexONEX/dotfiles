@@ -214,13 +214,6 @@ font pango:CaskaydiaCove NF Regular 11
 
 ################# autostart - execute applications at boot time
 # USER APPLICATIONS TO START AT BOOT
-exec --no-startup-id xfce4-clipman 
-
-# QbitTorrent
-exec --no-startup-id qb-start 
-
-# Jackett
-#exec --no-startup-id /usr/lib/jackett/jackett
 
 # Autotiling
 exec_always --no-startup-id autotiling

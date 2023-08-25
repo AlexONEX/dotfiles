@@ -25,9 +25,9 @@ function RunFile()
   if vim.bo.filetype == "python" then
     vim.cmd("split | term python %")
   elseif vim.bo.filetype == "c" then
-    vim.cmd("!gcc && ./a.out")
+    vim.cmd("!gcc -Wall && ./a.out")
   elseif vim.bo.filetype == "cpp" then
-    vim.cmd("!g++ -Wall % && ./a.out % && rm a.out")
+    vim.cmd("!g++ -Wall % && ./a.out")
   elseif vim.bo.filetype == "java" then
     vim.cmd("!javac % && java")
   elseif vim.bo.filetype == "sh" then
