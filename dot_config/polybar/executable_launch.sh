@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-## Copyright (C) 2020-2023 Aditya Shakya <adi1090x@gmail.com>
-
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 CARD="$(light -L | grep 'backlight' | head -n1 | cut -d'/' -f3)"
 INTERFACE="$(ip link | awk '/state UP/ {print $2}' | tr -d :)"
 RFILE="$DIR/.module"
@@ -38,5 +36,5 @@ launch_bar() {
 if [[ ! -f "$RFILE" ]]; then
 	fix_modules
 	touch "$RFILE"
-fi	
+fi
 launch_bar
