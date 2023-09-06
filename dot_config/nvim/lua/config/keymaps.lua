@@ -1,9 +1,10 @@
 -- Keymaps are automatically loaded on the VeryLazy event
---
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 
+--Disable recording
+vim.cmd("nnoremap q <Nop>")
 --- Define C-y as redo
 vim.keymap.set("n", "<C-y>", "<C-r>")
+--- C-u is undo
 
 -- Ctrl + a to select all
 vim.keymap.set("n", "<C-a>", "ggVG")

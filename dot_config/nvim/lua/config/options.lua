@@ -5,6 +5,9 @@
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 
+--set font CaskaydiaCove Nerd Font Mono:h9
+vim.o.guifont = "CaskaydiaCove Nerd Font Mono:h9"
+
 --set tab to 4 spaces
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
