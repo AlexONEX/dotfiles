@@ -214,6 +214,9 @@ font pango:CaskaydiaCove NF Regular 11
 
 ################# autostart - execute applications at boot time
 # USER APPLICATIONS TO START AT BOOT
+#
+# Gnome Keyring 
+exec --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 
 # Autotiling
 exec_always --no-startup-id autotiling

@@ -81,7 +81,10 @@ if [ -d "$HOME/n" ]; then
 fi
 
 export PATH=$PATH:/home/alex/.spicetify
-export PATH=$PATH:/opt/anaconda/bin/conda 
+
+#Managing python venv
+export WORKON_HOME=~/.virtualenvs
+source /usr/bin/virtualenvwrapper.sh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
