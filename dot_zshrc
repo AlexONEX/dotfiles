@@ -1,4 +1,6 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+zmodload zsh/zprof
+
+# Enable Powerlevel10k instant prompt. Shoul stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -10,7 +12,7 @@ if [ -f ~/.zsh/aliases ]; then
 fi
 
 
-source /usr/share/nvm/init-nvm.sh
+#source /usr/share/nvm/init-nvm.sh
 
 #source /usr/bin/virtualenvwrapper.sh
 #-------Plugin Management-------#
@@ -94,7 +96,7 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 zstyle ':omz:update' frequency 13
 bindkey -v
 
-extract(){
+extract() {
   if [ -f $1 ] ; then
     case $1 in
       *.tar.bz2)   tar xjf $1     ;;
@@ -108,18 +110,17 @@ extract(){
       *.zip)       unzip $1       ;;
       *.Z)         uncompress $1  ;;
       *.7z)        7z x $1        ;;
+      *.xz)        xz -d $1       ;;
       *)           echo "'$1' cannot be extracted via extract()" ;;
     esac
   else
     echo "'$1' is not a valid file"
   fi 
 }
-
 extractf() {
   if [ -f "$1" ]; then
     # Get the filename without extension
     folder_name="${1%.*}"
-
     case $1 in
       *.tar.bz2)   tar xjf "$1" -C "$folder_name" ;;
       *.tar.gz)    tar xzf "$1" -C "$folder_name" ;;
@@ -132,14 +133,13 @@ extractf() {
       *.zip)       unzip "$1" -d "$folder_name" ;;
       *.Z)         uncompress "$1" -C "$folder_name" ;;
       *.7z)        7z x "$1" -o"$folder_name" ;;
+      *.xz)        xz -d "$1" -C "$folder_name" ;;
       *)           echo "'$1' cannot be extracted via extract()" ;;
     esac
   else
     echo "'$1' is not a valid file"
   fi 
 }
-
-
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!

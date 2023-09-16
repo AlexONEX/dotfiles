@@ -1,12 +1,19 @@
+-- This file is automatically loaded by plugins.core
+vim.g.mapleader = " "
+
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 
---set font CaskaydiaCove Nerd Font Mono:h9
+--set font
 vim.o.guifont = "CaskaydiaCove Nerd Font Mono:h9"
 
 --set tab to 4 spaces
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
+
+vim.opt.autowrite = true
+vim.opt.clipboard = "unnamedplus"
+vim.opt.conceallevel = 3
 
 vim.opt.relativenumber = true
 vim.opt.guicursor = ""
@@ -34,3 +41,9 @@ vim.opt.colorcolumn = "75"
 
 vim.g.python3_host_prog = "/usr/bin/python3"
 vim.opt.spelllang = "es"
+
+if vim.g.neovide then
+  vim.g.neovide_scale_factor = 1.0
+  vim.g.neovide_hide_mouse_when_typing = true
+  vim.g.neovide_cursor_animation_length = 0
+end
