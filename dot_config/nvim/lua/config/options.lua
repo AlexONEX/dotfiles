@@ -1,14 +1,15 @@
 -- This file is automatically loaded by plugins.core
 vim.g.mapleader = " "
 
-vim.opt.tabstop = 2
-vim.opt.softtabstop = 2
+vim.opt.softtabstop = 0
 
 --set font
 vim.o.guifont = "CaskaydiaCove Nerd Font Mono:h9"
 
 --set tab to 4 spaces
-vim.opt.shiftwidth = 2
+vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
 vim.opt.expandtab = true
 
 vim.opt.autowrite = true
