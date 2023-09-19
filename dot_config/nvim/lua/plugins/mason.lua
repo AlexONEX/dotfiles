@@ -1,11 +1,32 @@
 return {
-  -- Ensure C/C++ debugger is installed
+
   "williamboman/mason.nvim",
-  optional = true,
-  opts = function(_, opts)
-    if type(opts.ensure_installed) == "table" then
-      vim.list_extend(opts.ensure_installed, { "codelldb" })
+  cmd = "Mason",
+  keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
+  build = ":MasonUpdate",
+  opts = {
+    ensure_installed = {
+      "stylua",
+      "shfmt",
+      -- "flake8",
+    },
+  },
+  ---@param opts MasonSettings | {ensure_installed: string[]}
+  config = function(_, opts)
+    require("mason").setup(opts)
+    local mr = require("mason-registry")
+    local function ensure_installed()
+      for _, tool in ipairs(opts.ensure_installed) do
+        local p = mr.get_package(tool)
+        if not p:is_installed() then
+          p:install()
+        end
+      end
     end
-    table.insert(opts.ensure_installed, "prettierd")
+    if mr.refresh then
+      mr.refresh(ensure_installed)
+    else
+      ensure_installed()
+    end
   end,
 }
