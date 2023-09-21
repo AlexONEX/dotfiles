@@ -8,6 +8,7 @@ image/jpeg=org.nomacs.ImageLounge.desktop;feh.desktop;
 image/png=org.nomacs.ImageLounge.desktop;thorium-browser.desktop;
 text/html=thorium-browser.desktop;
 text/plain=neovide.desktop;Alacritty.desktop;
+application/x-zerosize=neovide.desktop;
 
 [Default Applications]
 applciation/epub+zip=org.pwmt.zathura-pdf-mupdf.desktop;
@@ -35,3 +36,4 @@ x-scheme-handler/magnet=thorium-browser.desktop;
 x-scheme-handler/mailto=thorium-browser.desktop;
 x-scheme-handler/terminal=Alacritty.desktop;
 x-scheme-handler/webcal=thorium-browser.desktop;
+application/x-zerosize=neovide.desktop
