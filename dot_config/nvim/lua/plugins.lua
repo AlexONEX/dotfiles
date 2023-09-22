@@ -40,6 +40,7 @@ local plugin_specs = {
   },
 
   {
+<<<<<<< HEAD
   "zbirenbaum/copilot.lua",
   cmd = "Copilot",
   event = "VeryLazy",
@@ -88,6 +89,14 @@ local plugin_specs = {
       server_opts_overrides = {},
     })
   end,
+=======
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "VeryLazy",
+    config = function()
+      require("copilot").setup()
+    end,
+>>>>>>> 5e5364bb5abd29921f23f29a5059ed6f721952f6
   },
 
   {

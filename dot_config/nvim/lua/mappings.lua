@@ -239,7 +239,11 @@ keymap.set("n", "<leader>cb", function()
   end))
 end)
 
+<<<<<<< HEAD
 keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>")
+=======
+keymap.set("n", "<leader>e", ":NvimTreeOpen<CR>")
+>>>>>>> 5e5364bb5abd29921f23f29a5059ed6f721952f6
 
 keymap.set("n", "<C-q>", function()
   -- close current win if there are more than 1 win
