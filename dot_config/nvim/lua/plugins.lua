@@ -40,7 +40,6 @@ local plugin_specs = {
   },
 
   {
-<<<<<<< HEAD
   "zbirenbaum/copilot.lua",
   cmd = "Copilot",
   event = "VeryLazy",
@@ -89,14 +88,6 @@ local plugin_specs = {
       server_opts_overrides = {},
     })
   end,
-=======
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "VeryLazy",
-    config = function()
-      require("copilot").setup()
-    end,
->>>>>>> 5e5364bb5abd29921f23f29a5059ed6f721952f6
   },
 
   {
@@ -189,7 +180,7 @@ local plugin_specs = {
   { "sainnhe/edge", lazy = true },
   { "sainnhe/sonokai", lazy = true },
   { "sainnhe/gruvbox-material", lazy = true },
-  { "shaunsingh/nord.nvim", lazy = true },
+  { "gbprod/nord.nvim", lazy = true },
   { "sainnhe/everforest", lazy = true },
   { "EdenEast/nightfox.nvim", lazy = true },
   { "rebelot/kanagawa.nvim", lazy = true },
@@ -450,14 +441,8 @@ local plugin_specs = {
   -- for Linux and Mac
   -- .tmux.conf syntax highlighting and setting check
   {
-    "tmux-plugins/vim-tmux",
-    enabled = function()
-      if utils.executable("tmux") then
-        return true
-      end
-      return false
-    end,
-    ft = { "tmux" },
+    "christoomey/vim-tmux-navigator",
+    lazy = false,
   },
 
   -- Modern matchit implementation

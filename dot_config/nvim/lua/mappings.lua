@@ -239,11 +239,13 @@ keymap.set("n", "<leader>cb", function()
   end))
 end)
 
-<<<<<<< HEAD
 keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>")
-=======
-keymap.set("n", "<leader>e", ":NvimTreeOpen<CR>")
->>>>>>> 5e5364bb5abd29921f23f29a5059ed6f721952f6
+
+-- Vim tmux navigator 
+keymap.set("n", "<C-h>", "<cmd>TmuxNavigateLeft<cr>")
+keymap.set("n", "<C-j>", "<cmd>TmuxNavigateDown<cr>")
+keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<cr>")
+keymap.set("n", "<C-l>", "<cmd>TmuxNavigateRight<cr>")
 
 keymap.set("n", "<C-q>", function()
   -- close current win if there are more than 1 win

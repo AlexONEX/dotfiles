@@ -266,7 +266,7 @@ bindsym control+mod1+Next exec --no-startup-id conky-rotate -n
 bindsym control+mod1+Prior exec --no-startup-id conky-rotate -p
 
 # terminal
-bindsym $mod+Return exec --no-startup-id alacritty;focus
+bindsym $mod+Return exec --no-startup-id alacritty -e tmux;focus
 
 # System monitor
 bindsym control+Shift+Escape exec --no-startup-id stacer;focus
