@@ -281,7 +281,7 @@ local plugin_specs = {
   { "tpope/vim-commentary", event = "VeryLazy" },
 
   -- Multiple cursor plugin like Sublime Text?
-  -- 'mg979/vim-visual-multi'
+  {'mg979/vim-visual-multi'}, 
 
   -- Autosave files on certain events
   { "907th/vim-auto-save", event = "InsertEnter" },
