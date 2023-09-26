@@ -294,7 +294,9 @@ bindsym $mod+Shift+f exec --no-startup-id alacritty -e ranger;focus
 bindsym $mod+m exec --no-startup-id betterbird;focus
 
 # music
-bindsym $mod+Shift+m exec --no-startup-id sayonara;focus
+bindsym $mod+greater exec "~/.local/bin/spot-ctrl next"
+bindsym $mod+less exec "~/.local/bin/spot-ctrl prev"
+bindsym $mod+p exec "~/.local/bin/spot-ctrl play"
 
 # calibre
 bindsym $mod+b exec --no-startup-id alacritty -e /home/alex/.local/bin/fzf-calibre;focus
