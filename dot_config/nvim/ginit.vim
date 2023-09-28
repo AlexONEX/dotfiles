@@ -2,6 +2,7 @@
 inoremap <silent> <S-Insert>  <C-R>+
 cnoremap <S-Insert> <C-R>+
 nnoremap <silent> <C-6> <C-^>
+inoremap <c-x><c-k> <c-x><c-k>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                          config for nvim-qt                          "

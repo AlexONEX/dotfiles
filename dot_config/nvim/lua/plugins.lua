@@ -270,9 +270,12 @@ local plugin_specs = {
   },
 
   -- Snippet engine and snippet template
-  { "SirVer/ultisnips", dependencies = {
-    "honza/vim-snippets",
-  }, event = "InsertEnter" },
+  { "SirVer/ultisnips", 
+    dependencies = {
+      "honza/vim-snippets",
+    }, 
+    event = "InsertEnter",
+  },
 
   -- Automatic insertion and deletion of a pair of characters
   { "Raimondi/delimitMate", event = "InsertEnter" },
@@ -282,6 +285,8 @@ local plugin_specs = {
 
   -- Multiple cursor plugin like Sublime Text?
   {'mg979/vim-visual-multi'}, 
+
+  
 
   -- Autosave files on certain events
   { "907th/vim-auto-save", event = "InsertEnter" },
@@ -428,13 +433,14 @@ local plugin_specs = {
   -- Only use these plugin on Windows and Mac and when LaTeX is installed
   {
     "lervag/vimtex",
-    enabled = function()
-      if utils.executable("latex") then
-        return true
-      end
-      return false
+    config = function()
+      vim.g.vimtex_view_method = "zathura"
+      vim.g.vimtex_compiler_method = "latexmk"
+      vim.g.vimtex_quickfix_enabled = 1
+      vim.g.vimtex_syntax_enabled = 1
+      vim.g.vimtex_quickfix_mode = 0
+      vim.g.vimtex_filetypes = { "tex" }
     end,
-    ft = { "tex" },
   },
 
   -- Since tmux is only available on Linux and Mac, we only enable these plugins

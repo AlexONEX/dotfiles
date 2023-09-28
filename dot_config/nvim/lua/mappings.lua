@@ -17,7 +17,7 @@ keymap.set("n", "<leader>P", "m`O<ESC>p``", { desc = "paste above current line" 
 
 -- Shortcut for faster save and quit
 -- keymap.set("n", "<leader>w", "<cmd>update<cr>", { silent = true, desc = "save buffer" })
--- keymap to format and save file using Ctrl + s, format using Neoformat
+-- keymap to format and save file using Ctrl + s, format using Neoformat 
 keymap.set("n", "<C-s>", "<cmd>Neoformat<cr><cmd>update<cr>", { silent = true, desc = "save buffer" })
 keymap.set("i", "<C-s", "<cmd>Neoformat<cr><cmd>update<cr>", { silent = true, desc = "save buffer" })
 
