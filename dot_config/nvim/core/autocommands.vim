@@ -106,9 +106,14 @@ function! s:handle_large_file() abort
 
   if getfsize(f) > g:large_file || getfsize(f) == -2
     set eventignore+=all
-    " turning off relative number helps a lot
+    execute "TSBufDisable highlight"
+    execute "TSBufDisable highlight"
     set norelativenumber
-    setlocal noswapfile bufhidden=unload buftype=nowrite undolevels=-1
+    setlocal bufhidden=unload buftype=nowrite undolevels=-1
+    set noundofile nobackup noswapfile nowrap
+    filetype off
+    syntax clear
+    syntax off
   else
     set eventignore-=all relativenumber
   endif

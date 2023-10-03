@@ -52,6 +52,9 @@ set adjust-open "best-fit"
 # One page per row by default
 set pages-per-row 1
 
+# page-padding: defines the gap in pixels between each page
+set page-padding 0
+
 #zoom settings
 set zoom-min 10
 set guioptions ""
