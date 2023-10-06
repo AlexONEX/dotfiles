@@ -38,7 +38,9 @@ end
 
 -- Custom mapping <leader> (see `:h mapleader` for more info)
 vim.g.mapleader = ' '
-
+vim.o.guifont = "CaskaydiaCove Nerd Font:h9"
+vim.g.neovide_scroll_animation_length = 0.0
+vim.g.neovide_cursor_animation_length = 0.0
 
 -- Enable highlighting for lua HERE doc inside vim script
 vim.g.vimsyn_embed = 'l'

@@ -51,6 +51,8 @@ alias localip='ip -brief -color address'
 alias wttr='curl -4 wttr.in'
 alias rpolybar='~/.config/polybar/launch.sh'
 
+alias webToPdf='curl -u 'api:
+
 #Sudo
 alias stopB='sudo systemctl stop bluetooth.service'
 alias startB='sudo systemctl start bluetooth.service && bluetoothctl'
