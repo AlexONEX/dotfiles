@@ -284,11 +284,13 @@ local plugin_specs = {
   { "tpope/vim-commentary", event = "VeryLazy" },
 
   -- Multiple cursor plugin like Sublime Text?
-  {'mg979/vim-visual-multi'}, 
+  {
+      'mg979/vim-visual-multi',
+      branch = 'master',
+        event = 'BufRead',
+  },
 
-  
-
-  -- Autosave files on certain events
+    -- Autosave files on certain events
   { "907th/vim-auto-save", event = "InsertEnter" },
 
   -- Show undo history visually
