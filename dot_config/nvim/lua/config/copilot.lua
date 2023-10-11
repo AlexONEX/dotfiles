@@ -1,4 +1,4 @@
-   42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    42    43    43    43    43    43    43    43    43    43    43    43    43    43    43    43    43    43    43    43    43 require("copilot").setup({                                                            
+require("copilot").setup({
       panel = {
         enabled = true,
         auto_refresh = false,
