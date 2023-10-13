@@ -35,4 +35,4 @@ for _, file_name in ipairs(core_conf_files) do
     package.loaded[module_name] = nil
     require(module_name)
   end
-  end
+end
