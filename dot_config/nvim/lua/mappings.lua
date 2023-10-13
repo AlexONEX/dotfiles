@@ -22,7 +22,7 @@ keymap.set("n", "<C-s>", "<cmd>Neoformat<cr><cmd>update<cr>", { silent = true, d
 keymap.set("i", "<C-s", "<cmd>Neoformat<cr><cmd>update<cr>", { silent = true, desc = "save buffer" })
 
 -- Saves the file if modified and quit
-keymap.set("n", "q", "<cmd>x<cr>", { silent = true, desc = "quit current window" })
+keymap.set("n", "q", "<cmd>w | if len(getbufinfo({'buflisted':1})) <= 1 | qa | else | bd | endif<CR>", { silent = true, desc = "save file, close buffer, or quit nvim" })
 keymap.set("n", "Q", "<nop>")
 -- keymap.set("n", "q", "<cmd>q!<CR>")
 
