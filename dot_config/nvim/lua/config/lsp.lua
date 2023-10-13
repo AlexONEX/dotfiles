@@ -1,4 +1,4 @@
-  local fn = vim.fn
+local fn = vim.fn
 local api = vim.api
 local keymap = vim.keymap
 local lsp = vim.lsp
@@ -19,6 +19,13 @@ local set_qflist = function(buf_num, severity)
 end
 
 local custom_attach = function(client, bufnr)
+
+  local current_ft = vim.bo[bufnr].filetype
+  -- Check against the specified filetypes
+  if current_ft == "scala" or current_ft == "sc" or current_ft == "worksheet.sc" then
+    return
+  end
+
   -- Mappings.
   local map = function(mode, l, r, opts)
     opts = opts or {}

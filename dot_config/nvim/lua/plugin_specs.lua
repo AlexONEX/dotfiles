@@ -89,7 +89,7 @@ local plugin_specs = {
     config = function()
       require("config.nvim-metals")
     end,
-    ft = { "scala", "sbt", "sc", "scastie" , "worksheet" },
+    ft = { "scala", "sbt", "sc", "scastie" , "worksheet.sc" },
   },
 
   -- IDE for Lisp
