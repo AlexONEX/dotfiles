@@ -89,7 +89,7 @@ local plugin_specs = {
     config = function()
       require("config.nvim-metals")
     end,
-    ft = { "scala", "sbt", "sc", "scastie" , "worksheet.sc" },
+    ft = { "scala", "sbt", "sc", "scastie" , "worksheet.scala", "worksheet.sc" },
   },
 
   -- IDE for Lisp
@@ -319,6 +319,7 @@ local plugin_specs = {
     config = function()
       require("config.neomake")
     end,
+    ft = { "scala", "worksheet.scala", "worksheet.sc", "sc" },
   },
 
   -- Git command inside vim
