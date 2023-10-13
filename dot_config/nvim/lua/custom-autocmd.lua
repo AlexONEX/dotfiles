@@ -83,3 +83,12 @@ api.nvim_create_autocmd("VimResized", {
   desc = "autoresize windows on resizing operation",
   command = "wincmd =",
 })
+
+-- Automatically format on save
+api.nvim_create_autocmd('BufWritePre', {
+	buffer = vim.fn.bufnr(),
+	callback = function()
+		vim.lsp.buf.format({ timeout_ms = 3000 })
+	end,
+})
+

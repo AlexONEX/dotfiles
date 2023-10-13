@@ -87,6 +87,9 @@ keymap.set({ "n", "x" }, "L", "g_")
 keymap.set("x", "<", "<gv")
 keymap.set("x", ">", ">gv")
 
+-- Disable overwriting when pasting in visual mode
+keymap.set("v", "p", '"_dP')
+
 -- Edit and reload nvim config file quickly
 keymap.set("n", "<leader>ev", "<cmd>tabnew $MYVIMRC <bar> tcd %:h<cr>", {
   silent = true,
