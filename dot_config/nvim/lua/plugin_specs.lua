@@ -237,10 +237,10 @@ local plugin_specs = {
   },
 
   -- Snippet engine and snippet template
-  { "SirVer/ultisnips", 
+  { "SirVer/ultisnips",
     dependencies = {
       "honza/vim-snippets",
-    }, 
+    },
     event = "InsertEnter",
   },
 
@@ -315,7 +315,7 @@ local plugin_specs = {
     config = function()
       require("config.neomake")
     end,
-    ft = { "scala", "worksheet.scala", "worksheet.sc", "sc" },
+    lazy = false,
   },
 
   -- Git command inside vim
