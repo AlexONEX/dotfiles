@@ -113,9 +113,7 @@ local plugin_specs = {
     "smoka7/hop.nvim",
     event = "VeryLazy",
     config = function()
-      vim.defer_fn(function()
-        require("config.nvim_hop")
-      end, 2000)
+      require("config.nvim_hop")
     end,
   },
 
@@ -206,9 +204,7 @@ local plugin_specs = {
     "rcarriga/nvim-notify",
     event = "VeryLazy",
     config = function()
-      vim.defer_fn(function()
-        require("config.nvim-notify")
-      end, 2000)
+      require("config.nvim-notify")
     end,
   },
 
@@ -480,9 +476,7 @@ local plugin_specs = {
     "folke/which-key.nvim",
     event = "VeryLazy",
     config = function()
-      vim.defer_fn(function()
-        require("config.which-key")
-      end, 2000)
+      require("config.which-key")
     end,
   },
 
