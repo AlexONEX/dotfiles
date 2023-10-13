@@ -79,6 +79,19 @@ local plugin_specs = {
 
   { "machakann/vim-swap", event = "VeryLazy" },
 
+  -- IDE for scala
+  -- nvim-metals
+  {
+    "scalameta/nvim-metals",
+    requires = {
+      "nvim-lua/plenary.nvim",
+    },
+    config = function()
+      require("config.nvim-metals")
+    end,
+    ft = { "scala", "sbt", "sc", "scastie" },
+  },
+
   -- IDE for Lisp
   -- 'kovisoft/slimv'
   {
@@ -418,21 +431,6 @@ local plugin_specs = {
   -- Asynchronous command execution
   { "skywind3000/asyncrun.vim", lazy = true, cmd = { "AsyncRun" } },
   { "cespare/vim-toml", ft = { "toml" }, branch = "main" },
-
-  -- Edit text area in browser using nvim
-  {
-    "glacambre/firenvim",
-    enabled = function()
-      if vim.g.is_win or vim.g.is_mac then
-        return true
-      end
-      return false
-    end,
-    build = function()
-      vim.fn["firenvim#install"](0)
-    end,
-    lazy = true,
-  },
 
   -- Debugger plugin
   {
