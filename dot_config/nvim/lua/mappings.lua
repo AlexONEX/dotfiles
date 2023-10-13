@@ -260,3 +260,12 @@ keymap.set("n", "<C-q>", function()
     vim.cmd([[qa]])
   end
 end, { desc = "Super <C-q>" })
+
+-- Close buffer without losing split
+vim.keymap.set("n", "<leader>w", "<cmd>bp|bd #<CR>", { desc = "Close Buffer; Retain Split" })
+
+-- Copy filename to clipboard
+vim.keymap.set("n", "<leader>cf", "<cmd>let @+ = expand(\"%\")<CR>", { desc = "Copy File Name" })
+
+-- Copy file path to clipboard
+vim.keymap.set("n", "<leader>cp", "<cmd>let @+ = expand(\"%:p\")<CR>", { desc = "Copy File Path" })
