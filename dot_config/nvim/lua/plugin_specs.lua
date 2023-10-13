@@ -89,7 +89,7 @@ local plugin_specs = {
     config = function()
       require("config.nvim-metals")
     end,
-    ft = { "scala", "sbt", "sc", "scastie" },
+    ft = { "scala", "sbt", "sc", "scastie" , "worksheet" },
   },
 
   -- IDE for Lisp
@@ -311,6 +311,15 @@ local plugin_specs = {
 
   -- Auto format tools
   { "sbdchd/neoformat", cmd = { "Neoformat" } },
+
+  -- Linting with neomake
+  {
+    "neomake/neomake",
+    cmd = { "Neomake", "NeomakeProject" },
+    config = function()
+      require("config.neomake")
+    end,
+  },
 
   -- Git command inside vim
   {
