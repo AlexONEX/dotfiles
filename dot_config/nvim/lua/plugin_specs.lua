@@ -90,6 +90,7 @@ local plugin_specs = {
       require("config.nvim-metals")
     end,
     ft = { "scala", "sbt", "sc", "scastie" , "worksheet.scala", "worksheet.sc" },
+    -- load with keybind 
   },
 
   -- IDE for Lisp
@@ -246,6 +247,15 @@ local plugin_specs = {
 
   -- Automatic insertion and deletion of a pair of characters
   { "Raimondi/delimitMate", event = "InsertEnter" },
+
+  -- Automatic closing of HTML tags 
+  {
+    "windwp/nvim-ts-autotag",
+    ft = { "html", "js", "jsx", "ts", "tsx", "svelte", "vue" , "md",},
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
+  },
 
   -- Comment plugin
   { "tpope/vim-commentary", event = "VeryLazy" },

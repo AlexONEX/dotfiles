@@ -56,7 +56,7 @@ alias webToPdf='curl -u 'api:
 #Sudo
 alias stopB='sudo systemctl stop bluetooth.service'
 alias startB='sudo systemctl start bluetooth.service && bluetoothctl'
-alias b='bluetoothctl'
+alias b='fzf-calibre'
 
 # MEDIA
 alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
@@ -140,6 +140,9 @@ alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
 
 #pass stuff
 alias p="pass -c"
+
+#Scala stuff 
+alias initScala="sbt new scala/scala-seed.g8"
 
 #yta-best-mp3
 function yta(){
