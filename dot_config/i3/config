@@ -215,7 +215,7 @@ font pango:CaskaydiaCove NF Regular 11
 ################# autostart - execute applications at boot time
 # USER APPLICATIONS TO START AT BOOT
 #
-# Gnome Keyring 
+# Gnome Keyring
 exec --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 
 # Autotiling
@@ -303,6 +303,7 @@ bindsym $mod+b exec --no-startup-id alacritty -e /home/alex/.local/bin/fzf-calib
 
 ################# screenshots
 bindsym Print exec --no-startup-id flameshot gui
+
 ################# floating or tiled rules
 # floating enabled from some programs - find with xprop
 #for_window [class="Arcolinux-welcome-app.py"] floating enable
@@ -331,6 +332,7 @@ bindsym mod1+t exec --no-startup-id variety -t
 # next wallpaper
 bindsym mod1+n exec --no-startup-id variety -n
 bindsym mod1+Right exec --no-startup-id variety -n
+
 # previous wallpaper
 bindsym mod1+p exec --no-startup-id variety -p
 bindsym mod1+Left exec --no-startup-id variety -p
@@ -353,8 +355,8 @@ bindsym mod1+Shift+t exec --no-startup-id variety -t && wal -i $(cat $HOME/.conf
 bindsym mod1+Shift+u exec --no-startup-id wal -i $(cat $HOME/.config/variety/wallpaper/wallpaper.jpg.txt)
 
 ################# audio settings
-bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 2 
-bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 2 
+bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 2
+bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 2
 bindsym XF86AudioMute exec --no-startup-id pamixer -t
 
 ################# xbacklight
