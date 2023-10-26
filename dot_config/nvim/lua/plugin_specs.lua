@@ -90,7 +90,6 @@ local plugin_specs = {
       require("config.nvim-metals")
     end,
     ft = { "scala", "sbt", "sc", "scastie" , "worksheet.scala", "worksheet.sc" },
-    -- load with keybind 
   },
 
   -- IDE for Lisp
@@ -359,6 +358,10 @@ local plugin_specs = {
     end,
   },
 
+  {
+    "sindrets/diffview.nvim",
+  },
+
   -- Another markdown plugin
   { "preservim/vim-markdown", ft = { "markdown" } },
 
@@ -472,6 +475,20 @@ local plugin_specs = {
   {
     "gelguy/wilder.nvim",
     build = ":UpdateRemotePlugins",
+  },
+
+  --nvim-neorg (Neorg is a note-taking tool similar to Notion.so)
+  {
+    "nvim-neorg/neorg",
+    config = function()
+      require('neorg').setup {
+        load = {
+            ["core.defaults"] = {},
+          }
+        }
+    end,
+    requires = "nvim-treesitter/nvim-treesitter",
+    ft = { "norg" },
   },
 
   -- showing keybindings
