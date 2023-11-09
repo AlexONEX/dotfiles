@@ -106,7 +106,8 @@ bindsym $mod+Shift+0 move container to workspace 10; workspace 10
 
 ################# menu
 # dmenu
-bindsym $mod+d exec --no-startup-id dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'
+#bindsym $mod+d exec --no-startup-id dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'
+bindsym $mod+space exec --no-startup-id dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'
 
 #rofi 
 bindsym $mod+Shift+d exec --no-startup-id rofi -show run -theme ~/.config/i3/theme/rofi/launcher.rasi
@@ -167,7 +168,7 @@ bindsym $mod+z layout tabbed
 bindsym $mod+e layout toggle split
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+#bindsym $mod+space focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -279,8 +280,8 @@ bindsym control+mod1+r exec --no-startup-id rofi-theme-selector
 
 # Function Keybinds
 # Browser
-bindsym $mod+n exec --no-startup-id thorium-browser;focus
-bindsym $mod+Shift+n exec --no-startup-id thorium-browser --incognito;focus
+bindsym $mod+n exec --no-startup-id firefox;focus
+bindsym $mod+Shift+n exec --no-startup-id firefox --private-window;focus
 
 # document comparison
 #bindsym $mod+F5 exec --no-startup-id meld;focus

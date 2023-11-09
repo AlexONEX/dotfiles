@@ -11,7 +11,7 @@ if [ -f ~/.zsh/aliases ]; then
     . ~/.zsh/aliases
 fi
 
-#Set vim keybinds for shell
+#set vim keybindings
 set -o vi
 
 #source /usr/share/nvm/init-nvm.sh
