@@ -478,18 +478,30 @@ local plugin_specs = {
   },
 
   --nvim-neorg (Neorg is a note-taking tool similar to Notion.so)
-  {
-    "nvim-neorg/neorg",
-    config = function()
-      require('neorg').setup {
-        load = {
-            ["core.defaults"] = {},
-          }
-        }
-    end,
-    requires = "nvim-treesitter/nvim-treesitter",
-    ft = { "norg" },
-  },
+  --{
+  --  "nvim-neorg/neorg",
+  --  build = ":Neorg sync-parsers",
+  --  requires = {
+  --    "nvim-treesitter/nvim-treesitter",
+  --    "nvim-lua/plenary.nvim",
+  --  },
+  --  config = function()
+  --    require("neorg").setup {
+  --      load = {
+  --        ["core.defaults"] = {}, -- Loads default behaviour
+  --        ["core.concealer"] = {}, -- Adds pretty icons to your documents
+  --        ["core.dirman"] = { -- Manages Neorg workspaces
+  --          config = {
+  --            workspaces = {
+  --              notes = "~/notes",
+  --            },
+  --          },
+  --        },
+  --      },
+  --    }
+  --  end,
+  --  ft = { "norg" },
+  --},
 
   -- showing keybindings
   {
