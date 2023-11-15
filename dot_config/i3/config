@@ -227,12 +227,11 @@ exec_always --no-startup-id autotiling
 for_window [class="Spotify"] focus
 
 # TRAY APPLICATIONS
-# applications that are not installed will not start
 # Authentication dialog
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
 # bluetooth
-#exec --no-startup-id blueberry-tray
+exec --no-startup-id /home/alex/.config/i3/scripts/bluetooth-toggle.sh
 
 # network
 exec --no-startup-id nm-applet
@@ -241,21 +240,18 @@ exec --no-startup-id nm-applet
 exec_always --no-startup-id numlockx on
 
 # Conky
-# exec --no-startup-id conky -c ~/.config/i3/system-overview
 
-# feh sets wallpaper
+# feh wallpaper
 exec --no-startup-id feh --bg-fill --randomize /home/alex/.local/share/wallpapers/*
 
 # Polybar
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
 
 ################# system applications
-
 exec --no-startup-id /usr/bin/easyeffects --gapplication-service &
-# use dunst
-exec --no-startup-id dunst &
 
-exec --no-startup-id spotify-listener &
+# dunst
+exec --no-startup-id dunst &
 
 ################# applications keyboard shortcuts
 # ArchLinux Tweak Tool
