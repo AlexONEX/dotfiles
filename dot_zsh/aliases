@@ -28,13 +28,14 @@ alias nvimbackup='tar -czvf nvimbackup.tar.gz ~/.config/nvim ~/.local/share/nvim
 alias cd..='cd ..'
 alias ..='cd..'
 
-# Compress 
+# Compress
 alias zip='zip -r'
 alias xz='xz -z -v -k -T 0'
 
 # Pacman stuff
 alias u='paru -Syu'
 alias i='paru'
+alias pacmanClean='sudo pacman -Sc'
 alias purge='sudo pacman -Rnsc'
 alias listpkgs='pacman -Qqe > pkglist.txt'
 alias listaur='paru -Qqe > aurlist.txt'

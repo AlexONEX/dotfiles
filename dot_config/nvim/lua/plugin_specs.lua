@@ -40,12 +40,12 @@ local plugin_specs = {
   },
 
   {
-  "zbirenbaum/copilot.lua",
-  cmd = "Copilot",
-  event = "VeryLazy",
-  config = function()
-    require("config.copilot")
-  end,
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "VeryLazy",
+    config = function()
+      require("config.copilot")
+    end,
   },
 
   {
@@ -89,7 +89,7 @@ local plugin_specs = {
     config = function()
       require("config.nvim-metals")
     end,
-    ft = { "scala", "sbt", "sc", "scastie" , "worksheet.scala", "worksheet.sc" },
+    ft = { "scala", "sbt", "sc", "scastie", "worksheet.scala", "worksheet.sc" },
   },
 
   -- IDE for Lisp
@@ -237,20 +237,17 @@ local plugin_specs = {
   },
 
   -- Snippet engine and snippet template
-  { "SirVer/ultisnips",
-    dependencies = {
-      "honza/vim-snippets",
-    },
-    event = "InsertEnter",
-  },
+  { "SirVer/ultisnips", dependencies = {
+    "honza/vim-snippets",
+  }, event = "InsertEnter" },
 
   -- Automatic insertion and deletion of a pair of characters
   { "Raimondi/delimitMate", event = "InsertEnter" },
 
-  -- Automatic closing of HTML tags 
+  -- Automatic closing of HTML tags
   {
     "windwp/nvim-ts-autotag",
-    ft = { "html", "js", "jsx", "ts", "tsx", "svelte", "vue" , "md",},
+    ft = { "html", "js", "jsx", "ts", "tsx", "svelte", "vue", "md" },
     config = function()
       require("nvim-ts-autotag").setup()
     end,
@@ -305,19 +302,6 @@ local plugin_specs = {
       return false
     end,
     event = { "InsertEnter" },
-  },
-
-  -- Auto format tools
-  { "sbdchd/neoformat", cmd = { "Neoformat" } },
-
-  -- Linting with neomake
-  {
-    "neomake/neomake",
-    cmd = { "Neomake", "NeomakeProject" },
-    config = function()
-      require("config.neomake")
-    end,
-    lazy = false,
   },
 
   -- Git command inside vim

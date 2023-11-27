@@ -13,7 +13,6 @@ if version.cmp(ev, actual_ver) ~= 0 then
   vim.api.nvim_err_writeln(msg)
 end
 
-
 local core_conf_files = {
   "globals.lua", -- some global settings
   "options.vim", -- setting options in nvim
@@ -26,7 +25,7 @@ local core_conf_files = {
 local viml_conf_dir = vim.fn.stdpath("config") .. "/viml_conf"
 -- source all the core config files
 for _, file_name in ipairs(core_conf_files) do
-  if vim.endswith(file_name, 'vim') then
+  if vim.endswith(file_name, "vim") then
     local path = string.format("%s/%s", viml_conf_dir, file_name)
     local source_cmd = "source " .. path
     vim.cmd(source_cmd)
