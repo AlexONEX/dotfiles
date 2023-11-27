@@ -517,6 +517,16 @@ local plugin_specs = {
       require("config.fidget-nvim")
     end,
   },
+  {
+    "mfussenegger/nvim-lint",
+    auto_cmd = {
+      "BufWritePost",
+      "BufEnter",
+    },
+    config = function()
+      require("config.nvim-lint")
+    end,
+  },
 }
 
 -- configuration for lazy itself.
