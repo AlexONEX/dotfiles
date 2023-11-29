@@ -58,14 +58,9 @@ local plugin_specs = {
 
   {
     "nvim-treesitter/nvim-treesitter",
-    enabled = function()
-      if vim.g.is_mac then
-        return true
-      end
-      return false
-    end,
     event = "VeryLazy",
     build = ":TSUpdate",
+    run = ":Neorg sync-parsers", -- This is the important bit!
     config = function()
       require("config.treesitter")
     end,
@@ -461,31 +456,15 @@ local plugin_specs = {
     build = ":UpdateRemotePlugins",
   },
 
-  --nvim-neorg (Neorg is a note-taking tool similar to Notion.so)
-  --{
-  --  "nvim-neorg/neorg",
-  --  build = ":Neorg sync-parsers",
-  --  requires = {
-  --    "nvim-treesitter/nvim-treesitter",
-  --    "nvim-lua/plenary.nvim",
-  --  },
-  --  config = function()
-  --    require("neorg").setup {
-  --      load = {
-  --        ["core.defaults"] = {}, -- Loads default behaviour
-  --        ["core.concealer"] = {}, -- Adds pretty icons to your documents
-  --        ["core.dirman"] = { -- Manages Neorg workspaces
-  --          config = {
-  --            workspaces = {
-  --              notes = "~/notes",
-  --            },
-  --          },
-  --        },
-  --      },
-  --    }
-  --  end,
-  --  ft = { "norg" },
-  --},
+  {
+    "nvim-neorg/neorg",
+    build = ":Neorg sync-parsers",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    ft = { "norg" },
+    config = function()
+      require("config.neorg")
+    end,
+  },
 
   -- showing keybindings
   {
