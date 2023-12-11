@@ -109,7 +109,7 @@ vim.keymap.set({ "n", "x" }, "0", "^")
 vim.keymap.set({ "n", "x" }, "L", "g_")
 
 -- Continuous visual shifting (does not exit Visual mode), `gv` means
--- to reselect previous visual area, see https://superuser.com/q/310417/736190
+-- to reselect previous visual area, see https://superuser.com/q/310432/736190
 vim.keymap.set("x", "<", "<gv")
 vim.keymap.set("x", ">", ">gv")
 
@@ -238,8 +238,8 @@ end
 vim.keymap.set("i", "<A-;>", "<Esc>miA;<Esc>`ii")
 
 -- Go to the beginning and end of current line in insert mode quickly
-vim.keymap.set("i", "<C-A>", "<HOME>")
-vim.keymap.set("i", "<C-E>", "<END>")
+vim.keymap.set("i", "<C-a>", "<HOME>")
+vim.keymap.set("i", "<C-e>", "<END>")
 
 -- Go to beginning of command in command-line mode
 vim.keymap.set("c", "<C-A>", "<HOME>")
@@ -247,51 +247,30 @@ vim.keymap.set("c", "<C-A>", "<HOME>")
 -- Delete the character to the right of the cursor
 vim.keymap.set("i", "<C-D>", "<DEL>")
 
-vim.keymap.set("n", "<leader>cb", function()
-  local cnt = 0
-  local blink_times = 7
-  local timer = uv.new_timer()
-
-  timer:start(
-    0,
-    100,
-    vim.schedule_wrap(function()
-      vim.cmd([[
-      set cursorcolumn!
-      set cursorline!
-    ]])
-
-      if cnt == blink_times then
-        timer:close()
-      end
-
-      cnt = cnt + 1
-    end)
-  )
-end)
-
-vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>")
+-- Tree Toogle command
+vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
 
 -- Vim tmux navigator
-vim.keymap.set("n", "<C-h>", "<cmd>TmuxNavigateLeft<cr>")
-vim.keymap.set("n", "<C-j>", "<cmd>TmuxNavigateDown<cr>")
-vim.keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<cr>")
-vim.keymap.set("n", "<C-l>", "<cmd>TmuxNavigateRight<cr>")
-
-vim.keymap.set("n", "<C-q>", function()
-  -- close current win if there are more than 1 win
-  -- else close current tab if there are more than 1 tab
-  -- else close current vim
-  if #vim.api.nvim_tabpage_list_wins(0) > 1 then
-    vim.cmd([[close]])
-  elseif #vim.api.nvim_list_tabpages() > 1 then
-    vim.cmd([[tabclose]])
-  else
-    vim.cmd([[qa]])
-  end
-end, { desc = "Super <C-q>" })
+--vim.keymap.set("n", "<C-h>", "<cmd>TmuxNavigateLeft<cr>")
+--vim.keymap.set("n", "<C-j>", "<cmd>TmuxNavigateDown<cr>")
+--vim.keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<cr>")
+--vim.keymap.set("n", "<C-l>", "<cmd>TmuxNavigateRight<cr>")
 
 -- Close buffer without losing split
+vim.keymap.set("n", "<C-q>", function()
+  -- Guardar el archivo actual antes de cerrar
+  vim.cmd("write")
+  -- Cerrar la ventana actual si hay más de una ventana abierta
+  if #vim.api.nvim_tabpage_list_wins(0) > 1 then
+    vim.cmd("close")
+  -- Cerrar la pestaña actual si hay más de una pestaña abierta
+  elseif #vim.api.nvim_list_tabpages() > 1 then
+    vim.cmd("tabclose")
+  -- Cerrar Neovim si no hay otras ventanas o pestañas
+  else
+    vim.cmd("qa")
+  end
+end, { desc = "Super <C-q>" })
 vim.keymap.set("n", "<leader>w", "<cmd>bp|bd #<CR>", { desc = "Close Buffer; Retain Split" })
 
 -- Copy filename to clipboard
@@ -299,3 +278,13 @@ vim.keymap.set("n", "<leader>cf", '<cmd>let @+ = expand("%")<CR>', { desc = "Cop
 
 -- Copy file path to clipboard
 vim.keymap.set("n", "<leader>cp", '<cmd>let @+ = expand("%:p")<CR>', { desc = "Copy File Path" })
+
+-- Mapeo para ejecutar HopWord con Ctrl+f
+vim.keymap.set("n", "<C-f>", ":HopWord<CR>", { silent = true, desc = "HopWord" })
+vim.keymap.set("v", "<C-f>", ":HopWord<CR>", { silent = true, desc = "HopWord" })
+vim.keymap.set("i", "<C-f>", "<Esc>:HopWord<CR>", { silent = true, desc = "HopWord" })
+
+-- Mapeo para ejecutar HopLine con Ctrl+l
+vim.keymap.set("n", "<C-l>", ":HopLine<CR>", { silent = true, desc = "HopLine" })
+vim.keymap.set("v", "<C-l>", ":HopLine<CR>", { silent = true, desc = "HopLine" })
+vim.keymap.set("i", "<C-l>", "<Esc>:HopLine<CR>", { silent = true, desc = "HopLine" })

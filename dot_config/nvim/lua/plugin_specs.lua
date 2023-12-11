@@ -103,6 +103,22 @@ local plugin_specs = {
     ft = { "lisp" },
   },
 
+  -- IDE for Java 
+  -- 'mfussenegger/nvim-jdtls'
+  {
+    "mfussenegger/nvim-jdtls",
+    enabled = function()
+      if utils.executable("jdtls") then
+        return true
+      end
+      return false
+    end,
+    config = function()
+      require("config.nvim-jdtls")
+    end,
+    ft = { "java" },
+  },
+
   -- Super fast buffer jump
   {
     "smoka7/hop.nvim",
@@ -130,10 +146,17 @@ local plugin_specs = {
       end
     end,
   },
-  "nvim-lua/plenary.nvim",
+
+  {
+    "nvim-lua/plenary.nvim",
+  },
+
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
+    config = function()
+      require("config.telescope")
+    end,
     dependencies = {
       "nvim-telescope/telescope-symbols.nvim",
     },
@@ -488,6 +511,7 @@ local plugin_specs = {
   },
 
   { "ii14/emmylua-nvim", ft = "lua" },
+
   {
     "j-hui/fidget.nvim",
     event = "VeryLazy",
@@ -496,6 +520,7 @@ local plugin_specs = {
       require("config.fidget-nvim")
     end,
   },
+
   {
     "mfussenegger/nvim-lint",
     auto_cmd = {
