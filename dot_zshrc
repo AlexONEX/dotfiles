@@ -1,6 +1,4 @@
-zmodload zsh/zprof
-
-# Enable Powerlevel10k instant prompt. Shoul stay close to the top of ~/.zshrc.
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -11,12 +9,6 @@ if [ -f ~/.zsh/aliases ]; then
     . ~/.zsh/aliases
 fi
 
-#set vim keybindings
-set -o vi
-
-#source /usr/share/nvm/init-nvm.sh
-
-#source /usr/bin/virtualenvwrapper.sh
 #-------Plugin Management-------#
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.zsh}/plugins}
 
@@ -24,19 +16,23 @@ if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
   git clone --quiet https://github.com/mattmc3/zsh_unplugged $ZPLUGINDIR/zsh_unplugged
 fi
 source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
+source $ZPLUGINDIR/quotes/quotes.plugin.zsh
 
 repos=(
-  marlonrichert/zsh-autocomplete
-  martvdmoosdijk/zsh-marks
-  romkatv/powerlevel10k
-  smeagol74/zsh-fzf-pass
-  quotes
-  zsh-users/zsh-autosuggestions
-  zsh-users/zsh-syntax-highlighting
-  )
+    aikow/zsh-auto-ls
+    jeffreytse/zsh-vi-mode
+    Junker/zsh-archlinux
+    marlonrichert/zsh-autocomplete
+    martvdmoosdijk/zsh-marks
+    macunha1/zsh-terraform
+    romkatv/powerlevel10k
+    sroze/docker-compose-zsh-plugin
+    zsh-users/zsh-syntax-highlighting
+    zsh-users/zsh-autosuggestions
+    z-shell/zsh-diff-so-fancy
+)
 
 plugin-load $repos
-
 function plugin-update {
   ZPLUGINDIR=${ZPLUGINDIR:-$HOME/.config/zsh/plugins}
   for d in $ZPLUGINDIR/*/.git(/); do
@@ -44,11 +40,11 @@ function plugin-update {
     command git -C "${d:h}" pull --ff --recurse-submodules --depth 1 --rebase --autostash
   done
 }
+
 #--------Enviroment Variables--------#
+export XDG_CACHE_HOME=$HOME/.cache
 export TERM="xterm-256color"
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
-export WORKON_HOME=$HOME/.virtualenvs
-
 
 export EDITOR=nvim
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
@@ -61,7 +57,6 @@ export ZSH="$HOME/.zsh"
 export PATH=~/.npm-global/bin:$PATH
 export PATH="/usr/src/linux-headers-$(uname -r)/include:$PATH"
 export PATH="$HOME/.spicetify/:$PATH"
-
 typeset -U PATH path
 
 
@@ -74,25 +69,18 @@ fi
 if [ -d "$HOME/Applications" ] ;
   then PATH="$HOME/Applications:$PATH"
 fi
-if [ -d "/var/lib/flatpak/exports/bin/" ] ;
-  then PATH="/var/lib/flatpak/exports/bin/:$PATH"
-fi
 if [ -d "$HOME/go/bin" ] ;
   then PATH="$HOME/go/bin:$PATH"
-fi
-
-if [ -d "$HOME/n" ]; then
-  export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"
 fi
 
 export PATH=$PATH:/home/alex/.spicetify
 
 #Managing python venv
-export WORKON_HOME=~/.virtualenvs
+export WORKON_HOME=$HOME/.virtualenvs
 source /usr/bin/virtualenvwrapper.sh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+#[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 #-------------------------------#
 zstyle ':omz:update' mode auto      # update automatically without asking
 zstyle ':omz:update' frequency 13
@@ -140,7 +128,7 @@ extractf() {
     esac
   else
     echo "'$1' is not a valid file"
-  fi 
+  fi
 }
 
 webToPDF() {
@@ -160,3 +148,6 @@ webToPDF() {
 
     echo "PDF guardado como ${title}.pdf"
 }
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

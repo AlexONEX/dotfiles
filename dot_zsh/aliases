@@ -1,28 +1,23 @@
 # SHORTCUTS
-alias r='source ~/.zshrc'
+alias r='exec zsh'
 alias rf='rm -rf'
 alias a='$EDITOR $ZSH/aliases'
 alias j='goto'
 alias zplugins='ls $ZPLUGINDIR'
-alias openbb='docker attach openbb-openbb-1'
 alias dotsadd='cd $HOME && chezmoi add .quotes.json && chezmoi add .zshrc .zsh/aliases && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot nvim polybar zathura mimeapps.list'
-alias piracy='docker start plex-server jackett lidarr sonarr deluge radarr'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
-alias k='killall'
-alias btui='bluetoothctl'
+alias k='pkill -9'
 alias li='light -S'
 
 alias dsize='du -hsx * | sort -rh'
 alias neofetch='fastfetch'
-
 alias open='handlr open'
 alias c='clear'
 alias vim='nvim'
 alias cat='bat'
 
-# Backup nvim config and .local/share/nvim in a tar.gz file
-alias nvimbackup='tar -czvf nvimbackup.tar.gz ~/.config/nvim ~/.local/share/nvim'
+alias purge='paru -Rns'
 
 #Alias cd
 alias cd..='cd ..'
@@ -35,13 +30,7 @@ alias xz='xz -z -v -k -T 0'
 # Pacman stuff
 alias u='paru -Syu'
 alias i='paru'
-alias pacmanClean='sudo pacman -Sc'
-alias purge='sudo pacman -Rnsc'
-alias listpkgs='pacman -Qqe > pkglist.txt'
-alias listaur='paru -Qqe > aurlist.txt'
-alias installpkgs='sudo paru -S - < pkglist.txt'
-alias unused='pacman -Qqd | sudo pacman -Rsu -'
-alias uSpicetifyNorc='curl -fsSL https://raw.githubusercontent.com/Tetrax-10/Nord-Spotify/master/install-scripts/uninstall.sh | sh'
+alias purge='sudo pacman -Rns'
 
 alias uAndroid='adb shell pm uninstall -k --user 0'
 alias pullAndroid='cd $HOME/Pictures/Android && adb pull /storage/emulated/0/Pictures && adb pull /storage/emulated/0/Dcim'
@@ -51,7 +40,6 @@ alias kernel='uname -r'
 alias localip='ip -brief -color address'
 alias wttr='curl -4 wttr.in'
 alias rpolybar='~/.config/polybar/launch.sh'
-
 alias webToPdf='curl -u 'api:
 
 #Sudo
@@ -94,40 +82,6 @@ alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
 alias psmem='ps auxf | sort -nr -k 4'
 alias pscpu='ps auxf | sort -nr -k 3'
 
-# Merge Xresources
-alias merge='xrdb -merge ~/.Xresources'
-
-# git
-# source: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
-alias g="gitui"
-alias gs="git status"
-alias gss="git status -s"
-alias gcc="git clone"
-alias gc="git commit"
-alias gd='git diff'
-alias ga='git add'
-alias gaa='git add --all'
-alias gah='git add .'
-alias gb='git branch'
-alias gbD='git branch -D'
-alias gbr='git branch --remote'
-alias gf='git fetch'
-alias gfa='git fetch --all --prune'
-alias gfo='git fetch origin'
-alias gm='git merge'
-alias gp="git push"
-alias gl='git pull'
-alias grh='git reset .'
-alias grs='git reset . --staged'
-alias gco='git checkout'
-alias gcb='git checkout -b'
-alias gcm='git checkout $(git_main_branch)'
-alias gstp='git stash pop'
-alias gsts='git stash show -p'
-alias glog='git log --oneline --decorate --graph'
-alias gsi='git submodule init'
-alias gsu='git submodule update'
-
 # get error messages from journalctl
 alias jctl="journalctl -p 3 -xb"
 
@@ -138,12 +92,6 @@ alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 # switch between shells
 alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
 alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
-
-#pass stuff
-alias p="pass -c"
-
-#Scala stuff 
-alias initScala="sbt new scala/scala-seed.g8"
 
 #yta-best-mp3
 function yta(){
