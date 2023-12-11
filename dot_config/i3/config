@@ -264,6 +264,8 @@ bindsym control+mod1+Prior exec --no-startup-id conky-rotate -p
 
 # terminal
 bindsym $mod+Return exec --no-startup-id alacritty -e tmux;focus
+# execute alacritty with bash 
+bindsym $mod+shift+Return exec --no-startup-id alacritty -e bash;focus
 
 # System monitor
 bindsym control+Shift+Escape exec --no-startup-id stacer;focus
@@ -296,7 +298,7 @@ bindsym $mod+less exec "~/.local/bin/spot-ctrl prev"
 bindsym $mod+p exec "~/.local/bin/spot-ctrl play"
 
 # calibre
-bindsym $mod+b exec --no-startup-id alacritty -e /home/alex/.local/bin/fzf-calibre;focus
+bindsym control+b exec --no-startup-id alacritty -e /home/alex/.local/bin/fzf-calibre;focus
 
 ################# screenshots
 bindsym Print exec --no-startup-id flameshot gui
@@ -433,5 +435,5 @@ mode "$mode_gaps_outer" {
 # if you want transparency on non-focused windows, ...
 #exec_always --no-startup-id picom --config ~/.config/i3/picom.conf
 bindsym control+o exec --no-startup-id ~/.config/i3/scripts/picom-toggle.sh
-bindsym control+x exec --no-startup-id ~/.config/polybar/scripts/rofi_powermenu
-bindsym control+b exec --no-startup-id ~/.config/polybar/scripts/rofi_bluetooth
+bindsym $mod+x exec --no-startup-id ~/.config/polybar/scripts/rofi_powermenu
+bindsym $mod+b exec --no-startup-id ~/.config/polybar/scripts/rofi_bluetooth
