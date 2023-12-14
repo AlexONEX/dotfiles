@@ -66,16 +66,9 @@ local plugin_specs = {
     end,
   },
 
-  -- Python indent (follows the PEP8 style)
-  { "Vimjas/vim-python-pep8-indent", ft = { "python" } },
-
-  -- Python-related text object
-  { "jeetsukumaran/vim-pythonsense", ft = { "python" } },
-
   { "machakann/vim-swap", event = "VeryLazy" },
 
   -- IDE for scala
-  -- nvim-metals
   {
     "scalameta/nvim-metals",
     requires = {
@@ -103,8 +96,7 @@ local plugin_specs = {
     ft = { "lisp" },
   },
 
-  -- IDE for Java 
-  -- 'mfussenegger/nvim-jdtls'
+  -- IDE for Java
   {
     "mfussenegger/nvim-jdtls",
     enabled = function()
@@ -414,7 +406,6 @@ local plugin_specs = {
   -- Plugin to manipulate character pairs quickly
   { "machakann/vim-sandwich", event = "VeryLazy" },
 
-  -- Add indent object for vim (useful for languages like Python)
   { "michaeljsmith/vim-indent-object", event = "VeryLazy" },
 
   -- Only use these plugin on Windows and Mac and when LaTeX is installed

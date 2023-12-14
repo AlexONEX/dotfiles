@@ -8,15 +8,9 @@ function M.format_with_clang_format()
 end
 
 -- Formatter for Python files
-function M.format_with_black()
+function M.format_with_ruff()
   local file = vim.api.nvim_buf_get_name(0)
-  vim.cmd(string.format("silent !black %s", file))
-end
-
--- Formatter for scala files
-function M.format_with_scalafmt()
-  local file = vim.api.nvim_buf_get_name(0)
-  vim.cmd(string.format("silent !scalafmt %s", file))
+  vim.cmd(string.format("silent !ruff %s", file))
 end
 
 --

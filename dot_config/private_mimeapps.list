@@ -1,28 +1,25 @@
 [Added Associations]
 application/epub+zip=calibre-ebook-viewer.desktop;
 application/json=Alacritty.desktop;userapp-alacritty -e vim -PX7091.desktop;
-application/pdf=firefox.desktop;thorium-browser.desktop;
+application/pdf=firefox.desktop;
 application/x-ipynb+json=neovide.desktop;
 application/x-mobipocket-ebook=calibre-ebook-viewer.desktop;org.pwmt.zathura-pdf-mupdf.desktop;
 application/x-zerosize=neovide.desktop;
 image/jpeg=org.nomacs.ImageLounge.desktop;feh.desktop;
-image/png=org.nomacs.ImageLounge.desktop;thorium-browser.desktop;
-text/html=thorium-browser.desktop;
+image/png=org.nomacs.ImageLounge.desktop;
 text/plain=neovide.desktop;Alacritty.desktop;
 
 [Default Applications]
 applciation/epub+zip=org.pwmt.zathura-pdf-mupdf.desktop;
 application/epub=org.pwmt.zathura.desktop;
-application/epub+zip=calibre-ebook-viewer.desktop;
+application/epub+zip=org.pwmt.zathura.desktop;
 application/json=userapp-alacritty -e vim -PX7091.desktop;
 application/oxps=org.pwmt.zathura.desktop;
 application/pdf=org.pwmt.zathura.desktop;
 application/x-fictionbook+xml=org.pwmt.zathura.desktop;
 application/x-zerosize=neovide.desktop;
-application/xhtml+xml=thorium-browser.desktop;
 inode/directory=thunar.desktop;
 text/*=neovide.desktop;
-text/html=thorium-browser.desktop;
 text/plain=neovide.desktop;
 text/txt=neovide.desktop;
 text/x-c++hdr=neovide.desktop;
@@ -33,7 +30,4 @@ text/x-java=neovide.desktop;
 text/x-pascal=neovide.desktop;
 text/x-tex=neovide.desktop;
 video/mp4=vlc.desktop;
-x-scheme-handler/magnet=thorium-browser.desktop;
-x-scheme-handler/mailto=thorium-browser.desktop;
 x-scheme-handler/terminal=Alacritty.desktop;
-x-scheme-handler/webcal=thorium-browser.desktop

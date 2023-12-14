@@ -8,7 +8,7 @@ function save_and_format()
   if ft == "c" or ft == "cpp" or ft == "objc" or ft == "java" or ft == "proto" or ft == "cuda" or ft == "vala" then
     formatters.format_with_clang_format()
   elseif ft == "python" then
-    formatters.format_with_black()
+    formatters.format_with_ruff()
   elseif ft == "scala" then
     formatters.format_with_scalafmt()
   elseif ft == "lua" then
