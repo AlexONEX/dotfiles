@@ -9,6 +9,9 @@ if [ -f ~/.zsh/aliases ]; then
     . ~/.zsh/aliases
 fi
 
+autoload -Uz compinit
+compinit
+
 #-------Plugin Management-------#
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.zsh}/plugins}
 
@@ -16,17 +19,15 @@ if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
   git clone --quiet https://github.com/mattmc3/zsh_unplugged $ZPLUGINDIR/zsh_unplugged
 fi
 source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
-source $ZPLUGINDIR/quotes/quotes.plugin.zsh
 
 repos=(
     aikow/zsh-auto-ls
+    gimbo/gimbo-git.zsh
     jeffreytse/zsh-vi-mode
     Junker/zsh-archlinux
     marlonrichert/zsh-autocomplete
     martvdmoosdijk/zsh-marks
-    macunha1/zsh-terraform
     romkatv/powerlevel10k
-    sroze/docker-compose-zsh-plugin
     zsh-users/zsh-syntax-highlighting
     zsh-users/zsh-autosuggestions
     z-shell/zsh-diff-so-fancy
@@ -40,6 +41,7 @@ function plugin-update {
     command git -C "${d:h}" pull --ff --recurse-submodules --depth 1 --rebase --autostash
   done
 }
+
 
 #--------Enviroment Variables--------#
 export XDG_CACHE_HOME=$HOME/.cache
