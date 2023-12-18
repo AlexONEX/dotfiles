@@ -54,6 +54,7 @@ M.general = {
       "join visual lines",
     },
   },
+  
   v = {
     [">"] = { ">gv", "indent" },
     ["<"] = { "<gv", "unindent" },
