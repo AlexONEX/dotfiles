@@ -109,7 +109,7 @@ bindsym $mod+Shift+0 move container to workspace 10; workspace 10
 #bindsym $mod+d exec --no-startup-id dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'
 bindsym $mod+space exec --no-startup-id dmenu_run -i -nb '#191919' -nf '#fea63c' -sb '#fea63c' -sf '#191919' -fn 'NotoMonoRegular:bold:pixelsize=14'
 
-#rofi 
+#rofi
 bindsym $mod+Shift+d exec --no-startup-id rofi -show run -theme ~/.config/i3/theme/rofi/launcher.rasi
 
 ################# how to exit, logoff, suspend, ...
@@ -298,7 +298,6 @@ bindsym $mod+less exec "~/.local/bin/spot-ctrl prev"
 bindsym $mod+p exec "~/.local/bin/spot-ctrl play"
 
 # calibre
-bindsym control+b exec --no-startup-id alacritty -e /home/alex/.local/bin/fzf-calibre;focus
 
 ################# screenshots
 bindsym Print exec --no-startup-id flameshot gui
