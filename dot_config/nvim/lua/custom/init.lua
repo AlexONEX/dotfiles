@@ -9,10 +9,15 @@ local autocmd = vim.api.nvim_create_autocmd
 autocmd("BufWritePre", {
   pattern = "*",
   callback = function()
-    vim.lsp.buf.format { async = true }
+    require("conform").format { async = true }
   end,
 })
 
+autocmd({ "BufWritePost" }, {
+  callback = function()
+    require("lint").try_lint()
+  end,
+})
 -- Global options
 local fn = vim.fn
 local api = vim.api
