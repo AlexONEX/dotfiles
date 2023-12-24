@@ -1,18 +1,41 @@
-require("lint").linters_by_ft = {
-  javascript = { "eslint" },
-  typescript = { "eslint" },
+-- Import the lint module
+local lint = require "lint"
+
+-- Define linters by file type
+lint.linters_by_ft = {
   css = { "stylelint" },
   dockerfile = { "hadolint" },
-  yaml = { "yamllint" },
+  graphql = { "graphql-lsp" },
+  html = { "htmlbeautifier" },
+  java = { "google-java-format" },
+  javascript = { "eslint" },
+  javascriptreact = { "eslint" },
   json = { "jsonlint" },
-  sh = { "shellcheck" },
+  kotlin = { "ktlint" },
+  markdown = { "markdownlint" },
+  proto = { "buf" },
   python = { "ruff", "mypy" },
-  -- Agrega más linters según sea necesario
+  ruby = { "standardrb" },
+  rust = { "rustfmt" },
+  scss = { "stylelint" },
+  sh = { "shellcheck" },
+  svelte = { "svelte-check" },
+  terraform = { "tflint" },
+  toml = { "taplo" },
+  typescript = { "eslint" },
+  typescriptreact = { "eslint" },
+  yaml = { "yamllint" },
+  -- Add more linters as needed
 }
 
--- Configura un autocmd para activar el linting
+-- Create an autocmd to trigger linting on BufWritePost
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   callback = function()
-    require("lint").try_lint()
+    lint.try_lint()
   end,
 })
+
+-- Define a key mapping to trigger linting for the current file
+vim.keymap.set("n", "<leader>ll", function()
+  lint.try_lint()
+end, { desc = "Trigger linting for current file" })

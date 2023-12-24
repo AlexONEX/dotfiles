@@ -6,10 +6,10 @@ M.treesitter = {
     "css",
     "html",
     "typescript",
-    "javascript", -- Puede que también quieras añadir JavaScript
-    "java", -- Para Java
-    "rust", -- Para Rust
-    "python", -- Para Python
+    "javascript",
+    "java",
+    "rust",
+    "python",
   },
   indent = {
     enable = true,

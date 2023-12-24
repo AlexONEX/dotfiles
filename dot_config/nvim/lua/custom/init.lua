@@ -1,10 +1,10 @@
 local autocmd = vim.api.nvim_create_autocmd
 
 -- Auto resize panes when resizing nvim window
--- autocmd("VimResized", {
---   pattern = "*",
---   command = "tabdo wincmd =",
--- })
+autocmd("VimResized", {
+  pattern = "*",
+  command = "tabdo wincmd =",
+})
 
 autocmd("BufWritePre", {
   pattern = "*",
@@ -62,3 +62,5 @@ vim.g.mapleader = " "
 vim.o.guifont = "CaskaydiaCove Nerd Font:h9"
 vim.g.neovide_scroll_animation_length = 0.0
 vim.g.neovide_cursor_animation_length = 0.0
+
+vim.o.autowriteall = true
