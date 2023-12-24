@@ -50,7 +50,7 @@ export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 
 export EDITOR=nvim
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-export VISUAL=/bin/vim
+export VISUAL=/bin/nvim
 export DOTFILES=$HOME/.local/share/chezmoi/
 export PROJECTS_DIR=$HOME/Github/
 export NPM_PREFIX_DIR=$HOME/.node_modules
