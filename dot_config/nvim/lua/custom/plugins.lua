@@ -159,6 +159,12 @@ local plugins = {
     end,
   },
 
+  -- Tmux Support for Neovim
+  {
+    "christoomey/vim-tmux-navigator",
+    lazy = false,
+  },
+
   -- IDEs
   -- Latex support
   {

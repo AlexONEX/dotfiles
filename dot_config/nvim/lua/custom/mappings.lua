@@ -24,7 +24,13 @@ M.general = {
     ["<A-k>"] = { '<cmd>call utils#SwitchLine(line("."), "up")<cr>', "move line up" },
     ["<A-j>"] = { '<cmd>call utils#SwitchLine(line("."), "down")<cr>', "move line down" },
     ["<C-f>"] = { ":HopWord<CR>", "HopWord", silent = true },
-    ["<C-l>"] = { ":HopLine<CR>", "HopLine", silent = true },
+    ["<C-g>"] = { ":HopLine<CR>", "HopLine", silent = true },
+    --
+    ["<C-h>"] = { "<cmd> TmuxNavigateLeft<CR>", "window left" },
+    ["<C-j>"] = { "<cmd> TmuxNavigateDown<CR>", "window down" },
+    ["<C-k>"] = { "<cmd> TmuxNavigateUp<CR>", "window up" },
+    ["<C-l>"] = { "<cmd> TmuxNavigateRight<CR>", "window right" },
+
     ["<F11>"] = { "<cmd>set spell!<cr>", "toggle spell" },
     ["q"] = {
       "<cmd>w | if len(getbufinfo({'buflisted':1})) <= 1 | qa | else | bd | endif<CR>",
