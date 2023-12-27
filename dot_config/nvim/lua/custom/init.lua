@@ -1,5 +1,4 @@
 local autocmd = vim.api.nvim_create_autocmd
-
 -- Auto resize panes when resizing nvim window
 autocmd("VimResized", {
   pattern = "*",
@@ -35,7 +34,6 @@ end
 vim.g.is_win = (utils.has "win32" or utils.has "win64") and true or false
 vim.g.is_linux = (utils.has "unix" and (not utils.has "macunix")) and true or false
 vim.g.is_mac = utils.has "macunix" and true or false
-
 vim.g.logging_level = "info"
 
 ------------------------------------------------------------------------

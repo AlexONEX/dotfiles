@@ -4,7 +4,6 @@ local utils = require "custom.utils"
 ---@type NvPluginSpec[]
 local plugins = {
 
-  -- Override plugin definition options
   {
     "neovim/nvim-lspconfig",
     dependencies = {
