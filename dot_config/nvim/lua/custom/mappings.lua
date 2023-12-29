@@ -87,6 +87,25 @@ M.general = {
   },
 }
 
+M.dap = {
+  plugin = true,
+  n = {
+    ["<leader>db"] = {
+      "<cmd> DapToggleBreakpoint<cr>",
+      "Add breakpoint at line",
+    },
+    ["<leader>dr"] = {
+      "<cmd> DapContinue<cr>",
+      "Start or continue the debugger",
+    },
+    --leader+dc DapContinue
+    ["<leader>dc"] = {
+      "<cmd> DapContinue<cr>",
+      "Continue debugging",
+    },
+  },
+}
+
 -- Adding keybindings for punctuation undo
 local undo_ch = { ",", ".", "!", "?", ";", ":" }
 for _, ch in ipairs(undo_ch) do

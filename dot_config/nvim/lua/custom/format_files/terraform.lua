@@ -1,13 +1,13 @@
 local M = {}
 
 function M.setup()
-	-- Desactiva autocmds existentes para *.tf
-	vim.cmd([[silent! autocmd! filetypedetect BufRead,BufNewFile *.tf]])
+  -- Desactiva autocmds existentes para *.tf
+  vim.cmd [[silent! autocmd! filetypedetect BufRead,BufNewFile *.tf]]
 
-	vim.cmd([[autocmd BufRead,BufNewFile *.hcl set filetype=hcl]])
-	vim.cmd([[autocmd BufRead,BufNewFile .terraformrc,terraform.rc set filetype=hcl]])
-	vim.cmd([[autocmd BufRead,BufNewFile *.tf,*.tfvars set filetype=terraform]])
-	vim.cmd([[autocmd BufRead,BufNewFile *.tfstate,*.tfstate.backup set filetype=json]])
+  vim.cmd [[autocmd BufRead,BufNewFile *.hcl set filetype=hcl]]
+  vim.cmd [[autocmd BufRead,BufNewFile .terraformrc,terraform.rc set filetype=hcl]]
+  vim.cmd [[autocmd BufRead,BufNewFile *.tf,*.tfvars set filetype=terraform]]
+  vim.cmd [[autocmd BufRead,BufNewFile *.tfstate,*.tfstate.backup set filetype=json]]
 end
 
 return M
