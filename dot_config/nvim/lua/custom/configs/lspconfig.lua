@@ -42,3 +42,12 @@ for _, lsp in ipairs(lsp_servers) do
     capabilities = capabilities,
   }
 end
+
+lspconfig.clangd.setup {
+  cmd = {
+    "clangd",
+    "--offset-encoding=utf-16",
+  },
+  on_attach = on_attach,
+  capabilities = capabilities,
+}

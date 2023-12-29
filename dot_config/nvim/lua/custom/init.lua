@@ -17,6 +17,19 @@ autocmd({ "BufWritePost" }, {
     require("lint").try_lint()
   end,
 })
+
+local function load_configs(path)
+  local scan = vim.fs.dir(path)
+  for filename in scan do
+    if filename:match "%.lua$" then
+      local filepath = path .. "." .. filename:gsub("%.lua$", "")
+      require(filepath)
+    end
+  end
+end
+
+load_configs "format_files"
+
 -- Global options
 local fn = vim.fn
 local api = vim.api

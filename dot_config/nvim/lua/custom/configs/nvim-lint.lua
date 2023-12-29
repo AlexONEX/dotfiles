@@ -5,7 +5,6 @@ local lint = require "lint"
 lint.linters_by_ft = {
   css = { "stylelint" },
   dockerfile = { "hadolint" },
-  graphql = { "graphql-lsp" },
   html = { "htmlbeautifier" },
   java = { "google-java-format" },
   javascript = { "eslint" },
@@ -15,17 +14,14 @@ lint.linters_by_ft = {
   markdown = { "markdownlint" },
   proto = { "buf" },
   python = { "ruff", "mypy" },
-  ruby = { "standardrb" },
   rust = { "rustfmt" },
-  scss = { "stylelint" },
   sh = { "shellcheck" },
-  svelte = { "svelte-check" },
+  scss = { "stylelint" },
   terraform = { "tflint" },
   toml = { "taplo" },
   typescript = { "eslint" },
   typescriptreact = { "eslint" },
   yaml = { "yamllint" },
-  -- Add more linters as needed
 }
 
 -- Create an autocmd to trigger linting on BufWritePost
