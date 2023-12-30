@@ -18,6 +18,12 @@ autocmd({ "BufWritePost" }, {
   end,
 })
 
+-- Conceal level 2 for latex and bibtex files
+autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = { "*.tex", "*.bib" },
+  command = "setlocal conceallevel=2",
+})
+
 local function load_configs(path)
   local scan = vim.fs.dir(path)
   for filename in scan do
@@ -28,7 +34,7 @@ local function load_configs(path)
   end
 end
 
-load_configs "format_files"
+load_configs "after.ftplugin"
 
 -- Global options
 local fn = vim.fn

@@ -18,6 +18,7 @@ lint.linters_by_ft = {
   sh = { "shellcheck" },
   scss = { "stylelint" },
   terraform = { "tflint" },
+  tf = { "tflint" },
   toml = { "taplo" },
   typescript = { "eslint" },
   typescriptreact = { "eslint" },
