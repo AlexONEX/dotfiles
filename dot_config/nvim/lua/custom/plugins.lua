@@ -22,9 +22,24 @@ local plugins = {
       },
     },
     config = function()
-      require "plugins.configs.lspconfig"
       require "custom.configs.lspconfig"
     end, -- Override to setup mason-lspconfig
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter",
+    init = function()
+      require("core.utils").lazy_load "nvim-treesitter"
+    end,
+    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+    build = ":TSUpdate",
+    opts = function()
+      return require "custom.configs.treesitter"
+    end,
+    config = function(_, opts)
+      dofile(vim.g.base46_cache .. "syntax")
+      require("nvim-treesitter.configs").setup(opts)
+    end,
   },
 
   {
@@ -235,6 +250,7 @@ local plugins = {
       vim.g.vimtex_syntax_enabled = 1
       vim.g.vimtex_quickfix_mode = 0
       vim.g.vimtex_filetypes = { "tex" }
+      vim.g.vimtex_mappings_disable = { ["n"] = { "K" } }
     end,
   },
 
