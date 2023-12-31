@@ -28,6 +28,10 @@ alias ..='cd..'
 alias zip='zip -r'
 alias xz='xz -z -v -k -T 0'
 
+# Ip
+alias ip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
+alias ip_info="curl -qs https://ifconfig.co/json | jq -r '.ip,.city,.country,.hostname,.asn_org'"
+
 # Pacman stuff
 alias u='paru -Syu'
 alias i='paru'
