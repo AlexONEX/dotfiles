@@ -233,6 +233,15 @@ local plugins = {
     end,
   },
 
+  {
+    "nathom/filetype.nvim",
+    event = "BufRead",
+    -- use default config
+    config = function()
+      require "custom.configs.filetype"
+    end,
+  },
+
   -- Tmux Support for Neovim
   {
     "christoomey/vim-tmux-navigator",
