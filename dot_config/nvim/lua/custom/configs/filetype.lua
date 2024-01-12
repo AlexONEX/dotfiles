@@ -4,6 +4,9 @@ require("filetype").setup {
     extensions = {
       -- Set the filetype of *.pn files to potion
       pn = "potion",
+      tf = "terraform",
+      tfstate = "json",
+      tfvars = "terraform",
     },
     literal = {
       -- Set the filetype of files named "MyBackupFile" to lua
