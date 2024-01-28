@@ -20,6 +20,9 @@ local plugins = {
           require "custom.configs.nvim-lint"
         end,
       },
+      {
+        "hrsh7th/cmp-cmdline",
+      },
     },
     config = function()
       require "custom.configs.lspconfig"
@@ -242,6 +245,20 @@ local plugins = {
     end,
   },
 
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    opts = {},
+    dependencies = {
+      {
+        "MunifTanjim/nui.nvim",
+        --config = function()
+        --  require "custom.configs.nui"
+        --end,
+      },
+      { "rcarriga/nvim-notify" },
+    },
+  },
   -- Tmux Support for Neovim
   {
     "christoomey/vim-tmux-navigator",

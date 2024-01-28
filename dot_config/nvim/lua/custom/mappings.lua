@@ -15,7 +15,8 @@ M.general = {
       end,
       "reload init.lua",
     },
-    ["<leader>cd"] = { "<cmd>lcd %:p:h<cr><cmd>pwd<cr>", "change cwd" },
+
+    ["<Esc>"] = { [[<c-\><c-n>]], "escape terminal mode" },
     ["<leader>e"] = { ":NvimTreeToggle<CR>", "Toggle NvimTree" },
     ["<leader>cf"] = { '<cmd>let @+ = expand("%")<CR>', "Copy File Name" },
     ["<leader>cp"] = { '<cmd>let @+ = expand("%:p")<CR>', "Copy File Path" },
