@@ -45,7 +45,7 @@ function plugin-update {
 
 #--------Enviroment Variables--------#
 export XDG_CACHE_HOME=$HOME/.cache
-export TERM="xterm-256color"
+export TERM="tmux-256color"
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 
 export EDITOR=nvim
