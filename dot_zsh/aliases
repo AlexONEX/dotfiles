@@ -1,5 +1,10 @@
 # SHORTCUTS
 alias hacker-news='hackernews_tui'
+
+paru() {
+    command nice -n 10 ionice -c 3 /usr/bin/paru "$@"
+}
+
 alias r='exec zsh'
 alias rf='rm -rf'
 alias a='$EDITOR $ZSH/aliases'
