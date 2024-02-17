@@ -42,25 +42,20 @@ alias xz='xz -z -v -k -T 0'
 # support Compose v2 as docker CLI plugin
 (( ${+commands[docker-compose]} )) && dccmd='docker-compose' || dccmd='docker compose'
 
-alias dco="$dccmd"
-alias dcb="$dccmd build"
-alias dce="$dccmd exec"
-alias dcps="$dccmd ps"
-alias dcrestart="$dccmd restart"
-alias dcrm="$dccmd rm"
-alias dcr="$dccmd run"
-alias dcstop="$dccmd stop"
-alias dcup="$dccmd up"
-alias dcupb="$dccmd up --build"
-alias dcupd="$dccmd up -d"
-alias dcupdb="$dccmd up -d --build"
-alias dcdn="$dccmd down"
-alias dcl="$dccmd logs"
-alias dclf="$dccmd logs -f"
-alias dclF="$dccmd logs -f --tail 0"
-alias dcpull="$dccmd pull"
-alias dcstart="$dccmd start"
-alias dck="$dccmd kill"
+alias dcrm='$dccmd rm'
+alias dcr='$dccmd run'
+alias dcstop='$dccmd stop'
+alias dcup='$dccmd up'
+alias dcupb='$dccmd up --build'
+alias dcupd='$dccmd up -d'
+alias dcupdb='$dccmd up -d --build'
+alias dcdn='$dccmd down'
+alias dcl='$dccmd logs'
+alias dclf='$dccmd logs -f'
+alias dclF='$dccmd logs -f --tail 0'
+alias dcpull='$dccmd pull'
+alias dcstart='$dccmd start'
+alias dck='$dccmd kill'
 
 unset dccmd
 
@@ -134,8 +129,8 @@ alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
 alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 
 # switch between shells
-alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
-alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
+alias tobash='sudo chsh $USER -s /bin/bash && echo "Now log out."'
+alias tozsh='sudo chsh $USER -s /bin/zsh && echo "Now log out."'
 
 #yta-best-mp3
 function yta(){
@@ -161,11 +156,11 @@ alias duf='echo "╓───── m o u n t . p o i n t s"; \
 			 df -h;'
 
 function docstop(){
-      docker stop $(docker ps -aq) 
+      docker stop '$(docker ps -aq)'
 }
 
 function docstart(){
-      docker start $(docker ps -aq)
+      docker start '$(docker ps -aq)'
 }
 
 function dockerservice() {
@@ -179,13 +174,13 @@ function dockerservice() {
 }
 
 function docker-clean() {
-  docker stop $(sudo docker ps -aq) 
-  docker rm $(sudo docker ps -a -q)
-  #docker rmi $(sudo docker images -q)
+  docker stop '$(sudo docker ps -aq)' 
+  docker rm '$(sudo docker ps -a -q)'
+  #docker rmi '$(sudo docker images -q)'
 }
 
 function docker-clean-images() {
-  docker rmi $(sudo docker images -q)
+  docker rmi '$(sudo docker images -q)'
 }
 
 alias docstats="docker ps -q | xargs  docker stats --no-stream"
@@ -194,34 +189,4 @@ function t() {
 	X=$#
 	[[ $X -eq 0 ]] || X=X
 	tmux new-session -A -s $X
-}
-
-function gitforge() {
-	[ ! -d .git ] && echo "not a git repo" && return
-	gitauthor=`git config user.name`
-	printf "author ($gitauthor): "
-	read -r author
-	author=${author:=$gitauthor}
-	gitemail=`git config user.email`
-	printf "email ($gitemail):"
-	read -r email
-	email=${email:=$gitemail}
-	now=`date -Is`
-	printf "date ($now):"
-	read -r date
-	date=${date:=$now}
-	echo "\nhacking time as: $author <$email> $date\n"
-	export GIT_AUTHOR_DATE=$date
-	export GIT_AUTHOR_EMAIL=$email
-	export GIT_AUTHOR_NAME=$author
-	export GIT_COMMITTER_DATE=$date
-	export GIT_COMMITTER_EMAIL=$email
-	export GIT_COMMITTER_NAME=$author
-	[ ! "$1" ] && git commit || git commit -S$1
-	unset GIT_AUTHOR_DATE
-	unset GIT_AUTHOR_EMAIL
-	unset GIT_AUTHOR_NAME
-	unset GIT_COMMITTER_DATE
-	unset GIT_COMMITTER_EMAIL
-	unset GIT_COMMITTER_NAME
 }
