@@ -5,12 +5,17 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+autoload -U colors && colors
+autoload -Uz compinit
+compinit
+
 if [ -f ~/.zsh/aliases.sh ]; then
     . ~/.zsh/aliases.sh
 fi
 
-autoload -Uz compinit
-compinit
+if [ -f ~/.zsh/git_aliases.sh ]; then
+    . ~/.zsh/git_aliases.sh
+fi
 
 #-------Plugin Management-------#
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.zsh}/plugins}
@@ -22,7 +27,6 @@ source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
 
 repos=(
     aikow/zsh-auto-ls
-    gimbo/gimbo-git.zsh
     jeffreytse/zsh-vi-mode
     Junker/zsh-archlinux
     marlonrichert/zsh-autocomplete
@@ -48,8 +52,19 @@ export XDG_CACHE_HOME=$HOME/.cache
 export TERM="tmux-256color"
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 
+#--------Man page settings--------#
+export MANPAGER="most"
+export LESS_TERMCAP_mb=$(printf '\e[01;31m')       # Inicia modo negrita en rojo
+export LESS_TERMCAP_md=$(printf '\e[01;38;5;74m')  # Inicia modo negrita
+export LESS_TERMCAP_me=$(printf '\e[0m')           # Finaliza modo negrita
+export LESS_TERMCAP_se=$(printf '\e[0m')           # Finaliza modo destacado
+export LESS_TERMCAP_so=$(printf '\e[38;5;246m\e[48;5;234m') # Inicia modo destacado con fondo gris
+export LESS_TERMCAP_ue=$(printf '\e[0m')           # Finaliza subrayado
+export LESS_TERMCAP_us=$(printf '\e[04;38;5;146m') # Inicia subrayado
+#--------Ending of man page settings--------#
+
 export EDITOR=nvim
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
 export VISUAL=/bin/nvim
 export DOTFILES=$HOME/.local/share/chezmoi/
 export PROJECTS_DIR=$HOME/Github/

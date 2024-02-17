@@ -4,6 +4,15 @@ paru() {
     command nice -n 10 ionice -c 3 /usr/bin/paru "$@"
 }
 
+man() {
+  if [ $# -eq 0 ]; then
+    echo "Usage: man <command>"
+    return 1
+  fi
+  command man "$1" | col -bx | bat -l man -p
+}
+
+
 alias r='exec zsh'
 alias rf='rm -rf'
 alias a='$EDITOR $ZSH/aliases.sh'
