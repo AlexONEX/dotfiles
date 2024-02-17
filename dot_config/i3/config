@@ -226,6 +226,9 @@ exec_always --no-startup-id autotiling
 # exec --no-startup-id spotify
 for_window [class="Spotify"] focus
 
+# Xfce Clipman 
+exec --no-startup-id xfce4-clipman
+
 # TRAY APPLICATIONS
 # Authentication dialog
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
@@ -358,8 +361,8 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 2
 bindsym XF86AudioMute exec --no-startup-id pamixer -t
 
 ################# xbacklight
-bindsym XF86MonBrightnessDown exec light -U 0.125
-bindsym XF86MonBrightnessUp exec light -A 0.125
+bindsym XF86MonBrightnessDown exec lux -s 18 
+bindsym XF86MonBrightnessUp exec lux -a 18 
 
 ################# bar toggle
 #bindsym $mod+b bar mode toggle
