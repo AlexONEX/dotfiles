@@ -20,7 +20,7 @@ alias t='$EDITOR $HOME/.config/tmux/tmux.conf'
 alias j='goto'
 alias zplugins='ls $ZPLUGINDIR'
 
-alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/aliases.sh && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot polybar tmux/tmux.conf zathura && cd nvim/lua/custom && cd /home/alex/.local/share/chezmoi'
+alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/aliases.sh && chezmoi add .docker && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot polybar tmux/tmux.conf zathura && cd nvim/lua/custom && cd /home/alex/.local/share/chezmoi'
 alias frmcp='xclip -c'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
@@ -49,24 +49,35 @@ alias xz='xz -z -v -k -T 0'
 
 # Docker 
 # support Compose v2 as docker CLI plugin
-(( ${+commands[docker-compose]} )) && dccmd='docker-compose' || dccmd='docker compose'
 
-alias dcrm='$dccmd rm'
-alias dcr='$dccmd run'
-alias dcstop='$dccmd stop'
-alias dcup='$dccmd up'
-alias dcupb='$dccmd up --build'
-alias dcupd='$dccmd up -d'
-alias dcupdb='$dccmd up -d --build'
-alias dcdn='$dccmd down'
-alias dcl='$dccmd logs'
-alias dclf='$dccmd logs -f'
-alias dclF='$dccmd logs -f --tail 0'
-alias dcpull='$dccmd pull'
-alias dcstart='$dccmd start'
-alias dck='$dccmd kill'
+# Detectar si docker-compose está disponible o si se debe usar docker compose
+if type docker-compose > /dev/null 2>&1; then
+    dccmd='docker-compose'
+elif type docker > /dev/null 2>&1 && docker compose version > /dev/null 2>&1; then
+    dccmd='docker compose'
+else
+    echo "Neither docker-compose nor docker compose command is available."
+    return 1
+fi
 
-unset dccmd
+# Definir funciones en lugar de alias para evitar problemas de expansión
+dcrm() { $dccmd rm "$@"; }
+dcr() { $dccmd run "$@"; }
+dcstop() { $dccmd stop "$@"; }
+dcup() { $dccmd up "$@"; }
+dcupb() { $dccmd up --build "$@"; }
+dcupd() { $dccmd up -d "$@"; }
+dcupdb() { $dccmd up -d --build "$@"; }
+dcdn() { $dccmd down "$@"; }
+dcl() { $dccmd logs "$@"; }
+dclf() { $dccmd logs -f "$@"; }
+dclF() { $dccmd logs -f --tail 0 "$@"; }
+dcpull() { $dccmd pull "$@"; }
+dcstart() { $dccmd start "$@"; }
+dck() { $dccmd kill "$@"; }
+
+# Eliminar dccmd para evitar su uso directo
+#unset dccmd
 
 # Ip
 alias ip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
@@ -182,16 +193,13 @@ function dockerservice() {
   fi
 }
 
-function docker-clean() {
-  docker stop '$(sudo docker ps -aq)' 
-  docker rm '$(sudo docker ps -a -q)'
-  #docker rmi '$(sudo docker images -q)'
-}
-
-function docker-clean-images() {
-  docker rmi '$(sudo docker images -q)'
-}
-
+alias docker-remove-all='docker rm -f $(docker ps -aq)'
+alias docker-remove-volumes='docker volume rm $(docker volume ls -q)'
+alias docker-remove-images='docker rmi -f $(docker images -q)'
+alias docker-clean='docker system prune -a --volumes'
+alias docker-stop-all='docker stop $(docker ps -q)'
+alias docker-start-all='docker start $(docker ps -aq)'
+alias docker-restart-all='docker restart $(docker ps -q)'
 alias docstats="docker ps -q | xargs  docker stats --no-stream"
 
 function t() {

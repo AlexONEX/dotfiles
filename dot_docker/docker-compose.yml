@@ -1,0 +1,100 @@
+version: '3.3'
+services:
+  radarr:
+    container_name: radarr
+    image: linuxserver/radarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG}radarr:/config
+      - ${ROOT}movies:/movies
+      - ${ROOT}downloads:/downloads
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG}sonarr:/config
+      - ${ROOT}tv:/tv
+      - ${ROOT}downloads:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  jackett:
+    container_name: jackett
+    image: linuxserver/jackett
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG}jackett:/config
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+
+  deluge:
+    container_name: deluge
+    image: linuxserver/deluge
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - UMASK_SET=000
+      - DELUGE_LOGLEVEL=error
+    volumes:
+      - ${CONFIG}deluge:/config
+      - ${ROOT}downloads:/downloads
+    ports:
+      - 8112:8112
+    restart: unless-stopped
+
+  plex:
+    container_name: plex
+    image: lscr.io/linuxserver/plex
+    network_mode: host
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - VERSION=docker
+    volumes:
+      - ${CONFIG}plex:/config
+      - ${ROOT}movies:/movies
+      - ${ROOT}tv:/tv
+    restart: unless-stopped
+
+  readarr:
+    image: linuxserver/readarr:develop
+    container_name: readarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG}readarr:/config
+      - ${ROOT}books:/books
+      - ${ROOT}downloads:/downloads
+    ports:
+      - 8787:8787
+    restart: unless-stopped
+
+  suwayomi:
+    image: ghcr.io/suwayomi/tachidesk:preview
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG}suwayomi:/config
+    ports:
+      - "4567:4567"
+    restart: on-failure:3
