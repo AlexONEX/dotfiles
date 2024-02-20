@@ -25,9 +25,6 @@ alias frmcp='xclip -c'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
 alias k='pkill -9'
-li() {
-    lux -S "$1"%
-}
 
 
 alias dsize='du -hsx * | sort -rh'

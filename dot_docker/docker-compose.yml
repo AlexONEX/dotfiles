@@ -88,13 +88,3 @@ services:
     ports:
       - 8787:8787
     restart: unless-stopped
-
-  suwayomi:
-    image: ghcr.io/suwayomi/tachidesk:preview
-    environment:
-      - TZ=${TZ}
-    volumes:
-      - ${CONFIG}suwayomi:/config
-    ports:
-      - "4567:4567"
-    restart: on-failure:3
