@@ -47,6 +47,9 @@ function _G.inspect(item)
   vim.print(item)
 end
 
+--clipboard unnamedplus
+vim.o.clipboard = "unnamedplus"
+
 ------------------------------------------------------------------------
 --                          custom variables                          --
 ------------------------------------------------------------------------

@@ -52,6 +52,16 @@ export XDG_CACHE_HOME=$HOME/.cache
 export TERM="tmux-256color"
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 
+#set history size and file 
+export HISTFILESIZE=1000000000
+export HISTSIZE=1000000000
+export HISTFILE=~/.zsh_history
+
+setopt INC_APPEND_HISTORY
+export HISTTIMEFORMAT="[%F %T] "
+setopt EXTENDED_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+
 #--------Man page settings--------#
 export MANPAGER="most"
 export LESS_TERMCAP_mb=$(printf '\e[01;31m')       # Inicia modo negrita en rojo
