@@ -1,17 +1,30 @@
+[alias]
+  delete-local-merged = "!git fetch && git branch --merged | egrep -v 'master' | xargs git branch -d"
+[commit]
+  verbolse = true
+[core]
+	editor = nvim
+  pager = delta
+[diff]
+  alorithm = histogram
+[fetch]
+  prune = true
+    fsckobjects = true
+[init]
+  defaultBranch = main
+[merge]
+  conlfictStyle = diff3
 [user]
 	email = a.schwartzmann@hotmail.com
 	name = AlexONEX
-[core]
-	editor = nvim
+[url "git@github.com:"]
+	insteadOf = "https://github.com/"
 [push]
 	default = current
-[fetch]
-  prune = true
-[alias]
-  delete-local-merged = "!git fetch && git branch --merged | egrep -v 'master' | xargs git branch -d"
+  #good setting if confident you’re never going to accidentally make a local branch with the same name as an unrelated remote branch
+[receive]
+  fsckObjects = true
 [status]
   short = true
-[merge]
-  conlfictStyle = diff3
-
-
+[transfer]
+  fsckobjects = true
