@@ -1,0 +1,4 @@
+#!/bin/sh
+
+rclone sync /home/alex/GoogleDrive/ GoogleDrive: -v
+rclone sync /home/alex/OneDrive/ OneDrive: -v
