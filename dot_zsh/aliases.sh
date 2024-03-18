@@ -21,7 +21,7 @@ alias j='goto'
 alias nvimdiff='nvim -d'
 alias zplugins='ls $ZPLUGINDIR'
 
-alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/aliases.sh && chezmoi add .docker && chezmoi add .gitconfig && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot polybar tmux/tmux.conf zathura && cd nvim/lua/custom && cd /home/alex/.local/share/chezmoi'
+alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/aliases.sh && chezmoi add .docker && chezmoi add .gitconfig && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot polybar tmux/tmux.conf zathura && cd nvim/lua/custom && cd /home/alex/.local/share/chezmoi && cd ~/.local/bin/'
 alias frmcp='xclip -c'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
@@ -204,4 +204,67 @@ function t() {
 	X=$#
 	[[ $X -eq 0 ]] || X=X
 	tmux new-session -A -s $X
+}
+
+extract() {
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1     ;;
+      *.tar.gz)    tar xzf $1     ;;
+      *.bz2)       bunzip2 $1     ;;
+      *.rar)       unrar x $1       ;;
+      *.gz)        gunzip $1      ;;
+      *.tar)       tar xf $1      ;;
+      *.tbz2)      tar xjf $1     ;;
+      *.tgz)       tar xzf $1     ;;
+      *.zip)       unzip $1       ;;
+      *.Z)         uncompress $1  ;;
+      *.7z)        7z x $1        ;;
+      *.xz)        xz -d $1       ;;
+      *)           echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi 
+}
+extractf() {
+  if [ -f "$1" ]; then
+    # Get the filename without extension
+    folder_name="${1%.*}"
+    case $1 in
+      *.tar.bz2)   tar xjf "$1" -C "$folder_name" ;;
+      *.tar.gz)    tar xzf "$1" -C "$folder_name" ;;
+      *.bz2)       bunzip2 "$1" -C "$folder_name" ;;
+      *.rar)       unrar x "$1" "$folder_name" ;;
+      *.gz)        gunzip "$1" -C "$folder_name" ;;
+      *.tar)       tar xf "$1" -C "$folder_name" ;;
+      *.tbz2)      tar xjf "$1" -C "$folder_name" ;;
+      *.tgz)       tar xzf "$1" -C "$folder_name" ;;
+      *.zip)       unzip "$1" -d "$folder_name" ;;
+      *.Z)         uncompress "$1" -C "$folder_name" ;;
+      *.7z)        7z x "$1" -o"$folder_name" ;;
+      *.xz)        xz -d "$1" -C "$folder_name" ;;
+      *)           echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+webToPDF() {
+    # Solicitar al usuario la fuente y el título del PDF
+    echo "Introduce la URL de la fuente:"
+    read source
+    echo "Introduce el título del PDF:"
+    read title
+
+    # Usar curl para convertir la fuente en PDF
+    curl \
+        -u 'api:3e5153da1ecd4259af582ca739c2971a' \
+        -H 'Content-Type: application/json' \
+        -d "{\"source\":\"$source\",\"landscape\":false,\"use_print\":false}" \
+        https://api.pdfshift.io/v3/convert/pdf/ \
+        -o "${title}.pdf"
+
+    echo "PDF guardado como ${title}.pdf"
 }
