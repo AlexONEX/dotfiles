@@ -6,7 +6,7 @@
   verbolse = true
   cleanup = scissors
 [core]
-  editor = nvim
+	editor = nvim
   pager = delta
 [diff]
   alorithm = histogram
@@ -28,13 +28,12 @@
   keepbackup = false
   tool =  nvimdiff
 [user]
-  email = a.schwartzmann@hotmail.com
-  name = AlexONEX
+	email = a.schwartzmann@hotmail.com
+	name = AlexONEX
 [url "git@github.com:"]
-  insteadOf = "https://github.com/"
+	insteadOf = "https://github.com/"
 [push]
   autoSetupMerge = true
-  autoSetupRemote = true
 [receive]
   fsckObjects = true
 [submodule]

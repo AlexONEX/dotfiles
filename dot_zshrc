@@ -1,120 +1,105 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# Personal Zsh configuration file. It is strongly recommended to keep all
+# shell customization and configuration (including exported environment
+# variables such as PATH) in this file or in files sourced from it.
+#
+# Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md.
 
-autoload -U colors && colors
-autoload -Uz compinit
-compinit
+# Periodic auto-update on Zsh startup: 'ask' or 'no'.
+# You can manually run `z4h update` to update everything.
+zstyle ':z4h:' auto-update      'no'
+# Ask whether to auto-update this often; has no effect if auto-update is 'no'.
+zstyle ':z4h:' auto-update-days '28'
 
+# Keyboard type: 'mac' or 'pc'.
+zstyle ':z4h:bindkey' keyboard  'pc'
+
+# Mark up shell's output with semantic information.
+zstyle ':z4h:' term-shell-integration 'yes'
+
+# Right-arrow key accepts one character ('partial-accept') from
+# command autosuggestions or the whole thing ('accept')?
+zstyle ':z4h:autosuggestions' forward-char 'accept'
+
+# Recursively traverse directories when TAB-completing files.
+zstyle ':z4h:fzf-complete' recurse-dirs 'no'
+
+# Enable direnv to automatically source .envrc files.
+zstyle ':z4h:direnv'         enable 'no'
+# Show "loading" and "unloading" notifications from direnv.
+zstyle ':z4h:direnv:success' notify 'yes'
+
+# Enable ('yes') or disable ('no') automatic teleportation of z4h over
+# SSH when connecting to these hosts.
+zstyle ':z4h:ssh:example-hostname1'   enable 'yes'
+zstyle ':z4h:ssh:*.example-hostname2' enable 'no'
+# The default value if none of the overrides above match the hostname.
+zstyle ':z4h:ssh:*'                   enable 'no'
+
+# Send these files over to the remote host when connecting over SSH to the
+# enabled hosts.
+zstyle ':z4h:ssh:*' send-extra-files '~/.nanorc' '~/.env.zsh'
+
+# Clone additional Git repositories from GitHub.
+#
+# This doesn't do anything apart from cloning the repository and keeping it
+# up-to-date. Cloned files can be used after `z4h init`. This is just an
+# example. If you don't plan to use Oh My Zsh, delete this line.
+z4h install ohmyzsh/ohmyzsh || return
+
+# Install or update core components (fzf, zsh-autosuggestions, etc.) and
+# initialize Zsh. After this point console I/O is unavailable until Zsh
+# is fully initialized. Everything that requires user interaction or can
+# perform network I/O must be done above. Everything else is best done below.
+z4h init || return
+
+# Extend PATH.
+path=(~/bin $path)
+
+# Export environment variables.
+export GPG_TTY=$TTY
+
+# Source additional local files if they exist.
+z4h source ~/.env.zsh
+
+# Use additional Git repositories pulled in with `z4h install`.
+#
+# This is just an example that you should delete. It does nothing useful.
+z4h source ohmyzsh/ohmyzsh/lib/diagnostics.zsh  # source an individual file
+z4h load   ohmyzsh/ohmyzsh/plugins/emoji-clock  # load a plugin
+
+# Define key bindings.
+z4h bindkey z4h-backward-kill-word  Ctrl+Backspace     Ctrl+H
+z4h bindkey z4h-backward-kill-zword Ctrl+Alt+Backspace
+
+z4h bindkey undo Ctrl+/ Shift+Tab  # undo the last command line change
+z4h bindkey redo Alt+/             # redo the last undone command line change
+
+z4h bindkey z4h-cd-back    Alt+Left   # cd into the previous directory
+z4h bindkey z4h-cd-forward Alt+Right  # cd into the next directory
+z4h bindkey z4h-cd-up      Alt+Up     # cd into the parent directory
+z4h bindkey z4h-cd-down    Alt+Down   # cd into a child directory
+
+# Autoload functions.
+autoload -Uz zmv
+
+# Define functions and completions.
+function md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" }
+compdef _directories md
+
+# Define named directories: ~w <=> Windows home directory on WSL.
+[[ -z $z4h_win_home ]] || hash -d w=$z4h_win_home
+
+# Define aliases.
+alias tree='tree -a -I .git'
+
+# Add flags to existing aliases.
+alias ls="${aliases[ls]:-ls} -A"
+
+#if alias file exists source it 
 if [ -f ~/.zsh/aliases.sh ]; then
-    . ~/.zsh/aliases.sh
+    source ~/.zsh/aliases.sh
 fi
 
-if [ -f ~/.zsh/git_aliases.sh ]; then
-    . ~/.zsh/git_aliases.sh
-fi
-
-#-------Plugin Management-------#
-ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.zsh}/plugins}
-
-if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
-  git clone --quiet https://github.com/mattmc3/zsh_unplugged $ZPLUGINDIR/zsh_unplugged
-fi
-source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
-
-repos=(
-    aikow/zsh-auto-ls
-    jeffreytse/zsh-vi-mode
-    Junker/zsh-archlinux
-    marlonrichert/zsh-autocomplete
-    martvdmoosdijk/zsh-marks
-    romkatv/powerlevel10k
-    zsh-users/zsh-syntax-highlighting
-    zsh-users/zsh-autosuggestions
-    z-shell/zsh-diff-so-fancy
-)
-
-plugin-load $repos
-function plugin-update {
-  ZPLUGINDIR=${ZPLUGINDIR:-$HOME/.config/zsh/plugins}
-  for d in $ZPLUGINDIR/*/.git(/); do
-    echo "Updating ${d:h:t}"
-    command git -C "${d:h}" pull --ff --recurse-submodules --depth 1 --rebase --autostash
-  done
-}
-
-
-#--------Enviroment Variables--------#
-export XDG_CACHE_HOME=$HOME/.cache
-export TERM="tmux-256color"
-
-#set history size and file 
-export HISTFILESIZE=1000000000
-export HISTSIZE=1000000000
-export HISTFILE=~/.zsh_history
-
-setopt INC_APPEND_HISTORY
-export HISTTIMEFORMAT="[%F %T] "
-setopt EXTENDED_HISTORY
-setopt HIST_IGNORE_ALL_DUPS
-
-#--------Man page settings--------#
-export MANPAGER="most"
-export LESS_TERMCAP_mb=$(printf '\e[01;31m')       # Inicia modo negrita en rojo
-export LESS_TERMCAP_md=$(printf '\e[01;38;5;74m')  # Inicia modo negrita
-export LESS_TERMCAP_me=$(printf '\e[0m')           # Finaliza modo negrita
-export LESS_TERMCAP_se=$(printf '\e[0m')           # Finaliza modo destacado
-export LESS_TERMCAP_so=$(printf '\e[38;5;246m\e[48;5;234m') # Inicia modo destacado con fondo gris
-export LESS_TERMCAP_ue=$(printf '\e[0m')           # Finaliza subrayado
-export LESS_TERMCAP_us=$(printf '\e[04;38;5;146m') # Inicia subrayado
-#--------Ending of man page settings--------#
-
-export EDITOR=nvim
-
-export VISUAL=/bin/nvim
-export DOTFILES=$HOME/.local/share/chezmoi/
-export PROJECTS_DIR=$HOME/Github/
-export NPM_PREFIX_DIR=$HOME/.node_modules
-
-export ZSH="$HOME/.zsh"
-export PATH=~/.npm-global/bin:$PATH
-export PATH="/usr/src/linux-headers-$(uname -r)/include:$PATH"
-export RCLONE_BWLIMIT=1M
-export PATH="$HOME/.spicetify/:$PATH"
-typeset -U PATH path
-
-
-if [ -d "$HOME/.local/bin" ] ;
-  then PATH="$HOME/.local/bin:$PATH"
-fi
-if [ -d "$HOME/.emacs.d/bin" ] ;
-  then PATH="$HOME/.emacs.d/bin:$PATH"
-fi
-if [ -d "$HOME/Applications" ] ;
-  then PATH="$HOME/Applications:$PATH"
-fi
-if [ -d "$HOME/go/bin" ] ;
-  then PATH="$HOME/go/bin:$PATH"
-fi
-
-export PATH=$PATH:/home/alex/.spicetify
-
-#Managing python venv
-export WORKON_HOME=$HOME/.virtualenvs
-source /usr/bin/virtualenvwrapper.sh
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-#[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-source ~/.zsh/plugins/git.plugin.zsh
-#-------------------------------#
-zstyle ':omz:update' mode auto      # update automatically without asking
-zstyle ':omz:update' frequency 13
-bindkey -v
-
-
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Set shell options: http://zsh.sourceforge.net/Doc/Release/Options.html.
+setopt glob_dots     # no special treatment for file names with a leading dot
+setopt no_auto_menu  # require an extra TAB press to open the completion menu

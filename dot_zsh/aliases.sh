@@ -15,7 +15,7 @@ man() {
 
 alias r='exec zsh'
 alias rf='rm -rf'
-alias a='$EDITOR $ZSH/aliases.sh'
+alias a='nvim ~/.zsh/aliases.sh'
 alias t='$EDITOR $HOME/.config/tmux/tmux.conf'
 alias j='goto'
 alias nvimdiff='nvim -d'

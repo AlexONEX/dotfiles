@@ -282,6 +282,8 @@ bindsym $mod+greater exec "~/.local/bin/spot-ctrl next"
 bindsym $mod+less exec "~/.local/bin/spot-ctrl prev"
 bindsym $mod+p exec "~/.local/bin/spot-ctrl play"
 
+#cmus 
+
 # calibre
 
 ################# screenshots

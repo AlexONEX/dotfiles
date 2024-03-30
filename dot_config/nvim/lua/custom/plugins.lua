@@ -69,6 +69,7 @@ local plugins = {
     event = "VeryLazy",
     dependencies = {
       "mfussenegger/nvim-dap",
+      "nvim-neotest/nvim-nio",
     },
     config = function()
       local dap = require "dap"
@@ -245,38 +246,50 @@ local plugins = {
     end,
   },
 
-  {
-    "folke/noice.nvim",
-    event = "VeryLazy",
-    opts = {},
-    dependencies = {
-      {
-        "MunifTanjim/nui.nvim",
-        --config = function()
-        --  require "custom.configs.nui"
-        --end,
-      },
-      { "rcarriga/nvim-notify" },
-    },
-  },
+  ----{
+  ----  "folke/noice.nvim",
+  ----  event = "VeryLazy",
+  ----  opts = {},
+  ----  dependencies = {
+  ----    {
+  ----      "MunifTanjim/nui.nvim",
+  ----      --config = function()
+  ----      --  require "custom.configs.nui"
+  ----      --end,
+  ----    },
+  ----    { "rcarriga/nvim-notify" },
+  ----  },
+  ----},
+
   -- Tmux Support for Neovim
   {
     "christoomey/vim-tmux-navigator",
     lazy = false,
   },
 
+  {
+    "SirVer/ultisnips",
+    lazy = false,
+    config = function()
+      require "custom.configs.ultisnips"
+    end,
+  },
+
   -- IDEs
   -- Latex support
   {
     "lervag/vimtex",
+    ft = { "tex" },
     config = function()
       vim.g.vimtex_view_method = "zathura"
       vim.g.vimtex_compiler_method = "latexmk"
+      vim.g.vimtex_quickfix_mode = 0
       vim.g.vimtex_quickfix_enabled = 1
       vim.g.vimtex_syntax_enabled = 1
-      vim.g.vimtex_quickfix_mode = 0
+      --vim.g.tex_conceal = "abdmg"
       vim.g.vimtex_filetypes = { "tex" }
       vim.g.vimtex_mappings_disable = { ["n"] = { "K" } }
+      --vim.opt.conceallevel = 2
     end,
   },
 
