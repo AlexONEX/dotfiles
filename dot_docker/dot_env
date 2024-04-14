@@ -1,5 +1,0 @@
-TZ=America/Argentina/Buenos_Aires
-PUID=1000
-PGID=1000
-ROOT=/mnt/data/
-CONFIG=/home/alex/.config/

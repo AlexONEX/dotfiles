@@ -174,11 +174,15 @@ alias duf='echo "╓───── m o u n t . p o i n t s"; \
 			 df -h;'
 
 function docstop(){
-      docker stop '$(docker ps -aq)'
+      docker stop $(docker ps -aq)
 }
 
 function docstart(){
-      docker start '$(docker ps -aq)'
+      docker start $(docker ps -aq)
+}
+
+function dockrestart(){
+      docker restart $(docker ps -aq)
 }
 
 function dockerservice() {
@@ -191,13 +195,7 @@ function dockerservice() {
   fi
 }
 
-alias docker-remove-all='docker rm -f $(docker ps -aq)'
-alias docker-remove-volumes='docker volume rm $(docker volume ls -q)'
-alias docker-remove-images='docker rmi -f $(docker images -q)'
 alias docker-clean='docker system prune -a --volumes'
-alias docker-stop-all='docker stop $(docker ps -q)'
-alias docker-start-all='docker start $(docker ps -aq)'
-alias docker-restart-all='docker restart $(docker ps -q)'
 alias docstats="docker ps -q | xargs  docker stats --no-stream"
 
 function t() {

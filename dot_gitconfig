@@ -34,6 +34,7 @@
 	insteadOf = "https://github.com/"
 [push]
   autoSetupMerge = true
+  autoSetupRemote = true
 [receive]
   fsckObjects = true
 [submodule]
