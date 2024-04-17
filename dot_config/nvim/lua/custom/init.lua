@@ -64,23 +64,21 @@ vim.g.logging_level = "info"
 vim.g.loaded_perl_provider = 0 -- Disable perl provider
 vim.g.loaded_ruby_provider = 0 -- Disable ruby provider
 vim.g.loaded_node_provider = 0 -- Disable node provider
-vim.g.did_install_default_menus = 1 -- do not load menu
 
-if utils.executable "python3" then
-  if vim.g.is_win then
-    vim.g.python3_host_prog = fn.substitute(fn.exepath "python3", ".exe$", "", "g")
-  else
-    vim.g.python3_host_prog = fn.exepath "python3"
-  end
-else
-  api.nvim_err_writeln "Python3 executable not found! You must install Python3 and set its PATH correctly!"
-  return
+local enable_providers = {
+  "python3_provider",
+}
+
+for _, plugin in pairs(enable_providers) do
+  vim.g["loaded_" .. plugin] = nil
+  vim.cmd("runtime " .. plugin)
 end
+
+vim.g.did_install_default_menus = 1 -- do not load menu
 
 -- Custom mapping <leader> (see `:h mapleader` for more info)
 vim.g.mapleader = " "
 vim.o.guifont = "CaskaydiaCove Nerd Font:h9"
 vim.g.neovide_scroll_animation_length = 0.0
 vim.g.neovide_cursor_animation_length = 0.0
-
 vim.o.autowriteall = true
