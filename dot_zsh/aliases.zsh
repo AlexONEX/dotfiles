@@ -8,7 +8,6 @@ paru() {
 alias r='exec zsh'
 alias rf='rm -rf'
 alias a='$EDITOR ~/.zsh/aliases.zsh'
-alias z='$EDITOR ~/.zshrc'
 alias t='$EDITOR $HOME/.config/tmux/tmux.conf'
 alias j='goto'
 alias zplugins='ls $ZPLUGINDIR'

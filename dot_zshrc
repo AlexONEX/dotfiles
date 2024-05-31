@@ -21,8 +21,8 @@ if [ -f ~/.zsh/aliases.zsh ]; then
     . ~/.zsh/aliases.zsh
 fi
 
-if [ -f ~/.zsh/git.plugin.zsh ]; then
-    . ~/.zsh/git.plugin.zsh
+if [ -f ~/.zsh/git.plugin.sh ]; then
+    . ~/.zsh/git_aliases.sh
 fi
 
 #-------Plugin Management-------#
