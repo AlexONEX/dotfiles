@@ -14,7 +14,6 @@ lint.linters_by_ft = {
   markdown = { "markdownlint" },
   proto = { "buf" },
   python = { "ruff", "mypy" },
-  rust = { "rustfmt" },
   sh = { "shellcheck" },
   scss = { "stylelint" },
   terraform = { "tflint" },

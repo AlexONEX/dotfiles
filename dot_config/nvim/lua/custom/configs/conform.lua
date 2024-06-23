@@ -3,6 +3,11 @@ local conform = require "conform"
 
 -- Original configuration with filetypes sorted alphabetically
 conform.setup {
+  formatters = {
+    rustfmt = {
+      command = "/usr/bin/rustfmt",
+    },
+  },
   formatters_by_ft = {
     bash = { "beautysh" },
     c = { "clang_format" },
@@ -18,6 +23,7 @@ conform.setup {
     markdown = { { "prettierd", "prettier" } },
     python = { "black" },
     rust = { "rustfmt" },
+    rs = { "rustfmt" },
     scss = { { "prettierd", "prettier" } },
     svelte = { { "prettierd", "prettier" } },
     terraform = { "terraform_fmt" },
