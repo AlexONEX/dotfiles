@@ -161,6 +161,19 @@ bindsym $mod+v split v
 # enter fullscreen mode for the focused container
 bindsym $mod+Tab fullscreen toggle
 
+################# Define quasi alternating layout (Fibonacci)
+# Set the default orientation to vertical for a top-to-bottom arrangement initially
+default_orientation vertical
+
+# Toggle split direction each time a new window is opened, starting with a vertical split
+for_window [class=".*"] split toggle
+
+# Reset the toggle and close the window with a specific keybinding
+bindsym $mod+Shift+q split toggle, kill
+
+# Toggle the layout of the current container between split and no split
+bindsym $mod+e layout toggle split
+
 # change container layout (stacked, tabbed, toggle split)
 #bindsym $mod+s layout stacking
 #bindsym $mod+z layout tabbed
@@ -224,6 +237,7 @@ exec_always --no-startup-id autotiling
 # Music
 # exec --no-startup-id spotify
 for_window [class="Spotify"] focus
+bindsym $mod+Shift+m exec --no-startup-id strawberry 
 
 # Xfce Clipman 
 exec --no-startup-id xfce4-clipman
