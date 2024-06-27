@@ -21,9 +21,9 @@ if [ -f ~/.zsh/aliases.zsh ]; then
     . ~/.zsh/aliases.zsh
 fi
 
-if [ -f ~/.zsh/git.plugin.sh ]; then
-    . ~/.zsh/git_aliases.sh
-fi
+if [ -f ~/.zsh/git.plugin.zsh ]; then
+    . ~/.zsh/git.plugin.zsh
+fi 
 
 #-------Plugin Management-------#
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.zsh}/plugins}
