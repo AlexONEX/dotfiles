@@ -150,9 +150,16 @@ for_window [urgent=latest] focus
 
 ################# Tiling parameters
 # orientation for new workspaces
-default_orientation horizontal
+################# Define quasi alternating layout (Fibonacci)
+# Default orientation vertical for a top-to-bottom arrangement initially
+# Toggle split direction each time a new window is opened, starting with a vertical split
+default_orientation vertical 
 
-# split in horizontal orientation
+for_window [class=".*"] split toggle
+
+# Reset the toggle and close the window with a specific keybinding
+bindsym $mod+Shift+q split toggle, kill
+
 bindsym $mod+h split h
 
 # split in vertical orientation
@@ -161,23 +168,10 @@ bindsym $mod+v split v
 # enter fullscreen mode for the focused container
 bindsym $mod+Tab fullscreen toggle
 
-################# Define quasi alternating layout (Fibonacci)
-# Set the default orientation to vertical for a top-to-bottom arrangement initially
-default_orientation vertical
-
-# Toggle split direction each time a new window is opened, starting with a vertical split
-for_window [class=".*"] split toggle
-
-# Reset the toggle and close the window with a specific keybinding
-bindsym $mod+Shift+q split toggle, kill
-
-# Toggle the layout of the current container between split and no split
-bindsym $mod+e layout toggle split
-
 # change container layout (stacked, tabbed, toggle split)
-#bindsym $mod+s layout stacking
-#bindsym $mod+z layout tabbed
-#bindsym $mod+e layout toggle split
+bindsym $mod+s layout stacking
+bindsym $mod+z layout tabbed
+bindsym $mod+e layout toggle split
 
 # change focus between tiling / floating windows
 #bindsym $mod+space focus mode_toggle
@@ -206,20 +200,27 @@ font pango:CaskaydiaCove NF Regular 11
 # Workspace 2 text editor related
 # assign [class="sublime-text|sublime_text|Sublime_text|subl|Subl|subl3|Subl3"]       → 2
 # assign [class="Xed|xed|Brackets|Atom|Code|Geany"]                                   → 2
+
 # Workspace 4 Gimp
 # assign [class="Gimp"]                                                               → 4
+
 # Workspace 5 Images and meld
 # assign [class="ristretto|Ristretto|shotwell|Shotwell|Xviewer|Nitrogen"]             → 5
 # assign [class="feh|gthumb|Gthumb|eog|Eog|Pinta|pixeluvo|Pixeluvo"]                  → 5
 # assign [class="Meld"]                                                               → 5
+
 # Workspace 6 all video related software
 # assign [class="Vlc|vlc"]                                                            → 6
+
 # Workspace 7 virtual machines and settings
 # assign [class="Vmplayer|VirtualBox"]						    → 7
+
 # Workspace 8 file managers
 # assign [class="Nemo|Thunar|Caja|nautilus|Nautilus"]                                 → 8
+
 # Workspace 9 email clients
 # assign [class="Geary|Evolution"]                                                    → 9
+
 # Workspace 10 music related
 # assign [class="Spotify|spotify"]                                                    → 10
 # fix for spotify not moving to workspace 10
@@ -227,20 +228,40 @@ font pango:CaskaydiaCove NF Regular 11
 
 ################# autostart - execute applications at boot time
 # USER APPLICATIONS TO START AT BOOT
-#
+# System applications
+exec --no-startup-id /usr/bin/easyeffects --gapplication-service &
+
 # Gnome Keyring
 exec --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
 
 # Autotiling
 exec_always --no-startup-id autotiling
 
-# Music
-# exec --no-startup-id spotify
-for_window [class="Spotify"] focus
-bindsym $mod+Shift+m exec --no-startup-id strawberry 
+# network
+exec --no-startup-id nm-applet
+
+# num lock activated
+exec_always --no-startup-id numlockx on
+
+# feh wallpaper
+exec --no-startup-id feh --bg-fill --randomize /home/alex/.local/share/wallpapers/*
+
+# Polybar
+exec_always --no-startup-id ~/.config/polybar/launch.sh &
+
+# dunst
+exec --no-startup-id dunst &
 
 # Xfce Clipman 
 exec --no-startup-id xfce4-clipman
+
+#Email
+exec --no-startup-id bash -c "betterbird & sleep 5 && i3-msg '[class=\"Betterbird\"] move scratchpad'"
+bindsym $mod+Shift+- move scratchpad
+
+# Show scratchpad window
+bindsym $mod+- scratchpad show
+
 
 # TRAY APPLICATIONS
 # Authentication dialog
@@ -249,27 +270,17 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 # bluetooth
 exec --no-startup-id /home/alex/.config/i3/scripts/bluetooth-toggle.sh
 
-# network
-exec --no-startup-id nm-applet
-
-# num lock activated
-exec_always --no-startup-id numlockx on
-
-# Conky
-
-# feh wallpaper
-exec --no-startup-id feh --bg-fill --randomize /home/alex/.local/share/wallpapers/*
-
-# Polybar
-exec_always --no-startup-id ~/.config/polybar/launch.sh &
-
-################# system applications
-exec --no-startup-id /usr/bin/easyeffects --gapplication-service &
-
-# dunst
-exec --no-startup-id dunst &
 
 ################# applications keyboard shortcuts
+# Music
+bindsym $mod+Shift+m exec --no-startup-id strawberry 
+bindsym $mod+greater exec "~/.local/bin/spot-ctrl next"
+bindsym $mod+less exec "~/.local/bin/spot-ctrl prev"
+bindsym $mod+p exec "~/.local/bin/spot-ctrl play"
+
+# scratchpad
+bindsym $mod+m scratchpad show
+
 # terminal
 bindsym $mod+Return exec --no-startup-id alacritty -e tmux new-session -A -s main;focus
 # execute alacritty with bash
@@ -289,14 +300,7 @@ bindsym $mod+f exec --no-startup-id thunar;focus
 bindsym $mod+Shift+f exec --no-startup-id alacritty -e ranger;focus
 
 # mail application
-bindsym $mod+m exec --no-startup-id betterbird;focus
-
-# music
-bindsym $mod+greater exec "~/.local/bin/spot-ctrl next"
-bindsym $mod+less exec "~/.local/bin/spot-ctrl prev"
-bindsym $mod+p exec "~/.local/bin/spot-ctrl play"
-
-#cmus 
+#bindsym $mod+m exec --no-startup-id betterbird;focus
 
 # calibre
 

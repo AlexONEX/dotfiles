@@ -18,6 +18,7 @@ alias calibre='fzf-calibre'
 alias k='pkill -9'
 alias li='light -S'
 
+
 alias dsize='du -hsx * | sort -rh'
 alias neofetch='fastfetch'
 alias open='handlr open'
@@ -189,4 +190,53 @@ function t() {
 	X=$#
 	[[ $X -eq 0 ]] || X=X
 	tmux new-session -A -s $X
+}
+
+function extract() {
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xvjf $1    ;;
+      *.tar.gz)    tar xvzf $1    ;;
+      *.bz2)       bunzip2 $1     ;;
+      *.rar)       unrar x $1     ;;
+      *.gz)        gunzip $1      ;;
+      *.tar)       tar xvf $1     ;;
+      *.tbz2)      tar xvjf $1    ;;
+      *.tgz)       tar xvzf $1    ;;
+      *.zip)       unzip $1       ;;
+      *.Z)         uncompress $1  ;;
+      *.7z)        7z x $1        ;;
+      *)           echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+
+extractf() {
+  if [ -f "$1" ] ; then
+    # Create a directory based on the file name without its extension
+    local dirname="${1%.*}"
+    mkdir -p "$dirname"
+    cd "$dirname"
+    
+    # Extract the file based on its extension
+    case "$1" in
+      *.tar.bz2) tar xvjf "../$1" ;;
+      *.tar.gz)  tar xvzf "../$1" ;;
+      *.bz2)     bunzip2 "../$1" ;;
+      *.rar)     unrar x "../$1" ;;
+      *.gz)      gunzip "../$1" ;;
+      *.tar)     tar xvf "../$1" ;;
+      *.tbz2)    tar xvjf "../$1" ;;
+      *.tgz)     tar xvzf "../$1" ;;
+      *.zip)     unzip "../$1" ;;
+      *.Z)       uncompress "../$1" ;;
+      *.7z)      7z x "../$1" ;;
+      *)         echo "'$1' cannot be extracted via extractf()" ;;
+    esac
+  else
+    echo "File '$1' not found"
+  fi
 }
