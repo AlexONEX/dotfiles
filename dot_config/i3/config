@@ -152,8 +152,7 @@ for_window [urgent=latest] focus
 # orientation for new workspaces
 ################# Define quasi alternating layout (Fibonacci)
 # Default orientation vertical for a top-to-bottom arrangement initially
-# Toggle split direction each time a new window is opened, starting with a vertical split
-default_orientation vertical 
+default_orientation horizontal 
 
 for_window [class=".*"] split toggle
 
@@ -174,7 +173,7 @@ bindsym $mod+z layout tabbed
 bindsym $mod+e layout toggle split
 
 # change focus between tiling / floating windows
-#bindsym $mod+space focus mode_toggle
+# bindsym $mod+space focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
