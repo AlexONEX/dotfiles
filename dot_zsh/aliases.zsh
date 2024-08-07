@@ -6,13 +6,18 @@ paru() {
 }
 
 alias r='exec zsh'
-alias z='$EDITOR ~/.zshrc'
 alias rf='rm -rf'
 alias a='$EDITOR ~/.zsh/aliases.zsh'
 alias t='$EDITOR $HOME/.config/tmux/tmux.conf'
 alias j='goto'
 alias zplugins='ls $ZPLUGINDIR'
 alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/aliases.zsh && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot polybar tmux/tmux.conf zathura && cd nvim/lua/custom && cd /home/alex/.local/share/chezmoi'
+
+alias z='$EDITOR ~/.zshrc'
+alias ct='$EDITOR ~/.config/tmux/tmux.conf'
+
+#list all installed packages
+alias pkglist='paru -Qe > ~/pkglist.txt'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
 alias k='pkill -9'

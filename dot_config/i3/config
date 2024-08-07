@@ -159,6 +159,7 @@ for_window [class=".*"] split toggle
 # Reset the toggle and close the window with a specific keybinding
 bindsym $mod+Shift+q split toggle, kill
 
+# split in horizontal orientation
 bindsym $mod+h split h
 
 # split in vertical orientation
@@ -253,6 +254,9 @@ exec --no-startup-id dunst &
 
 # Xfce Clipman 
 exec --no-startup-id xfce4-clipman
+
+# Unclutter-xfixes
+exec --no-startup-id unclutter -root -idle 2 &
 
 #Email
 exec --no-startup-id bash -c "betterbird & sleep 5 && i3-msg '[class=\"Betterbird\"] move scratchpad'"
