@@ -42,7 +42,7 @@ cd "$DOTFILES_DIR" || exit
 git add .
 if ! git diff --quiet || ! git diff --staged --quiet; then
   git commit -m "Updating dotfiles: $(date)"
-  #git push origin main
+  git push origin main
 else
   echo "No changes to commit."
 fi
