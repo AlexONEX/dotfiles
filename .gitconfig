@@ -1,0 +1,48 @@
+[alias]
+  delete-local-merged = "!git fetch && git branch --merged | egrep -v \"(\\*|master|main|dev)|\" | xargs git branch -d"
+[branch]
+  sort = -committerdate
+[commit]
+  verbolse = true
+  cleanup = scissors
+[core]
+	editor = nvim
+  pager = delta
+[diff]
+  alorithm = histogram
+  submodule = log
+  tool =  nvimdiff
+  context = 10
+[fetch]
+  prune = true
+  fsckobjects = true
+  prunetags = true
+[gpg]
+  format = ssh
+[init]
+  defaultBranch = main
+[log]
+  date = iso
+[merge]
+  conlfictStyle = diff3
+  keepbackup = false
+  tool =  nvimdiff
+[user]
+	email = a.schwartzmann@hotmail.com
+	name = AlexONEX
+[url "git@github.com:"]
+	insteadOf = "https://github.com/"
+[push]
+  autoSetupMerge = true
+  autoSetupRemote = true
+[receive]
+  fsckObjects = true
+[submodule]
+  recurse = true
+[status]
+  short = true
+  submoduleSummary = true
+[tag]
+  sort = -committerdate
+[transfer]
+  fsckobjects = true

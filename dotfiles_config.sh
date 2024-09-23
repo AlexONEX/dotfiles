@@ -1,6 +1,7 @@
 #!/bin/bash
 FILES=(
   ".zshrc"
+  ".gitconfig"
   ".zsh/aliases.zsh"
   ".zsh/git.plugin.zsh"
   ".config/Ultisnips"
