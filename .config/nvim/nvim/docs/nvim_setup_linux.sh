@@ -2,7 +2,7 @@
 set -exu
 set -o pipefail
 
-# Instalar paru si no está instalado
+# Install paru if it is not installed
 if ! command -v paru &> /dev/null; then
     echo "Instalando paru..."
     sudo pacman -S --needed base-devel
@@ -13,7 +13,6 @@ if ! command -v paru &> /dev/null; then
     rm -rf paru
 fi
 
-# Instalar paquetes necesarios globalmente usando solo paru
 paru -S --needed \
     python \
     nodejs \
@@ -46,9 +45,12 @@ paru -S --needed \
     haskell-language-server \
     hlint \
     ghc \
-    haskell-hunit
+    haskell-hunit \
+    bash-language-server \
+    shellcheck \
+    shfmt \
+    lua-language-server \
+    luacheck \
+    stylua
 
-
-# Instalar vint (linter para Vim script)
-
-echo "Instalación de paquetes completada."
+echo "Finished paru installation"

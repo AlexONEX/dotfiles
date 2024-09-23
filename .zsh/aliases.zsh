@@ -20,7 +20,7 @@ paru-clean() {
   
   echo "Searching for unused optional packages..."
   unused_pkgs=$(paru -Qdtq)
-  
+  jpegoptim optipng
   if [ -n "$unused_pkgs" ]; then
     echo "The following unused optional packages were found:"
     echo "$unused_pkgs"
@@ -54,8 +54,7 @@ alias pkglist='paru -Qe > ~/pkglist.txt'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
 alias k='pkill -9'
-alias li='light -S'
-
+alias bl='xbacklight -get'
 
 alias dsize='du -hsx * | sort -rh'
 alias neofetch='fastfetch'

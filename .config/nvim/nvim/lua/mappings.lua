@@ -159,6 +159,20 @@ keymap.set("n", "<leader>st", "<cmd>call utils#SynGroup()<cr>", { desc = "check 
 -- Copy entire buffer.
 keymap.set("n", "<leader>y", "<cmd>%yank<cr>", { desc = "yank entire buffer" })
 
+-- Move between buffers
+vim.api.nvim_set_keymap(
+	"n",
+	"<Tab>",
+	":if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bnext<CR>",
+	{ noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+	"n",
+	"<S-Tab>",
+	":if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bprevious<CR>",
+	{ noremap = true, silent = true }
+)
+
 -- Toggle cursor column
 keymap.set("n", "<leader>cl", "<cmd>call utils#ToggleCursorCol()<cr>", { desc = "toggle cursor column" })
 
