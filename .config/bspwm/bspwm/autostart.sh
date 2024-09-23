@@ -1,5 +1,5 @@
-
 #!/bin/bash
+
 function run {
   if ! pgrep $1 ;
   then
@@ -15,7 +15,6 @@ function run {
 #autorandr horizontal
 
 $HOME/.config/polybar/forest/launch.sh
-
 #change your keyboard if you need it
 #setxkbmap -layout be
 
@@ -35,20 +34,14 @@ xsetroot -cursor_name left_ptr &
 #run variety &
 #run nm-applet &
 #run pamac-tray &
+
 run xfce4-power-manager &
+run mpd
 dunst &
 numlockx on &
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 #blueberry-tray &
 #picom --config $HOME/.config/bspwm/picom.conf &
-/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 #run volumeicon &
-#nitrogen --restore &
-#run caffeine &
-#run vivaldi-stable &
 #run firefox &
-#run thunar &
-#run dropbox &
 #run insync start &
-#run discord &
-#run spotify &
-#run code &
