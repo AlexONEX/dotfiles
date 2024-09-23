@@ -50,7 +50,7 @@ local plugin_specs = {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		enabled = function()
-			if vim.g.is_mac then
+			if vim.g.is_mac or vim.g.is_linux then
 				return true
 			end
 			return false
