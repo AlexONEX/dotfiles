@@ -38,17 +38,17 @@ paru -S --needed \
     yamllint \
     yaml-language-server \
     taplo-cli \
-    shellcheck \
     shfmt \
+    shellcheck \
     bash-language-server \
-    haskell-ormolu \
-    haskell-language-server \
-    hlint \
-    ghc \
     haskell-hunit \
-    bash-language-server \
-    shellcheck \
-    shfmt \
+    haskell-language-server \
+    ghc \
+    haskell-ormolu \
+    hlint \
+    haskell-hunit \
+    haskell-hoogle \
+    ghcid \
     lua-language-server \
     luacheck \
     stylua

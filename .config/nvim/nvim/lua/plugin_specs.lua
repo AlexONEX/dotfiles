@@ -122,6 +122,7 @@ local plugin_specs = {
 			"nvim-telescope/telescope-symbols.nvim",
 		},
 	},
+
 	{
 		"ibhagwan/fzf-lua",
 		-- optional for icon support
