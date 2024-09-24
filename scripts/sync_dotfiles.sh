@@ -41,7 +41,8 @@ compress_images
 cd "$DOTFILES_DIR" || exit
 git add .
 if ! git diff --quiet || ! git diff --staged --quiet; then
-  git commit -m "Updating dotfiles: $(date)"
+  commit_message="Updating dotfiles: $(date +"%Y-%m-%d %H:%M:%S")"
+  git commit -m "$commit_message"
   git push origin main
 else
   echo "No changes to commit."
