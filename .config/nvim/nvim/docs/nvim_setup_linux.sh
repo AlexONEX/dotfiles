@@ -14,6 +14,7 @@ if ! command -v paru &> /dev/null; then
 fi
 
 paru -S --needed \
+    git-delta\
     python \
     nodejs \
     ripgrep \

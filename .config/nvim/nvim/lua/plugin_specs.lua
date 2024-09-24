@@ -422,13 +422,18 @@ local plugin_specs = {
 	-- Only use these plugin on Windows and Mac and when LaTeX is installed
 	{
 		"lervag/vimtex",
-		enabled = function()
-			if utils.executable("latex") then
-				return true
-			end
-			return false
-		end,
 		ft = { "tex" },
+		config = function()
+			vim.g.vimtex_view_method = "zathura"
+			vim.g.vimtex_compiler_method = "latexmk"
+			vim.g.vimtex_quickfix_mode = 0
+			vim.g.vimtex_quickfix_enabled = 1
+			vim.g.vimtex_syntax_enabled = 1
+			--vim.g.tex_conceal = "abdmg"
+			vim.g.vimtex_filetypes = { "tex" }
+			vim.g.vimtex_mappings_disable = { ["n"] = { "K" } }
+			vim.opt.conceallevel = 2
+		end,
 	},
 
 	-- Since tmux is only available on Linux and Mac, we only enable these plugins

@@ -408,6 +408,18 @@ ctrl + alt + o
 #super + p
 #	bspc node --state \~pseudo_tiled
 
+#Spot-ctrl toggle
+super + shift + p
+    ~/.config/bspwm/scripts/spot-ctrl.sh sp-play
+
+# super + <
+super + shift + comma
+  ~/.config/bspwm/scripts/spot-ctrl.sh sp-prev
+
+# super + >
+super + shift + period
+  ~/.config/bspwm/scripts/spot-ctrl.sh sp-next
+
 #kill
 super + q
 	bspc node -c
