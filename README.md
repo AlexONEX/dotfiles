@@ -4,8 +4,8 @@ My Doftiles managed by chezmoi <br>
 [EasyEffects](https://github.com/wwmm/easyeffects#Installation)<br>
 [i3 Window Manager](https://i3wm.org/downloads/)<br>
 [Flameshot](https://flameshot.org/#download)<br>
-[Lemurs](https://github.com/coastalwhite/lemurs)<br>
-[Nvim](https://neovim.io/)<br>
+[Ly]([https://github.com/coastalwhite/lemurs](https://github.com/fairyglade/ly)<br>
+[Nvim]([https://neovim.io/](https://github.com/fairyglade/ly)<br>
 [Polybar](https://polybar.github.io/)<br>
 [Ranger](https://ranger.github.io/)<br>
 [Spicetify](https://spicetify.app/docs/advanced-usage/installation/)<br>
