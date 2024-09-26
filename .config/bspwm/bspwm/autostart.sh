@@ -14,6 +14,10 @@ function run {
 #xrandr --output HDMI2 --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output VIRTUAL1 --off
 #autorandr horizontal
 
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+fi
+
 $HOME/.config/polybar/forest/launch.sh
 #change your keyboard if you need it
 #setxkbmap -layout be
@@ -36,7 +40,6 @@ xsetroot -cursor_name left_ptr &
 #run pamac-tray &
 
 run xfce4-power-manager &
-run mpd
 dunst &
 numlockx on &
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &

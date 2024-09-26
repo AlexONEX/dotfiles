@@ -65,3 +65,5 @@ zstyle ':omz:update' frequency 13
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export EDITOR='nvim'
+
+export PATH=$PATH:/home/mars/.spicetify
