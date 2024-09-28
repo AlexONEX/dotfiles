@@ -80,7 +80,7 @@ super + m
 super + x
     archlinux-logout
 
-#powermenu
+#powermene
 super + shift + x
     arcolinux-powermenu
 
@@ -326,7 +326,7 @@ Print
 
 #xfce4-terminal dropdown
 F12
-    xfce4-terminal --drop-down
+    xfce4-terminal --drop-down -e "tmux new-session -A -s bkgr"
 
 
 #################################################################
@@ -335,11 +335,11 @@ F12
 
 #Raises volume
 XF86AudioRaiseVolume
-    amixer -D pulse set Master 10%+
+    amixer -D pulse set Master 2%+
 
 #Lowers volume
 XF86AudioLowerVolume
-    amixer -D pulse set Master 10%-
+    amixer -D pulse set Master 2%-
 
 #Mute
 XF86AudioMute

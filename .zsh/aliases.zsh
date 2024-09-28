@@ -8,16 +8,16 @@ paru() {
 paru-clean() {
   echo "Updating the system..."
   paru -Syu
-  
+
   echo "Cleaning package cache..."
   paru -Sc
-  
+
   echo "Cleaning entire cache..."
   paru -Scc
-  
+
   echo "Removing orphaned packages..."
   paru -c
-  
+
   echo "Searching for unused optional packages..."
   unused_pkgs=$(paru -Qdtq)
   jpegoptim optipng
@@ -34,7 +34,7 @@ paru-clean() {
   else
     echo "No unused optional packages were found."
   fi
-  
+
   echo "Cleanup completed."
 }
 
@@ -53,6 +53,37 @@ alias ct='$EDITOR ~/.config/tmux/tmux.conf'
 alias pkglist='paru -Qe > ~/pkglist.txt'
 alias tocp='xclip -sel c'
 alias calibre='fzf-calibre'
+
+# fzz
+alias vif='vim $(fzf)'
+alias rgf='vim $(rg . | fzf | cut -d ":" -f 1)'
+# Recursive search with rg and fzf
+alias rgfzf='rg . | fzf'
+# Search and cd into the directory
+fcd() {
+  local dir
+  dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir"
+}
+
+fstring() {
+  local file_and_line=$(
+    rg --color=always --line-number --no-heading --smart-case "${1:-}" |
+      fzf --ansi --color "hl:-1:underline,hl+:-1:underline:reverse" \
+          --delimiter : \
+          --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
+          --preview-window 'up,60%,border-bottom,+{2}+3/3,~3'
+  )
+  if [[ -n $file_and_line ]]; then
+    local file=$(echo "$file_and_line" | cut -d: -f1)
+    local line=$(echo "$file_and_line" | cut -d: -f2)
+    if [[ -n $EDITOR ]]; then
+      $EDITOR "$file" +$line
+    else
+      vim "$file" +$line
+    fi
+  fi
+}
+
 alias k='pkill -9'
 alias bl='xbacklight -get'
 
@@ -73,7 +104,7 @@ alias ..='cd..'
 alias zip='zip -r'
 alias xz='xz -z -v -k -T 0'
 
-# Docker 
+# Docker
 (( ${+commands[docker-compose]} )) && dccmd='docker-compose' || dccmd='docker compose'
 
 alias dco="$dccmd"
@@ -194,7 +225,7 @@ alias duf='echo "╓───── m o u n t . p o i n t s"; \
 			 df -h;'
 
 function docstop(){
-      docker stop $(docker ps -aq) 
+      docker stop $(docker ps -aq)
 }
 
 function docstart(){
@@ -212,7 +243,7 @@ function dockerservice() {
 }
 
 function docker-clean() {
-  docker stop $(sudo docker ps -aq) 
+  docker stop $(sudo docker ps -aq)
   docker rm $(sudo docker ps -a -q)
   docker rmi $(sudo docker images -q)
 }
@@ -288,7 +319,7 @@ extractf() {
     local dirname="${1%.*}"
     mkdir -p "$dirname"
     cd "$dirname"
-    
+
     # Extract the file based on its extension
     case "$1" in
       *.tar.bz2) tar xvjf "../$1" ;;
@@ -306,24 +337,5 @@ extractf() {
     esac
   else
     echo "File '$1' not found"
-  fi
-}
-
-fstring() {
-  local file_and_line=$(
-    rg --color=always --line-number --no-heading --smart-case "${1:-}" |
-      fzf --ansi --color "hl:-1:underline,hl+:-1:underline:reverse" \
-          --delimiter : \
-          --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
-          --preview-window 'up,60%,border-bottom,+{2}+3/3,~3'
-  )
-  if [[ -n $file_and_line ]]; then
-    local file=$(echo "$file_and_line" | cut -d: -f1)
-    local line=$(echo "$file_and_line" | cut -d: -f2)
-    if [[ -n $EDITOR ]]; then
-      $EDITOR "$file" +$line
-    else
-      vim "$file" +$line
-    fi
   fi
 }
