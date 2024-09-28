@@ -1,6 +1,7 @@
 #!/bin/bash
 FILES=(
   ".zshrc"
+  ".zshenv"
   ".gitconfig"
   ".zsh/aliases.zsh"
   ".zsh/git.plugin.zsh"
@@ -18,6 +19,6 @@ FILES=(
   ".config/rofi"
   ".config/tmux/tmux.conf"
   ".config/zathura"
-  ".local/share/bin"
+  ".local/bin"
   ".local/share/wallpapers"
 )
