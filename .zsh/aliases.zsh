@@ -1,5 +1,6 @@
 # SHORTCUTS
 alias hacker-news='hackernews_tui'
+alias dotfiles='~/dotfiles/scripts/sync_dotfiles.sh'
 
 paru() {
     command nice -n 10 ionice -c 3 /usr/bin/paru "$@"
