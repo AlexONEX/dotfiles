@@ -276,7 +276,7 @@ alt + F3
 
 #Xlunch app launcher
 #alt + F5
-#    xlunch --config ~/.config/xlunch/default.conf --input ~/.config/xlunch/entries.dsv   
+#    xlunch --config ~/.config/xlunch/default.conf --input ~/.config/xlunch/entries.dsv
 
 
 #################################################################
@@ -410,15 +410,15 @@ ctrl + alt + o
 
 #Spot-ctrl toggle
 super + shift + p
-    ~/.config/bspwm/scripts/spot-ctrl.sh sp-play
+  $HOME/.cargo/bin/spotify-control play-pause
 
 # super + <
 super + shift + comma
-  ~/.config/bspwm/scripts/spot-ctrl.sh sp-prev
+  $HOME/.cargo/bin/spotify-control previous
 
 # super + >
 super + shift + period
-  ~/.config/bspwm/scripts/spot-ctrl.sh sp-next
+  $HOME/.cargo/bin/spotify-control next
 
 #kill
 super + q
