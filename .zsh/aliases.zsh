@@ -211,7 +211,12 @@ function ytpa(){
     yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist "$1"
 }
 
-alias yta-best='yt-dlp --extract-audio --audio-format "wav"'
+
+# Improved function to replace yta-best alias
+yta-best() {
+    eval yt-dlp --extract-audio --audio-format "wav" --output '"%(title)s.%(ext)s"' -- '"$1"'
+}
+
 alias ytp-abest='yt-dlp --extract-audio --audio-format "wav" --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist '
 alias ytv-best="yt-dlp -f bestvideo+bestaudio "
 alias spotdl='spotdl --cookie-file /home/alex/Music/music.youtube.com_cookies.txt'

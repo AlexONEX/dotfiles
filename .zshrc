@@ -23,7 +23,7 @@ fi
 
 if [ -f ~/.zsh/git.plugin.zsh ]; then
     . ~/.zsh/git.plugin.zsh
-fi 
+fi
 
 #-------Plugin Management-------#
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.zsh}/plugins}
@@ -53,8 +53,11 @@ setopt HIST_IGNORE_ALL_DUPS
 
 typeset -U PATH path
 
-# virtualenvwrapper 
+# virtualenvwrapper
 source /usr/bin/virtualenvwrapper.sh
+
+#goto
+source ~/.local/bin/goto.sh
 
 #-------------------------------#
 zstyle ':omz:update' mode auto      # update automatically without asking
