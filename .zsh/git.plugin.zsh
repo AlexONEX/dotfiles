@@ -189,6 +189,7 @@ alias gdca='git diff --cached'
 alias gdcw='git diff --cached --word-diff'
 alias gds='git diff --staged'
 alias gdw='git diff --word-diff'
+alias gdh='git diff HEAD^ HEAD'
 
 function gdv() { git diff -w "$@" | view - }
 compdef _git gdv=git-diff
