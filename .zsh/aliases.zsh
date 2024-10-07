@@ -44,6 +44,16 @@ alias rf='rm -rf'
 alias a='$EDITOR ~/.zsh/aliases.zsh'
 alias t='$EDITOR $HOME/.config/tmux/tmux.conf'
 alias j='goto'
+mark() {
+    if [ $# -eq 1 ]; then
+        goto -r "$1" "$(pwd)"
+    else
+        echo "Usage: mark <alias>"
+    fi
+}
+
+# Alias para saltar a un directorio marcado
+alias j='goto'
 alias zplugins='ls $ZPLUGINDIR'
 alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/aliases.zsh && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot polybar tmux/tmux.conf zathura && cd nvim/lua/custom && cd /home/alex/.local/share/chezmoi'
 
