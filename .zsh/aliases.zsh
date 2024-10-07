@@ -63,6 +63,7 @@ alias ct='$EDITOR ~/.config/tmux/tmux.conf'
 #list all installed packages
 alias pkglist='paru -Qe > ~/pkglist.txt'
 alias tocp='xclip -sel c'
+alias cf='cat $1 | xclip -sel c'
 alias calibre='fzf-calibre'
 
 # fzz

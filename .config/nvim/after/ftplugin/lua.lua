@@ -1,6 +1,3 @@
--- File: /home/mars/.config/nvim/after/ftplugin/lua.lua
-
--- General configuration
 vim.opt_local.expandtab = true
 vim.opt_local.shiftwidth = 2
 vim.opt_local.softtabstop = 2
@@ -8,14 +5,14 @@ vim.opt_local.tabstop = 2
 vim.opt_local.formatoptions:remove({ "o", "r" })
 
 -- Function to format with StyLua and save
-function _G.format_and_save()
+_G.format_and_save = function()
 	vim.cmd("silent !stylua %")
 	vim.cmd("edit") -- Reload the file
 	vim.cmd("write")
 end
 
 -- Function to run the Lua script
-function _G.run_lua()
+_G.run_lua = function()
 	vim.cmd("luafile %")
 end
 
