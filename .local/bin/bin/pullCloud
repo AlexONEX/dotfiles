@@ -1,4 +1,0 @@
-#!/bin/sh
-
-rclone copy GoogleDrive: /home/mars/GoogleDrive -v --update
-rclone copy OneDrive: /home/mars/OneDrive -v --update
