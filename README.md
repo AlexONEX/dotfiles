@@ -1,7 +1,7 @@
 # dotfiles
 [Alacritty](https://alacritty.org/)<br>
 [EasyEffects](https://github.com/wwmm/easyeffects#Installation)<br>
-[Bspwm]([https://i3wm.org/downloads](https://github.com/baskerville/bspwm/)<br>
+[Bspwm](https://github.com/baskerville/bspwm)<br>
 [Flameshot](https://flameshot.org/#download)<br>
 [Ly](https://github.com/fairyglade/ly)<br>
 [Nvim](https://github.com/fairyglade/ly)<br>
