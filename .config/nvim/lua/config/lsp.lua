@@ -47,6 +47,7 @@ local custom_attach = function(client, bufnr)
 	map("n", "<space>wl", function()
 		vim.print(vim.lsp.buf.list_workspace_folders())
 	end, { desc = "list workspace folder" })
+	map("n", "<leader>df", vim.diagnostic.open_float, { desc = "show diagnostics in float" })
 
 	-- Set some key bindings conditional on server capabilities
 	if client.server_capabilities.documentFormattingProvider then
