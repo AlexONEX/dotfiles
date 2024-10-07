@@ -10,7 +10,6 @@ FILES=(
   ".config/bspwm"
   ".config/dunst"
   ".config/easyeffects"
-  ".config/i3"
   ".config/flameshot"
   ".config/nvim"
   ".config/paru"
