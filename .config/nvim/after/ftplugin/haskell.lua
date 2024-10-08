@@ -1,3 +1,5 @@
+local M = {}
+
 vim.bo.commentstring = "-- %s"
 vim.opt_local.formatoptions:remove({ "o", "r" })
 
@@ -22,8 +24,6 @@ local haskell_flags = table.concat({
   "-eventlog",
   "-debug",
 }, " ")
-
-local M = {}
 
 local function create_term_buf(type, size)
   vim.opt.splitbelow = true
@@ -63,30 +63,39 @@ function M.run_haskell()
   vim.cmd("startinsert")
 end
 
+function M.format_haskell()
+  vim.cmd("Neoformat ormolu")
+end
+
 function M.run_hlint()
   vim.lsp.buf.code_action()
 end
 
+function M.setup()
+  vim.api.nvim_buf_set_keymap(0, "n", "<F9>", ":lua HaskellUtils.compile_run_haskell()<CR>",
+    { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(0, "n", "<F10>", ":lua HaskellUtils.run_haskell()<CR>", { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(0, "n", "<F11>", ":lua HaskellUtils.compile_run_haskell()<CR>",
+    { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(0, "n", "<C-s>", ":lua HaskellUtils.format_haskell()<CR>",
+    { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(0, "n", "<leader>hl", ":lua HaskellUtils.run_hlint()<CR>",
+    { noremap = true, silent = true })
+
+  local lspconfig = require("lspconfig")
+  lspconfig.hls.setup({
+    settings = {
+      haskell = {
+        formattingProvider = "ormolu",
+        checkProject = true,
+      },
+    },
+  })
+
+  vim.g.neoformat_enabled_haskell = { "ormolu" }
+  vim.g.neoformat_try_formatprg = 1
+end
+
 _G.HaskellUtils = M
 
-vim.api.nvim_buf_set_keymap(0, "n", "<F9>", ":lua HaskellUtils.compile_run_haskell()<CR>",
-  { noremap = true, silent = true })
-vim.api.nvim_buf_set_keymap(0, "n", "<F10>", ":lua HaskellUtils.run_haskell()<CR>", { noremap = true, silent = true })
-vim.api.nvim_buf_set_keymap(0, "n", "<F11>", ":lua HaskellUtils.compile_run_haskell()<CR>",
-  { noremap = true, silent = true })
-vim.api.nvim_buf_set_keymap(0, "n", "<leader>hl", ":lua HaskellUtils.run_hlint()<CR>", { noremap = true, silent = true })
-
--- LSP configuration for Haskell
-local lspconfig = require("lspconfig")
-lspconfig.hls.setup({
-  settings = {
-    haskell = {
-      formattingProvider = "ormolu",
-      checkProject = true,
-    },
-  },
-})
-
--- Neoformat configuration for Haskell
-vim.g.neoformat_enabled_haskell = { "ormolu" }
-vim.g.neoformat_try_formatprg = 1
+return M
