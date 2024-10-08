@@ -13,7 +13,7 @@ vim.loader.enable()
 
 local utils = require("utils")
 
-local expected_version = "0.10.1"
+local expected_version = "0.10.2"
 utils.is_compatible_version(expected_version)
 
 local config_dir = vim.fn.stdpath("config")
@@ -28,6 +28,6 @@ require("custom-autocmd")
 -- all the user-defined mappings
 require("mappings")
 -- all the plugins installed and their configurations
-vim.cmd("source ".. vim.fs.joinpath(config_dir, "viml_conf/plugins.vim"))
+vim.cmd("source " .. vim.fs.joinpath(config_dir, "viml_conf/plugins.vim"))
 -- colorscheme settings
 require("colorschemes")
