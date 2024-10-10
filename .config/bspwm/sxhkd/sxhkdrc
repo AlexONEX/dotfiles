@@ -420,6 +420,9 @@ super + shift + comma
 super + shift + period
   $HOME/.cargo/bin/spotify-control next
 
+# super + shift + s
+  $HOME/.cargo/bin/spotify-control search
+
 #kill
 super + q
 	bspc node -c

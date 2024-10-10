@@ -23,7 +23,8 @@ end
 local plugin_specs = {
   -- auto-completion engine
   {
-    "hrsh7th/nvim-cmp",
+    "iguanacucumber/magazine.nvim",
+    name = "nvim-cmp",
     -- event = 'InsertEnter',
     event = "VeryLazy",
     dependencies = {
