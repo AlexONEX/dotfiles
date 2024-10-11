@@ -166,7 +166,7 @@ api.nvim_create_autocmd("FileType", {
         local status, result = pcall(api.nvim_win_set_cursor, 0, mark_pos)
         if not status then
           api.nvim_err_writeln(string.format("Failed to resume cursor position. Context %s, error: %s",
-          vim.inspect(ev), result))
+            vim.inspect(ev), result))
         end
       end)
       -- the following two ways also seem to work,
@@ -226,7 +226,7 @@ api.nvim_create_autocmd("BufEnter", {
   group = api.nvim_create_augroup("auto_close_win", { clear = true }),
   desc = "Quit Nvim if we have only one window, and its filetype match our pattern",
   callback = function(ev)
-    local quit_filetypes = {'qf', 'vista', 'NvimTree'}
+    local quit_filetypes = { 'qf', 'vista', 'NvimTree' }
 
     local should_quit = true
     local tabwins = api.nvim_tabpage_list_wins(0)
@@ -246,7 +246,7 @@ api.nvim_create_autocmd("BufEnter", {
   end
 })
 
-api.nvim_create_autocmd({"VimEnter", "DirChanged"}, {
+api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
   group = api.nvim_create_augroup("git_repo_check", { clear = true }),
   pattern = "*",
   desc = "check if we are inside Git repo",
@@ -258,8 +258,8 @@ api.nvim_create_autocmd("BufReadPre", {
   group = api.nvim_create_augroup("large_file", { clear = true }),
   pattern = "*",
   desc = "check if we are inside Git repo",
-  callback = function (ev)
-    local file_size_limit =524288 -- 0.5MB
+  callback = function(ev)
+    local file_size_limit = 524288 -- 0.5MB
     local f = ev.file
 
     if fn.getfsize(f) > file_size_limit or fn.getfsize(f) == -2 then
@@ -272,4 +272,23 @@ api.nvim_create_autocmd("BufReadPre", {
       vim.bo.undolevels = -1
     end
   end
+})
+
+
+local function setup_custom_mappings()
+  -- Mapping for entering insert mode with 'i'
+  vim.api.nvim_set_keymap('n', 'i', [[col('.') < col('$') ? "i<Right>" : "i"]], { noremap = true, expr = true })
+
+  -- Mapping for exiting insert mode with '<Esc>'
+  vim.api.nvim_set_keymap('i', '<Esc>', [[col('.') == 1 ? "<Esc>" : "<Esc>l"]], { noremap = true, expr = true })
+end
+
+-- Create an autocommand group
+local augroup = vim.api.nvim_create_augroup("CustomMappings", { clear = true })
+
+-- Set up the autocommand to run on VimEnter
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = augroup,
+  callback = setup_custom_mappings,
+  desc = "Set up custom mappings for entering and exiting insert mode"
 })
