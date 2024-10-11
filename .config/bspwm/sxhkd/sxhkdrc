@@ -408,21 +408,6 @@ ctrl + alt + o
 #super + p
 #	bspc node --state \~pseudo_tiled
 
-#Spot-ctrl toggle
-super + shift + p
-  $HOME/.cargo/bin/spotify-control play-pause
-
-# super + <
-super + shift + comma
-  $HOME/.cargo/bin/spotify-control previous
-
-# super + >
-super + shift + period
-  $HOME/.cargo/bin/spotify-control next
-
-# super + shift + s
-  $HOME/.cargo/bin/spotify-control search
-
 #kill
 super + q
 	bspc node -c
@@ -516,6 +501,21 @@ super + shift + Up
 # Move focused window to other monitor
 super + shift + Down
 		bspc node -m next --follow
+
+#Spot-ctrl toggle
+super + shift + p
+  $HOME/.cargo/bin/spotify-control play-pause
+
+# super + <
+super + shift + comma
+  $HOME/.cargo/bin/spotify-control previous
+
+# super + >
+super + shift + period
+  $HOME/.cargo/bin/spotify-control next
+
+super + shift + s
+  $HOME/.cargo/bin/spotify-control search
 
 #################################################################
 # SUPER + CONTROL KEYS
