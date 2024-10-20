@@ -1,9 +1,8 @@
 #!/bin/bash
 
 function run {
-  if ! pgrep $1 ;
-  then
-    $@&
+  if ! pgrep $1; then
+    $@ &
   fi
 }
 
@@ -15,7 +14,7 @@ function run {
 #autorandr horizontal
 
 if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
-    export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+  export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
 fi
 
 $HOME/.config/polybar/forest/launch.sh
@@ -30,7 +29,7 @@ else
   run sxhkd -c ~/.config/bspwm/sxhkd/sxhkdrc &
 fi
 
-feh --bg-fill --randomize ~/.local/share/wallpapers/*
+feh --bg-fill --no-fehbg -randomize ~/.local/share/wallpapers/*
 dex $HOME/.config/autostart/arcolinux-welcome-app.desktop
 xsetroot -cursor_name left_ptr &
 #conky -c $HOME/.config/bspwm/system-overview &
