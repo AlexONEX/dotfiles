@@ -273,22 +273,3 @@ api.nvim_create_autocmd("BufReadPre", {
     end
   end
 })
-
-
-local function setup_custom_mappings()
-  -- Mapping for entering insert mode with 'i'
-  vim.api.nvim_set_keymap('n', 'i', [[col('.') < col('$') ? "i<Right>" : "i"]], { noremap = true, expr = true })
-
-  -- Mapping for exiting insert mode with '<Esc>'
-  vim.api.nvim_set_keymap('i', '<Esc>', [[col('.') == 1 ? "<Esc>" : "<Esc>l"]], { noremap = true, expr = true })
-end
-
--- Create an autocommand group
-local augroup = vim.api.nvim_create_augroup("CustomMappings", { clear = true })
-
--- Set up the autocommand to run on VimEnter
-vim.api.nvim_create_autocmd("VimEnter", {
-  group = augroup,
-  callback = setup_custom_mappings,
-  desc = "Set up custom mappings for entering and exiting insert mode"
-})
