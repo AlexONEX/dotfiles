@@ -83,8 +83,9 @@ fstring() {
       fzf --ansi --color "hl:-1:underline,hl+:-1:underline:reverse" \
           --delimiter : \
           --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
-          --preview-window 'up,60%,border-bottom,+{2}+3/3,~3'
+          --preview-window 'right,60%,border-bottom,+{2}+3/3,~3'
   )
+
   if [[ -n $file_and_line ]]; then
     local file=$(echo "$file_and_line" | cut -d: -f1)
     local line=$(echo "$file_and_line" | cut -d: -f2)
