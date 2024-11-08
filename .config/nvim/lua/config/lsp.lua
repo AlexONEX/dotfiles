@@ -3,6 +3,7 @@ local api = vim.api
 local keymap = vim.keymap
 local lsp = vim.lsp
 local diagnostic = vim.diagnostic
+local lspconfig = require("lspconfig")
 
 local utils = require("utils")
 
@@ -51,7 +52,7 @@ local custom_attach = function(client, bufnr)
 
   -- Set some key bindings conditional on server capabilities
   if client.server_capabilities.documentFormattingProvider then
-    map("n", "<C-s>", vim.lsp.buf.format, { desc = "format code" })
+    map({ "n", "x" }, "<space>f", vim.lsp.buf.format, { desc = "format code" })
   end
 
   _G.copy_diagnostic_message = function()
@@ -64,8 +65,17 @@ local custom_attach = function(client, bufnr)
       print("No diagnostic message at current line")
     end
   end
-  vim.api.nvim_buf_set_keymap(0, "n", "<leader>dc", ":lua _G.copy_diagnostic_message()<CR>",
-    { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    "n",
+    "<leader>dc",
+    ":lua _G.copy_diagnostic_message()<CR>",
+    { noremap = true, silent = true }
+  )
+
+  -- Uncomment code below to enable inlay hint from language server, some LSP server supports inlay hint,
+  -- but disable this feature by default, so you may need to enable inlay hint in the LSP server config.
+  -- vim.lsp.inlay_hint.enable(true, {buffer=bufnr})
 
   api.nvim_create_autocmd("CursorHold", {
     buffer = bufnr,
@@ -84,8 +94,8 @@ local custom_attach = function(client, bufnr)
 
       local cursor_pos = api.nvim_win_get_cursor(0)
       if
-          (cursor_pos[1] ~= vim.b.diagnostics_pos[1] or cursor_pos[2] ~= vim.b.diagnostics_pos[2])
-          and #diagnostic.get() > 0
+        (cursor_pos[1] ~= vim.b.diagnostics_pos[1] or cursor_pos[2] ~= vim.b.diagnostics_pos[2])
+        and #diagnostic.get() > 0
       then
         diagnostic.open_float(nil, float_opts)
       end
@@ -127,72 +137,102 @@ local custom_attach = function(client, bufnr)
 end
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
 -- required by nvim-ufo
 capabilities.textDocument.foldingRange = {
   dynamicRegistration = false,
   lineFoldingOnly = true,
 }
 
-local lspconfig = require("lspconfig")
+-- For what diagnostic is enabled in which type checking mode, check doc:
+-- https://github.com/microsoft/pyright/blob/main/docs/configuration.md#diagnostic-settings-defaults
+-- Currently, the pyright also has some issues displaying hover documentation:
+-- https://www.reddit.com/r/neovim/comments/1gdv1rc/what_is_causeing_the_lsp_hover_docs_to_looks_like/
 
-if utils.executable("pylsp") then
-  local venv_path = os.getenv("VIRTUAL_ENV")
-  local py_path = nil
-  -- decide which python executable to use for mypy
-  if venv_path ~= nil then
-    py_path = venv_path .. "/bin/python3"
-  else
-    py_path = vim.g.python3_host_prog
-  end
+if utils.executable("pyright") then
+  local new_capability = {
+    -- this will remove some of the diagnostics that duplicates those from ruff, idea taken and adapted from
+    -- here: https://github.com/astral-sh/ruff-lsp/issues/384#issuecomment-1989619482
+    textDocument = {
+      publishDiagnostics = {
+        tagSupport = {
+          valueSet = { 2 },
+        },
+      },
+      hover = {
+        contentFormat = { "plaintext" },
+        dynamicRegistration = true,
+      },
+    },
+  }
+  local merged_capability = vim.tbl_deep_extend("force", capabilities, new_capability)
 
-  lspconfig.pylsp.setup({
+  lspconfig.pyright.setup {
+    cmd = { "delance-langserver", "--stdio" },
     on_attach = custom_attach,
-    settings = {
-      pylsp = {
-        plugins = {
-          -- formatter options
-          black = { enabled = true },
-          autopep8 = { enabled = false },
-          yapf = { enabled = false },
-          -- linter options
-          pylint = { enabled = true, executable = "pylint" },
-          ruff = { enabled = false },
-          pyflakes = { enabled = false },
-          pycodestyle = { enabled = false },
-          -- type checker
-          pylsp_mypy = {
-            enabled = true,
-            overrides = { "--python-executable", py_path, true },
-            report_progress = true,
-            live_mode = false,
-          },
-          -- auto-completion options
-          jedi_completion = { fuzzy = true },
-          -- import sorting
-          isort = { enabled = true },
+    -- capabilities = merged_capability,
+    capabilities = merged_capability,
+    pyright = {
+      -- disable import sorting and use Ruff for this
+      disableOrganizeImports = true,
+      disableTaggedHints = false,
+    },
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        diagnosticMode = "workspace",
+        typeCheckingMode = "standard",
+        useLibraryCodeForTypes = true,
+        -- we can this setting below to redefine some diagnostics
+        diagnosticSeverityOverrides = {
+          deprecateTypingAliases = false,
+        },
+        -- inlay hint settings are provided by pylance?
+        inlayHints = {
+          callArgumentNames = "partial",
+          functionReturnTypes = true,
+          pytestParameters = true,
+          variableTypes = true,
         },
       },
     },
-    flags = {
-      debounce_text_changes = 200,
-    },
-    capabilities = capabilities,
-  })
+  }
 else
-  vim.notify("pylsp not found!", vim.log.levels.WARN, { title = "Nvim-config" })
+  vim.notify("pyright not found!", vim.log.levels.WARN, { title = "Nvim-config" })
 end
 
--- if utils.executable('pyright') then
---   lspconfig.pyright.setup{
---     on_attach = custom_attach,
---     capabilities = capabilities
---   }
--- else
---   vim.notify("pyright not found!", vim.log.levels.WARN, {title = 'Nvim-config'})
--- end
+if utils.executable("ruff") then
+  require("lspconfig").ruff.setup {
+    on_attach = custom_attach,
+    capabilities = capabilities,
+    init_options = {
+      -- the settings can be found here: https://docs.astral.sh/ruff/editors/settings/
+      settings = {
+        organizeImports = true,
+      },
+    },
+  }
+end
+
+-- Disable ruff hover feature in favor of Pyright
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("lsp_attach_disable_ruff_hover", { clear = true }),
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    -- vim.print(client.name, client.server_capabilities)
+
+    if client == nil then
+      return
+    end
+    if client.name == "ruff" then
+      client.server_capabilities.hoverProvider = false
+    end
+  end,
+  desc = "LSP: Disable hover capability from Ruff",
+})
 
 if utils.executable("ltex-ls") then
-  lspconfig.ltex.setup({
+  lspconfig.ltex.setup {
     on_attach = custom_attach,
     cmd = { "ltex-ls" },
     filetypes = { "text", "plaintex", "tex", "markdown" },
@@ -202,44 +242,45 @@ if utils.executable("ltex-ls") then
       },
     },
     flags = { debounce_text_changes = 300 },
-  })
+  }
 end
 
 if utils.executable("clangd") then
-  lspconfig.clangd.setup({
+  lspconfig.clangd.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
     filetypes = { "c", "cpp", "cc" },
     flags = {
       debounce_text_changes = 500,
     },
-  })
+  }
 end
 
 -- set up vim-language-server
 if utils.executable("vim-language-server") then
-  lspconfig.vimls.setup({
+  lspconfig.vimls.setup {
     on_attach = custom_attach,
     flags = {
       debounce_text_changes = 500,
     },
     capabilities = capabilities,
-  })
+  }
 else
   vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Nvim-config" })
 end
 
 -- set up bash-language-server
 if utils.executable("bash-language-server") then
-  lspconfig.bashls.setup({
+  lspconfig.bashls.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
-  })
+  }
 end
 
+-- settings for lua-language-server can be found on https://luals.github.io/wiki/settings/
 if utils.executable("lua-language-server") then
   -- settings for lua-language-server can be found on https://github.com/LuaLS/lua-language-server/wiki/Settings .
-  lspconfig.lua_ls.setup({
+  lspconfig.lua_ls.setup {
     on_attach = custom_attach,
     settings = {
       Lua = {
@@ -247,14 +288,17 @@ if utils.executable("lua-language-server") then
           -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
           version = "LuaJIT",
         },
+        hint = {
+          enable = true,
+        },
       },
     },
     capabilities = capabilities,
-  })
+  }
 end
 
 if utils.executable("rust-analyzer") then
-  lspconfig.rust_analyzer.setup({
+  lspconfig.rust_analyzer.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
     settings = {
@@ -271,7 +315,7 @@ if utils.executable("rust-analyzer") then
         },
       },
     },
-  })
+  }
 else
   vim.notify("rust-analyzer not found!", vim.log.levels.WARN, { title = "Nvim-config" })
 end
@@ -283,12 +327,12 @@ fn.sign_define("DiagnosticSignInfo", { text = "ℹ️", texthl = "DiagnosticSign
 fn.sign_define("DiagnosticSignHint", { text = "", texthl = "DiagnosticSignHint" })
 
 -- global config for diagnostic
-diagnostic.config({
+diagnostic.config {
   underline = false,
   virtual_text = false,
   signs = true,
   severity_sort = true,
-})
+}
 
 -- lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(lsp.diagnostic.on_publish_diagnostics, {
 --   underline = false,

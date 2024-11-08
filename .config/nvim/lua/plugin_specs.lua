@@ -4,14 +4,14 @@ local plugin_dir = vim.fn.stdpath("data") .. "/lazy"
 local lazypath = plugin_dir .. "/lazy.nvim"
 
 if not vim.uv.fs_stat(lazypath) then
-  vim.fn.system({
+  vim.fn.system {
     "git",
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
     "--branch=stable", -- latest stable release
     lazypath,
-  })
+  }
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -66,7 +66,7 @@ local plugin_specs = {
   -- Python-related text object
   { "jeetsukumaran/vim-pythonsense", ft = { "python" } },
 
-  { "machakann/vim-swap",            event = "VeryLazy" },
+  { "machakann/vim-swap", event = "VeryLazy" },
 
   -- IDE for Lisp
   -- 'kovisoft/slimv'
@@ -130,7 +130,7 @@ local plugin_specs = {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       -- calling `setup` is optional for customization
-      require("fzf-lua").setup({})
+      require("fzf-lua").setup {}
     end,
   },
   {
@@ -140,15 +140,15 @@ local plugin_specs = {
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
   },
   -- A list of colorscheme plugin you may want to try. Find what suits you.
-  { "navarasu/onedark.nvim",       lazy = true },
-  { "sainnhe/edge",                lazy = true },
-  { "shaunsingh/nord.nvim",        lazy = true },
-  { "sainnhe/sonokai",             lazy = true },
-  { "sainnhe/gruvbox-material",    lazy = true },
-  { "sainnhe/everforest",          lazy = true },
-  { "EdenEast/nightfox.nvim",      lazy = true },
-  { "catppuccin/nvim",             name = "catppuccin", lazy = true },
-  { "olimorris/onedarkpro.nvim",   lazy = true },
+  { "navarasu/onedark.nvim", lazy = true },
+  { "sainnhe/edge", lazy = true },
+  { "shaunsingh/nord.nvim", lazy = true },
+  { "sainnhe/sonokai", lazy = true },
+  { "sainnhe/gruvbox-material", lazy = true },
+  { "sainnhe/everforest", lazy = true },
+  { "EdenEast/nightfox.nvim", lazy = true },
+  { "catppuccin/nvim", name = "catppuccin", lazy = true },
+  { "olimorris/onedarkpro.nvim", lazy = true },
   { "marko-cerovac/material.nvim", lazy = true },
   {
     "rockyzhang24/arctic.nvim",
@@ -156,7 +156,7 @@ local plugin_specs = {
     name = "arctic",
     branch = "v2",
   },
-  { "rebelot/kanagawa.nvim",       lazy = true },
+  { "rebelot/kanagawa.nvim", lazy = true },
   { "nvim-tree/nvim-web-devicons", event = "VeryLazy" },
 
   {
@@ -245,7 +245,7 @@ local plugin_specs = {
       end
     end,
     dependencies = { "nvim-lua/plenary.nvim" },
-    config = true,    -- default settings
+    config = true, -- default settings
     submodules = false, -- not needed, submodules are required only for tests
   },
 
@@ -280,16 +280,16 @@ local plugin_specs = {
   },
 
   -- Comment plugin
-  { "tpope/vim-commentary",     event = "VeryLazy" },
+  { "tpope/vim-commentary", event = "VeryLazy" },
 
   -- Multiple cursor plugin like Sublime Text?
   { "mg979/vim-visual-multi" },
 
   -- Autosave files on certain events
-  { "907th/vim-auto-save",      event = "InsertEnter" },
+  { "907th/vim-auto-save", event = "InsertEnter" },
 
   -- Show undo history visually
-  { "simnalamburt/vim-mundo",   cmd = { "MundoToggle", "MundoShow" } },
+  { "simnalamburt/vim-mundo", cmd = { "MundoToggle", "MundoShow" } },
 
   -- better UI for some nvim actions
   { "stevearc/dressing.nvim" },
@@ -304,10 +304,10 @@ local plugin_specs = {
   },
 
   -- Handy unix command inside Vim (Rename, Move etc.)
-  { "tpope/vim-eunuch",          cmd = { "Rename", "Delete" } },
+  { "tpope/vim-eunuch", cmd = { "Rename", "Delete" } },
 
   -- Repeat vim motions
-  { "tpope/vim-repeat",          event = "VeryLazy" },
+  { "tpope/vim-repeat", event = "VeryLazy" },
 
   { "nvim-zh/better-escape.vim", event = { "InsertEnter" } },
 
@@ -334,7 +334,7 @@ local plugin_specs = {
   },
 
   -- Auto format tools
-  { "sbdchd/neoformat",          cmd = { "Neoformat" } },
+  { "sbdchd/neoformat", cmd = { "Neoformat" } },
 
   -- Git command inside vim
   {
@@ -346,8 +346,8 @@ local plugin_specs = {
   },
 
   -- Better git log display
-  { "rbong/vim-flog",            cmd = { "Flog" } },
-  { "akinsho/git-conflict.nvim", version = "*",        config = true },
+  { "rbong/vim-flog", cmd = { "Flog" } },
+  { "akinsho/git-conflict.nvim", version = "*", config = true },
   {
     "ruifm/gitlinker.nvim",
     event = "User InGitRepo",
@@ -364,9 +364,6 @@ local plugin_specs = {
     end,
   },
 
-  -- Better git commit experience
-  { "rhysd/committia.vim",              lazy = true },
-
   {
     "sindrets/diffview.nvim",
   },
@@ -380,13 +377,13 @@ local plugin_specs = {
   },
 
   -- Another markdown plugin
-  { "preservim/vim-markdown",           ft = { "markdown" } },
+  { "preservim/vim-markdown", ft = { "markdown" } },
 
   -- Faster footnote generation
   { "vim-pandoc/vim-markdownfootnotes", ft = { "markdown" } },
 
   -- Vim tabular plugin for manipulate tabular, required by markdown plugins
-  { "godlygeek/tabular",                cmd = { "Tabularize" } },
+  { "godlygeek/tabular", cmd = { "Tabularize" } },
 
   -- Markdown previewing (only for Mac and Windows)
   {
@@ -412,14 +409,14 @@ local plugin_specs = {
     ft = { "markdown" },
   },
 
-  { "chrisbra/unicode.vim",            event = "VeryLazy" },
+  { "chrisbra/unicode.vim", event = "VeryLazy" },
 
   -- Additional powerful text object for vim, this plugin should be studied
   -- carefully to use its full power
-  { "wellle/targets.vim",              event = "VeryLazy" },
+  { "wellle/targets.vim", event = "VeryLazy" },
 
   -- Plugin to manipulate character pairs quickly
-  { "machakann/vim-sandwich",          event = "VeryLazy" },
+  { "machakann/vim-sandwich", event = "VeryLazy" },
 
   -- Add indent object for vim (useful for languages like Python)
   { "michaeljsmith/vim-indent-object", event = "VeryLazy" },
@@ -456,12 +453,12 @@ local plugin_specs = {
   },
 
   -- Modern matchit implementation
-  { "andymass/vim-matchup",     event = "BufRead" },
-  { "tpope/vim-scriptease",     cmd = { "Scriptnames", "Messages", "Verbose" } },
+  { "andymass/vim-matchup", event = "BufRead" },
+  { "tpope/vim-scriptease", cmd = { "Scriptnames", "Messages", "Verbose" } },
 
   -- Asynchronous command execution
-  { "skywind3000/asyncrun.vim", lazy = true,                                   cmd = { "AsyncRun" } },
-  { "cespare/vim-toml",         ft = { "toml" },                               branch = "main" },
+  { "skywind3000/asyncrun.vim", lazy = true, cmd = { "AsyncRun" } },
+  { "cespare/vim-toml", ft = { "toml" }, branch = "main" },
 
   -- Edit text area in browser using nvim
   {
@@ -501,7 +498,7 @@ local plugin_specs = {
   },
 
   -- Session management plugin
-  { "tpope/vim-obsession",   cmd = "Obsession" },
+  { "tpope/vim-obsession", cmd = "Obsession" },
 
   {
     "ojroques/vim-oscyank",
@@ -572,9 +569,17 @@ local plugin_specs = {
     end,
     event = "VeryLazy",
   },
+  {
+    -- show hint for code actions, the user can also implement code actions themselves,
+    -- see discussion here: https://github.com/neovim/neovim/issues/14869
+    "kosayoda/nvim-lightbulb",
+    config = function()
+      require("nvim-lightbulb").setup { autocmd = { enabled = true } }
+    end,
+  },
 }
 
-require("lazy").setup({
+require("lazy").setup {
   spec = plugin_specs,
   ui = {
     border = "rounded",
@@ -584,4 +589,4 @@ require("lazy").setup({
   rocks = {
     enabled = false,
   },
-})
+}

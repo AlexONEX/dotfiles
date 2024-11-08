@@ -1,21 +1,25 @@
-vim.opt_local.expandtab = true
-vim.opt_local.shiftwidth = 2
-vim.opt_local.softtabstop = 2
-vim.opt_local.tabstop = 2
+vim.bo.expandtab = true
+vim.bo.shiftwidth = 2
+vim.bo.softtabstop = 2
+vim.bo.tabstop = 2
 vim.opt_local.formatoptions:remove({ "o", "r" })
 
--- Function to format with StyLua and save
-_G.format_and_save = function()
-	vim.cmd("silent !stylua %")
-	vim.cmd("edit") -- Reload the file
-	vim.cmd("write")
+if not _G.format_and_save then
+	_G.format_and_save = function()
+		vim.cmd("silent !stylua %")
+		vim.cmd("edit")
+		vim.cmd("write")
+	end
 end
 
--- Function to run the Lua script
-_G.run_lua = function()
-	vim.cmd("luafile %")
+if not _G.run_lua then
+	_G.run_lua = function()
+		vim.cmd("luafile %")
+	end
 end
 
 -- Key mappings
-vim.api.nvim_buf_set_keymap(0, "n", "<C-s>", ":lua _G.format_and_save()<CR>", { noremap = true, silent = true })
-vim.api.nvim_buf_set_keymap(0, "n", "<F9>", ":lua _G.run_lua()<CR>", { noremap = true, silent = true })
+local opts = { buffer = true, silent = true }
+vim.keymap.set("n", "<C-s>", _G.format_and_save, opts)
+vim.keymap.set("n", "<F9>", _G.run_lua, opts)
+vim.keymap.set("n", "<space>f", "<cmd>!stylua %<CR>", opts)
