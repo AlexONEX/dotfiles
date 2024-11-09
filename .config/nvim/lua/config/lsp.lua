@@ -256,19 +256,6 @@ if utils.executable("clangd") then
   }
 end
 
--- set up vim-language-server
-if utils.executable("vim-language-server") then
-  lspconfig.vimls.setup {
-    on_attach = custom_attach,
-    flags = {
-      debounce_text_changes = 500,
-    },
-    capabilities = capabilities,
-  }
-else
-  vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Nvim-config" })
-end
-
 -- set up bash-language-server
 if utils.executable("bash-language-server") then
   lspconfig.bashls.setup {
@@ -282,19 +269,40 @@ if utils.executable("lua-language-server") then
   -- settings for lua-language-server can be found on https://github.com/LuaLS/lua-language-server/wiki/Settings .
   lspconfig.lua_ls.setup {
     on_attach = custom_attach,
+    capabilities = capabilities,
     settings = {
       Lua = {
         runtime = {
-          -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
           version = "LuaJIT",
         },
-        hint = {
+        diagnostics = {
+          globals = { "vim" },
+        },
+        workspace = {
+          library = vim.api.nvim_get_runtime_file("", true),
+          checkThirdParty = false,
+        },
+        telemetry = {
+          enable = false,
+        },
+        format = {
           enable = true,
+          defaultConfig = {
+            indent_style = "space",
+            indent_size = "2",
+          },
         },
       },
     },
-    capabilities = capabilities,
+    -- Agregar soporte para archivos Vim
+    filetypes = { "lua", "vim" },
+    single_file_support = true,
+    flags = {
+      debounce_text_changes = 500,
+    },
   }
+else
+  vim.notify("lua-language-server not found!", vim.log.levels.WARN, { title = "Nvim-config" })
 end
 
 if utils.executable("rust-analyzer") then

@@ -54,6 +54,7 @@ paru -S --needed \
     luacheck \
     stylua \
     texlab \
-    latexmk
+    latexmk \
+    latexindent
 
 echo "Finished paru installation"

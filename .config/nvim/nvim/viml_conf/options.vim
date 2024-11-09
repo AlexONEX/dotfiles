@@ -17,7 +17,50 @@ set updatetime=500  " For CursorHold events
 
 " Clipboard settings, always use clipboard for all delete, yank, change, put
 " operation, see https://stackoverflow.com/q/30691466/6064933
-if !empty(provider#clipboard#Executable())
+if has('unix')
+  if has('mac')
+    " macOS clipboard settings
+    set clipboard=unnamed
+  else
+    " Linux clipboard settings
+    if executable('xclip')
+      let g:clipboard = {
+            \   'name': 'xclip',
+            \   'copy': {
+            \      '+': 'xclip -selection clipboard',
+            \      '*': 'xclip -selection primary',
+            \    },
+            \   'paste': {
+            \      '+': 'xclip -selection clipboard -o',
+            \      '*': 'xclip -selection primary -o',
+            \   },
+            \   'cache_enabled': 1,
+            \ }
+      set clipboard+=unnamedplus
+    elseif executable('xsel')
+      let g:clipboard = {
+            \   'name': 'xsel',
+            \   'copy': {
+            \      '+': 'xsel --clipboard --input',
+            \      '*': 'xsel --primary --input',
+            \    },
+            \   'paste': {
+            \      '+': 'xsel --clipboard --output',
+            \      '*': 'xsel --primary --output',
+            \   },
+            \   'cache_enabled': 1,
+            \ }
+      set clipboard+=unnamedplus
+    endif
+  endif
+endif
+
+" Reemplaza la línea existente que verifica el clipboard
+if empty(provider#clipboard#Executable())
+  echohl WarningMsg
+  echo "No clipboard provider found. Install xclip or xsel."
+  echohl None
+else
   set clipboard+=unnamedplus
 endif
 

@@ -1,7 +1,7 @@
 local M = {}
 
 vim.bo.commentstring = "-- %s"
-vim.opt_local.formatoptions:remove({ "o", "r" })
+vim.opt_local.formatoptions:remove { "o", "r" }
 
 local haskell_flags = table.concat({
   "-Wall",
@@ -72,30 +72,48 @@ function M.run_hlint()
 end
 
 function M.setup()
-  vim.api.nvim_buf_set_keymap(0, "n", "<F9>", ":lua HaskellUtils.compile_run_haskell()<CR>",
-    { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    "n",
+    "<F9>",
+    ":lua HaskellUtils.compile_run_haskell()<CR>",
+    { noremap = true, silent = true }
+  )
   vim.api.nvim_buf_set_keymap(0, "n", "<F10>", ":lua HaskellUtils.run_haskell()<CR>", { noremap = true, silent = true })
-  vim.api.nvim_buf_set_keymap(0, "n", "<F11>", ":lua HaskellUtils.compile_run_haskell()<CR>",
-    { noremap = true, silent = true })
-  vim.api.nvim_buf_set_keymap(0, "n", "<C-s>", ":lua HaskellUtils.format_haskell()<CR>",
-    { noremap = true, silent = true })
-  vim.api.nvim_buf_set_keymap(0, "n", "<leader>hl", ":lua HaskellUtils.run_hlint()<CR>",
-    { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    "n",
+    "<F11>",
+    ":lua HaskellUtils.compile_run_haskell()<CR>",
+    { noremap = true, silent = true }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    "n",
+    "<C-s>",
+    ":lua HaskellUtils.format_haskell()<CR>",
+    { noremap = true, silent = true }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    "n",
+    "<leader>hl",
+    ":lua HaskellUtils.run_hlint()<CR>",
+    { noremap = true, silent = true }
+  )
 
   local lspconfig = require("lspconfig")
-  lspconfig.hls.setup({
+  lspconfig.hls.setup {
     settings = {
       haskell = {
         formattingProvider = "ormolu",
         checkProject = true,
       },
     },
-  })
-
+  }
   vim.g.neoformat_enabled_haskell = { "ormolu" }
   vim.g.neoformat_try_formatprg = 1
 end
 
 _G.HaskellUtils = M
-
 return M

@@ -97,6 +97,33 @@ fstring() {
   fi
 }
 
+FSTRING() {
+  local file_and_line=$(
+    rg --color=always \
+       --line-number \
+       --no-heading \
+       --case-sensitive \
+       --fixed-strings \
+       --word-regexp \
+       "${1:-}" |
+      fzf --ansi \
+          --exact \
+          --color "hl:-1:underline,hl+:-1:underline:reverse" \
+          --delimiter : \
+          --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
+          --preview-window 'right,60%,border-bottom,+{2}+3/3,~3'
+  )
+  if [[ -n $file_and_line ]]; then
+    local file=$(echo "$file_and_line" | cut -d: -f1)
+    local line=$(echo "$file_and_line" | cut -d: -f2)
+    if [[ -n $EDITOR ]]; then
+      $EDITOR "$file" +$line
+    else
+      vim "$file" +$line
+    fi
+  fi
+}
+
 alias k='pkill -9'
 alias bl='xbacklight -get'
 
