@@ -52,6 +52,8 @@ paru -S --needed \
     ghcid \
     lua-language-server \
     luacheck \
-    stylua
+    stylua \
+    texlab \
+    latexmk
 
 echo "Finished paru installation"
