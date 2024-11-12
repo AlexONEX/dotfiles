@@ -642,3 +642,178 @@ snippet DD "D" iA
 endsnippet
 
 # vim:ft=snippets
+
+snippet preamble "Preámbulo LaTeX completo" b
+
+
+\documentclass[a4paper,twoside]{article}
+
+%----------------------------------------------------------------------------------------
+%	BASIC PACKAGES
+%----------------------------------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{parskip}      % No indent paragraphs
+\usepackage{emptypage}    % Hide page numbers on empty pages
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{url}
+
+%----------------------------------------------------------------------------------------
+%	MATH PACKAGES AND SETTINGS
+%----------------------------------------------------------------------------------------
+\usepackage{amsmath, amsfonts, mathtools, amsthm, amssymb}
+\usepackage{mathrsfs}    % Fancy script capitals
+\usepackage{cancel}      % Cancel terms
+\usepackage{bm}         % Bold math
+\usepackage{stmaryrd}   % For \lightning symbol
+
+% Math shortcuts
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}}
+\newcommand{\C}{\ensuremath{\mathbb{C}}}
+\renewcommand{\O}{\ensuremath{\emptyset}}
+
+% Math notation
+\let\implies\Rightarrow
+\let\impliedby\Leftarrow
+\let\iff\Leftrightarrow
+\let\epsilon\varepsilon
+\let\svlim\lim\def\lim{\svlim\limits}  % Put x \to \infty below \lim
+
+% Contradiction symbol
+\newcommand{\contra}{\scalebox{1.5}{$\lightning$}}
+
+%----------------------------------------------------------------------------------------
+%	CUSTOM ENVIRONMENTS
+%----------------------------------------------------------------------------------------
+\usepackage{mdframed}
+\mdfsetup{skipabove=1em,skipbelow=0em}
+
+% Theorem environments
+\theoremstyle{definition}
+\newmdtheoremenv[nobreak=true]{definition}{Definition}
+\newmdtheoremenv[nobreak=true]{theorem}{Theorem}
+\newmdtheoremenv[nobreak=true]{proposition}{Proposition}
+\newmdtheoremenv[nobreak=true]{corollary}{Corollary}
+
+% Other math environments
+\newtheorem*{example}{Example}
+\newtheorem*{remark}{Remark}
+\newtheorem*{notation}{Notation}
+\newtheorem*{observe}{Observation}
+\newtheorem*{problem}{Problem}
+\newtheorem*{intuition}{Intuition}
+
+%----------------------------------------------------------------------------------------
+%	EXERCISE ENVIRONMENT
+%----------------------------------------------------------------------------------------
+\newcounter{exercise}
+\newcommand{\exercise}[1]{%
+    \stepcounter{exercise}%
+    \subsection*{Exercise \theexercise: #1}
+}
+
+\newcounter{subexercise}[exercise]
+\newcommand{\subexercise}{%
+    \stepcounter{subexercise}%
+    \subsubsection*{Exercise \theexercise.\thesubexercise}
+}
+
+%----------------------------------------------------------------------------------------
+%	LECTURE ENVIRONMENT
+%----------------------------------------------------------------------------------------
+\usepackage{xifthen}
+
+\newcommand{\lecture}[3]{%
+    \subsection*{Lecture #1: #3}
+    \marginpar{\small\textsf{#2}}
+}
+
+%----------------------------------------------------------------------------------------
+%	HEADER AND FOOTER
+%----------------------------------------------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\fancyhead{}  % Clear all headers
+\fancyfoot{}  % Clear all footers
+
+\fancyhead[RO]{\rightmark}            % Right odd
+\fancyhead[LE]{\leftmark}             % Left even
+\fancyfoot[RO,LE]{\thepage}           % Page numbers
+
+%----------------------------------------------------------------------------------------
+%	BOXES AND NOTES
+%----------------------------------------------------------------------------------------
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+
+% Note box
+\newenvironment{notebox}[1]{%
+    \begin{tcolorbox}[
+        breakable,
+        arc=0mm,
+        colback=white,
+        colframe=black!40,
+        title=#1,
+        fonttitle=\sffamily
+    ]
+}{%
+    \end{tcolorbox}
+}
+
+% Important box
+\newenvironment{important}[1]{%
+    \begin{tcolorbox}[
+        breakable,
+        arc=0mm,
+        colback=white,
+        colframe=red!60!black,
+        title=#1,
+        fonttitle=\sffamily
+    ]
+}{%
+    \end{tcolorbox}
+}
+
+%----------------------------------------------------------------------------------------
+%	CORRECTION COMMANDS
+%----------------------------------------------------------------------------------------
+\definecolor{correct}{HTML}{009900}
+\newcommand{\correction}[2]{%
+    \ensuremath{\:}{\color{red}{#1}}\ensuremath{\to}{\color{correct}{#2}}\ensuremath{\:}%
+}
+\newcommand{\green}[1]{{\color{correct}{#1}}}
+
+%----------------------------------------------------------------------------------------
+%	FIGURE SUPPORT
+%----------------------------------------------------------------------------------------
+\usepackage{import}
+\usepackage{transparent}
+
+\newcommand{\incfig}[1]{%
+    \def\svgwidth{\columnwidth}
+    \import{./figures/}{#1.pdf_tex}
+}
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT INFORMATION
+%----------------------------------------------------------------------------------------
+\author{Alejandro Ezequiel Schwartzmann}
+
+% Suppress PDf warning
+\pdfsuppresswarningpagegroup=1
+
+\begin{document}
+
+\end{document}
+endsnippet
