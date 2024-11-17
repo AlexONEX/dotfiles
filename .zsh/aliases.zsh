@@ -62,9 +62,21 @@ alias ct='$EDITOR ~/.config/tmux/tmux.conf'
 
 #list all installed packages
 alias pkglist='paru -Qe > ~/pkglist.txt'
-alias tocp='xclip -sel c'
 alias cf='cat $1 | xclip -sel c'
 alias calibre='fzf-calibre'
+
+if command -v xclip >/dev/null 2>&1; then
+  alias tocp='xclip -selection clipboard'
+  alias fromcp='xclip -selection clipboard -o'
+elif command -v xsel >/dev/null 2>&1; then
+  alias tocp='xsel --clipboard --input'
+  alias fromcp='xsel --clipboard --output'
+else
+  echo "Neither xclip nor xsel found. Please install one of them."
+  # Create dummy aliases that show error message
+  alias tocp='echo "No clipboard provider installed (xclip/xsel required)"'
+  alias fromcp='echo "No clipboard provider installed (xclip/xsel required)"'
+fi
 
 # fzz
 alias vif='vim $(fzf)'

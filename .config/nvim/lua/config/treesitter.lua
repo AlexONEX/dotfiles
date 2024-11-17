@@ -6,11 +6,11 @@ require("nvim-treesitter.configs").setup({
 		"vim",
 		"json",
 		"toml",
-		"latex", -- Para archivos LaTeX
-		"sql", -- Para archivos SQL
-		"bibtex", -- Útil para referencias en LaTeX
-		"markdown", -- Útil para documentación y comentarios
-		"markdown_inline", -- Para mejor soporte de Markdown
+		"latex",
+		"sql",
+		"bibtex",
+		"markdown",
+		"markdown_inline",
 	},
 	ignore_install = {}, -- List of parsers to ignore installing
 	sync_install = false,
