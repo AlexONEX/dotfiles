@@ -71,3 +71,10 @@ export EDITOR='nvim'
 
 export PATH=$PATH:/home/mars/.spicetify
 export HISTFILE=/dev/null
+
+# if ~/secure/ exists, source all files in it
+if [ -d ~/secure ]; then
+    for file in ~/secure/*; do
+        source $file
+    done
+fi
