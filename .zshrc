@@ -71,6 +71,7 @@ export EDITOR='nvim'
 
 export PATH=$PATH:/home/mars/.spicetify
 export HISTFILE=/dev/null
+export LISTEN_ADDR="127.0.0.1:9021"
 
 # if ~/secure/ exists, source all files in it
 if [ -d ~/secure ]; then

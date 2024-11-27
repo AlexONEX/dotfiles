@@ -42,7 +42,6 @@ run xfce4-power-manager &
 dunst &
 numlockx on &
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
-export LISTEN_ADDR="127.0.0.1:9021"
 run miniflux &
 #blueberry-tray &
 #picom --config $HOME/.config/bspwm/picom.conf &
