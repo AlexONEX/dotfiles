@@ -79,3 +79,35 @@ if [ -d ~/secure ]; then
         source $file
     done
 fi
+
+# Function to copy last command output to clipboard
+last_cmd_output() {
+    # Get the last command excluding 'lcopy' itself
+    local last_cmd=$(fc -ln -1 | grep -v "lcopy")
+
+    # Execute the command and capture output
+    local output=$(eval "$last_cmd" 2>&1)
+
+    if [[ -n "$output" ]]; then
+        if command -v xclip >/dev/null 2>&1; then
+            printf '%s\n' "$output" | xclip -selection clipboard
+        elif command -v xsel >/dev/null 2>&1; then
+            printf '%s\n' "$output" | xsel --clipboard --input
+        elif command -v pbcopy >/dev/null 2>&1; then
+            printf '%s\n' "$output" | pbcopy
+        else
+            echo "Error: No clipboard command found. Please install xclip, xsel, or pbcopy"
+            return 1
+        fi
+        echo "Output copied to clipboard:"
+        echo "--------------------------"
+        echo "$output"
+    else
+        echo "No command output found"
+    fi
+}
+
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /home/mars/.dart-cli-completion/zsh-config.zsh ]] && . /home/mars/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
