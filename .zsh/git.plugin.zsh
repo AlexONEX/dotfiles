@@ -292,7 +292,7 @@ function ggfl() {
 compdef _git ggfl=git-checkout
 
 alias gpsup='git push --set-upstream origin $(git_current_branch)'
-alias gpsupf='git push --set-upstream origin $(git_current_branch) --force-with-lease --force-if-includes' 
+alias gpsupf='git push --set-upstream origin $(git_current_branch) --force-with-lease --force-if-includes'
 alias gpsupf='git push --set-upstream origin $(git_current_branch) --force-with-lease'
 alias gpv='git push --verbose'
 alias gpoat='git push origin --all && git push origin --tags'
@@ -403,3 +403,45 @@ for old_alias new_alias (
     $new_alias"
 done
 unset old_alias new_alias
+
+create_git_repo() {
+    command -v git >/dev/null 2>&1 || {
+        echo "Error: git is not installed"
+        return 1
+    }
+
+    command -v gh >/dev/null 2>&1 || {
+        echo "Error: GitHub CLI (gh) is not installed"
+        return 1
+    }
+
+    git rev-parse --git-dir > /dev/null 2>&1 || {
+        echo "Error: Not a git repository"
+        return 1
+    }
+
+    remote_url=$(git config --get remote.origin.url 2>/dev/null)
+
+    if [ -z "$remote_url" ]; then
+        git_root=$(git rev-parse --show-toplevel)
+        repo_name=${git_root:t}
+        git_user=$(git config user.name)
+
+        if [ -z "$git_user" ]; then
+            echo "Error: Git username not found in config. Please set it with: git config --global user.name 'username'"
+            return 1
+        fi
+
+        echo "Creating repository on GitHub..."
+        gh repo create "$repo_name" --private --source=. --push || {
+            echo "Error: Failed to create repository on GitHub"
+            return 1
+        }
+
+        echo "Successfully created repository $repo_name"
+        return 0
+    else
+        echo "Remote repository already exists"
+        return 0
+    fi
+}

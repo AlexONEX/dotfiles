@@ -396,3 +396,5 @@ extractf() {
     echo "File '$1' not found"
   fi
 }
+
+alias lcopy='last_cmd_output'

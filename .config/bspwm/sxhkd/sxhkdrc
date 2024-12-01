@@ -1,6 +1,6 @@
 # KEYBOARD BINDINGS FOR ANY TWM
 #################################################################
-
+entr -np pkill -USR1 -x sxhkd &
 #################################################################
 # SUPER + FUNCTION KEYS
 #################################################################
@@ -118,7 +118,7 @@ super + KP_Enter
 #################################################################
 
 #File-Manager
-super + shift + Return
+super + shift + f
 	thunar
 
 #Keyboard dependent
