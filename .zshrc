@@ -72,12 +72,12 @@ export EDITOR='nvim'
 export PATH=$PATH:/home/mars/.spicetify
 export HISTFILE=/dev/null
 export LISTEN_ADDR="127.0.0.1:9021"
+export PATH=~/.npm-global/bin:$PATH
 
 # if ~/secure/ exists, source all files in it
 if [ -d ~/secure ]; then
-    for file in ~/secure/*; do
-        source $file
-    done
+    chmod 600 ~/secure/*
+    export $(grep -v '^#' ~/secure/credentials.env | xargs)
 fi
 
 # Function to copy last command output to clipboard
