@@ -121,11 +121,6 @@ super + KP_Enter
 super + shift + f
 	thunar
 
-#Keyboard dependent
-#File-Manager
-#super + shift + KP_Enter
-#	thunar
-
 #rofi
 super + shift + d
     ~/.config/bspwm/launcher/launcher.sh
@@ -134,9 +129,9 @@ super + shift + d
 super + shift + s
 	pkill -USR1 -x sxhkd
 
-#Keyboard dependent
-#super + shift + KP_Enter
-#	thunar
+super + shift + m
+  spotify
+
 
 
 #################################################################
@@ -249,14 +244,6 @@ alt + p
 #Wallpaper favorite
 alt + f
     variety -f
-
-#Wallpaper previous
-alt + Left
-    variety -p
-
-#Wallpaper next
-alt + Right
-    variety -n
 
 #Wallpaper toggle-pause
 alt + Up
@@ -430,6 +417,14 @@ super + Tab
 super + {Left,Down,Up,Right}
     bspc node -f {west,south,north,east}
 
+#dunstctl close all
+super + semicolon
+    dunstctl close-all
+
+#dunst show last notification
+super + period
+    dunstctl history-pop
+
 #################################################################
 # SUPER + ALT KEYS
 #################################################################
@@ -466,10 +461,6 @@ super + shift + r
 #kill
 super + shift + q
 	bspc node -c
-
-#Logout
-#super + shift + x
-#	bspc quit
 
 super + shift + {Left,Down,Up,Right}
     bspc node -s {west,south,north,east}
