@@ -22,4 +22,4 @@ end
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<C-s>", _G.format_and_save, opts)
 vim.keymap.set("n", "<F9>", _G.run_lua, opts)
-vim.keymap.set("n", "<space>f", "<cmd>!stylua %<CR>", opts)
+vim.keymap.set("n", "<space>f", "<cmd>silent !stylua %<CR>", opts)
