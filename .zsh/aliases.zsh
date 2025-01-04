@@ -1,6 +1,9 @@
 # SHORTCUTS
 alias hacker-news='hackernews_tui'
 alias dotfiles='~/dotfiles/scripts/sync_dotfiles.sh'
+bak() {
+    cp "$1" "$1.bak"
+}
 
 paru() {
     command nice -n 10 ionice -c 3 /usr/bin/paru "$@"
@@ -392,9 +395,80 @@ extractf() {
       *.7z)      7z x "../$1" ;;
       *)         echo "'$1' cannot be extracted via extractf()" ;;
     esac
+    cd ..
   else
     echo "File '$1' not found"
   fi
 }
 
-alias lcopy='last_cmd_output'
+extractfall() {
+  # Desactivar 'nomatch' temporalmente
+  setopt +o nomatch
+
+  # Encontrar todos los archivos comprimidos en el directorio actual
+  local files=(*.tar.bz2 *.tar.gz *.bz2 *.rar *.gz *.tar *.tbz2 *.tgz *.zip *.Z *.7z)
+
+  # Restaurar 'nomatch'
+  setopt nomatch
+
+  # Verificar si hay archivos que procesar
+  if [ ${#files[@]} -eq 0 ]; then
+    echo "No se encontraron archivos comprimidos en el directorio actual"
+    return
+  fi
+
+  # Procesar cada archivo encontrado
+  for file in "${files[@]}"; do
+    if [ -f "$file" ]; then
+      extractf "$file"
+    fi
+  done
+}
+
+mount_ntfs() {
+    sudo mkdir -p /mnt/external
+
+    local drives=($(lsblk -o NAME,FSTYPE -n -l | grep "ntfs" | awk '{print $1}'))
+
+    if [ ${#drives[@]} -eq 0 ]; then
+        echo "❌ No NTFS hard drive connected"
+        return 1
+    fi
+
+    echo "💾 Discos NTFS encontrados:"
+    local i=1
+    for drive in "${drives[@]}"; do
+        local label=$(lsblk -o NAME,LABEL -n -l | grep "$drive" | awk '{$1=""; print $0}' | xargs)
+        local size=$(lsblk -o NAME,SIZE -n -l | grep "$drive" | awk '{print $2}')
+        echo "[$i] /dev/$drive (${label:-Sin etiqueta}, $size)"
+        ((i++))
+    done
+
+    # Si hay más de uno, pedir selección
+    local selected_drive
+    if [ ${#drives[@]} -gt 1 ]; then
+        echo "\nNumber of disk to mount (1-${#drives[@]}):"
+        read -k 1 selection
+        if [[ $selection -lt 1 ]] || [[ $selection -gt ${#drives[@]} ]]; then
+            echo "\n❌ Invalid selection"
+            return 1
+        fi
+        selected_drive="/dev/${drives[$selection-1]}"
+    else
+        selected_drive="/dev/${drives[0]}"
+    fi
+
+    sudo umount $selected_drive 2>/dev/null
+    sudo fuser -k $selected_drive 2>/dev/null
+
+    # Reparar y montar
+    echo "\n🔧 Repairing disk..."
+    sudo ntfsfix $selected_drive
+    echo "🚀 Mounting..."
+    if sudo mount -t ntfs-3g -o rw,uid=$(id -u),gid=$(id -g),windows_names $selected_drive /mnt/external; then
+        echo "✅ Mounted in /mnt/external"
+    else
+        echo "❌ Error"
+        return 1
+    fi
+}

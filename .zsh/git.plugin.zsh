@@ -75,6 +75,7 @@ function work_in_progress() {
 # (order should follow README)
 
 alias grt='cd "$(git rev-parse --show-toplevel || echo .)"'
+alias git-clean='git branch | grep -v "dev" | grep -v "main" | xargs git branch -D'
 
 function ggpnp() {
   if [[ "$#" == 0 ]]; then
