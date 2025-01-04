@@ -2,6 +2,7 @@
   delete-local-merged = "!git fetch && git branch --merged | egrep -v \"(\\*|master|main|dev)|\" | xargs git branch -d"
 [branch]
   sort = -committerdate
+	autoSetupMerge = always
 [commit]
   verbolse = true
   cleanup = scissors
@@ -34,7 +35,8 @@
 	insteadOf = "https://github.com/"
 [push]
   autoSetupMerge = true
-  autoSetupRemote = true
+	autoSetupRemote = true
+	default = current
 [receive]
   fsckObjects = true
 [submodule]
