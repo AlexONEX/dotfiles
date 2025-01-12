@@ -15,7 +15,7 @@ super + F2
 
 #Inkscape
 super + F3
-    inkscape
+  alacritty -e nvim
 
 #Gimp
 super + F4
@@ -58,8 +58,12 @@ super + F12
 #################################################################
 
 #Code
-super + e
+super + c
     code
+
+#Nvim
+super + e
+    alacritty -e nvim
 
 #Browser
 super + n
@@ -67,10 +71,6 @@ super + n
 
 super + shift + n
    firefox -private-window
-
-#Conky-toggle
-super + c
-    conky-toggle
 
 #Thunderbird
 super + m
@@ -80,7 +80,7 @@ super + m
 super + x
     archlinux-logout
 
-#powermene
+#powermenu
 super + shift + x
     arcolinux-powermenu
 
@@ -88,20 +88,12 @@ super + shift + x
 super + r
     rofi-theme-selector
 
-#Urxvt
-super + t
-    urxvt
-
 #Pavucontrol
 super + v
     pavucontrol
 
-#Audio player
-super + m
-    lollypop
-
 #alacritty
-super + Return
+super + t
     alacritty -e tmux new-session -A -s main
 
 #Xkill
@@ -110,8 +102,8 @@ super + Escape
 
 #Keyboard dependent
 #alacritty
-super + KP_Enter
-	alacritty
+super + Return
+   alacritty -e tmux new-session -A -s main
 
 #################################################################
 # SUPER + SHIFT KEYS
@@ -132,98 +124,9 @@ super + shift + s
 super + shift + m
   spotify
 
-
-
 #################################################################
 # CONTROL + ALT KEYS
 #################################################################
-
-#arcolinux-welcome-app
-ctrl + alt + w
-     arcolinux-welcome-app
-
-#archlinux-tweak-tool
-ctrl + alt + e
-    archlinux-tweak-tool
-
-#conky-rotate
-ctrl + alt + Next
-     conky-rotate -n
-
-#conky-rotate
-ctrl + alt + Prior
-    conky-rotate -p
-
-#File-Manager
-ctrl + alt + b
-     thunar
-
-#Catfish
-ctrl + alt + c
-     catfish
-
-#Chromium
-ctrl + alt + g
-    chromium -no-default-browser-check
-
-#Firefox
-ctrl + alt + f
-     firefox
-
-#Nitrogen
-ctrl + alt + i
-     nitrogen
-
-#archlinux-logout
-ctrl + alt + k
-     archlinux-logout
-
-#archlinux-logout
-ctrl + alt + l
-    archlinux-logout
-
-#Pamac-manager
-ctrl + alt + p
-    pamac-manager
-
-#Xfce4-settings-manager
-ctrl + alt + m
-     xfce4-settings-manager
-
-#Pulse Audio Control
-ctrl + alt + u
-     pavucontrol
-
-#Rofi theme selector
-ctrl + alt + r
-  rofi-theme-selector
-
-#Spotify
-ctrl + alt + s
-   spotify
-
-#alacritty
-ctrl + alt + Return
-    alacritty
-
-#alacritty
-ctrl + alt + t
-    alacritty
-
-#Vivaldi
-ctrl + alt + v
-    vivaldi-stable
-
-#Xfce4-appfinder
-ctrl + alt + a
-    xfce4-appfinder
-
-
-#Keyboard dependent
-#alacritty
-#ctrl + alt + KP_Enter
-#     alacritty
-
 
 #################################################################
 # ALT + ... KEYS
@@ -233,25 +136,9 @@ ctrl + alt + a
 alt + t
     variety -t
 
-#Wallpaper next
-alt + n
-    variety -n
-
-#Wallpaper previous
-alt + p
-    variety -p
-
-#Wallpaper favorite
-alt + f
-    variety -f
-
-#Wallpaper toggle-pause
-alt + Up
-    variety --toggle-pause
-
-#Wallpaper resume
-alt + Down
-    variety --resume
+#Wallpaper
+alt + {n,p}
+    feh --bg-fill --randomize ~/.local/share/wallpapers/*
 
 #Xfce appfinder
 alt + F2
@@ -261,35 +148,6 @@ alt + F2
 alt + F3
     xfce4-appfinder
 
-#Xlunch app launcher
-#alt + F5
-#    xlunch --config ~/.config/xlunch/default.conf --input ~/.config/xlunch/entries.dsv
-
-
-#################################################################
-#VARIETY KEYS WITH PYWAL
-#################################################################
-
-#Wallpaper trash
-alt + shift + t
-    variety -t && wal -i $(cat $HOME/.config/variety/wallpaper/wallpaper.jpg.txt)&
-
-#Wallpaper next
-alt + shift + n
-    variety -n && wal -i $(cat $HOME/.config/variety/wallpaper/wallpaper.jpg.txt)&
-
-#Wallpaper previous
-alt + shift + p
-    variety -p && wal -i $(cat $HOME/.config/variety/wallpaper/wallpaper.jpg.txt)&
-
-#Wallpaper favorite
-alt + shift + f
-    variety -f && wal -i $(cat $HOME/.config/variety/wallpaper/wallpaper.jpg.txt)&
-
-#Wallpaper update
-alt + shift + u
-    wal -i $(cat $HOME/.config/variety/wallpaper/wallpaper.jpg.txt)&
-
 #################################################################
 # CONTROL + SHIFT KEYS
 #################################################################
@@ -297,7 +155,6 @@ alt + shift + u
 #Xcfe4-TaskManager
 ctrl + shift + Escape
     xfce4-taskmanager
-
 
 #################################################################
 #     SCREENSHOTS
@@ -314,7 +171,6 @@ Print
 #xfce4-terminal dropdown
 F12
     xfce4-terminal --drop-down -e "tmux new-session -A -s bkgr"
-
 
 #################################################################
 #     MULTIMEDIA KEYS
@@ -493,20 +349,20 @@ super + shift + Up
 super + shift + Down
 		bspc node -m next --follow
 
-#Spot-ctrl toggle
+#Media
 super + shift + p
-  $HOME/.cargo/bin/spotify-control play-pause
+    playerctl --all-players play-pause
 
 # super + <
 super + shift + comma
-  $HOME/.cargo/bin/spotify-control previous
+  playerctl previous
 
 # super + >
 super + shift + period
-  $HOME/.cargo/bin/spotify-control next
+  playerctl next
 
 super + shift + s
-  $HOME/.cargo/bin/spotify-control search
+  playerctl search
 
 #################################################################
 # SUPER + CONTROL KEYS
