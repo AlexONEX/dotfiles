@@ -74,6 +74,7 @@ export HISTFILE=/dev/null
 export LISTEN_ADDR="127.0.0.1:9021"
 export PATH=~/.npm-global/bin:$PATH
 
+
 # if ~/secure/ exists, source all files in it
 if [ -d ~/secure ]; then
     chmod 600 ~/secure/*
