@@ -23,7 +23,7 @@ end
 local plugin_specs = {
   -- auto-completion engine
   {
-    "iguanacucumber/magazine.nvim",
+    "hrsh7th/nvim-cmp",
     name = "nvim-cmp",
     -- event = 'InsertEnter',
     event = "VeryLazy",
@@ -398,7 +398,7 @@ local plugin_specs = {
       end
       return false
     end,
-    build = "cd app && npm install",
+    build = "cd app && npm install && git restore .",
     ft = { "markdown" },
   },
 
