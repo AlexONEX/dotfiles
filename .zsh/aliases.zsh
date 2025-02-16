@@ -1,6 +1,8 @@
 # SHORTCUTS
 alias hacker-news='hackernews_tui'
 alias dotfiles='~/dotfiles/scripts/sync_dotfiles.sh'
+alias initpy='touch __init__.py'
+
 bak() {
     cp "$1" "$1.bak"
 }
@@ -214,6 +216,10 @@ alias restart='sudo systemctl restart'
 # MEDIA
 alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
 alias ytp='yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"'
+mkplaylist() {
+   ls -1 *.mkv | sort > playlist.txt
+   mpv --playlist="playlist.txt"
+}
 
 # LS Stuff
 alias ls='eza -al --color=always --group-directories-first' # my preferred listing
