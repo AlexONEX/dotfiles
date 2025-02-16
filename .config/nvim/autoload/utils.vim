@@ -10,23 +10,6 @@ function! s:Single_quote(str) abort
   return "'" . substitute(copy(a:str), "'", "''", 'g') . "'"
 endfunction
 
-" Check the syntax group in the current cursor position, see
-" https://stackoverflow.com/q/9464844/6064933 and
-" https://jordanelver.co.uk/blog/2015/05/27/working-with-vim-colorschemes/
-function! utils#SynGroup() abort
-  if !exists('*synstack')
-    return
-  endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunction
-
-" Check if a colorscheme exists in runtimepath.
-" The following two functions are inspired by https://stackoverflow.com/a/5703164/6064933.
-function! utils#HasColorscheme(name) abort
-  let l:pat = printf('colors/%s.vim', a:name)
-  return !empty(globpath(&runtimepath, l:pat))
-endfunction
-
 " Custom fold expr, adapted from https://vi.stackexchange.com/a/9094/15292
 function! utils#VimFolds(lnum) abort
   " get content of current line and the line below
