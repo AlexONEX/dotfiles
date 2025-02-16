@@ -65,15 +65,6 @@ zstyle ':omz:update' frequency 13
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export EDITOR='nvim'
-
-export PATH=$PATH:/home/mars/.spicetify
-export HISTFILE=/dev/null
-export LISTEN_ADDR="127.0.0.1:9021"
-export PATH=~/.npm-global/bin:$PATH
-
 
 # if ~/secure/ exists, source all files in it
 if [ -d ~/secure ]; then
