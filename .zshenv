@@ -12,5 +12,3 @@ export PATH=$PATH:/home/mars/.spicetify
 export HISTFILE=/dev/null
 export LISTEN_ADDR="127.0.0.1:9021"
 export PATH=~/.npm-global/bin:$PATH
-
-
