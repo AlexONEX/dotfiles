@@ -9,6 +9,7 @@
 [core]
 	editor = nvim
   pager = delta
+	excludesFile = ~/.gitignore
 [diff]
   alorithm = histogram
   submodule = log
