@@ -1,3 +1,8 @@
+# Ignore a file by renaming it with ignore its name
+*.ignore
+ignore.*
+*.ignore.*
+
 # Python cache files
 __pycache__/
 *.py[cod]
