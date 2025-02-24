@@ -72,6 +72,8 @@ if [ -d ~/secure ]; then
     export $(grep -v '^#' ~/secure/credentials.env | xargs)
 fi
 
+export EDITOR='nvim'
+
 # Function to copy last command output to clipboard
 last_cmd_output() {
     # Get the last command excluding 'lcopy' itself
