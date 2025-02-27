@@ -1,15 +1,11 @@
-local M = {}
+vim.opt_local.formatoptions:remove({ "o", "r" })
 
--- Configuración general
-vim.opt_local.formatoptions:remove({ 'o', 'r' })
-
--- Función para formatear y guardar
-function M.format_and_save()
-  vim.lsp.buf.format()
-  vim.cmd('write')
+local function format_and_save()
+	vim.cmd("silent !taplo format %")
+	vim.cmd("edit")
+	vim.cmd("write")
 end
 
--- Mapeo de teclas
-vim.api.nvim_buf_set_keymap(0, 'n', '<C-s>', ':lua require("toml").format_and_save()<CR>', { noremap = true, silent = true })
+vim.api.nvim_create_user_command("FormatAndSaveToml", format_and_save, {})
 
-return M
+vim.api.nvim_buf_set_keymap(0, "n", "<C-s>", ":FormatAndSaveToml<CR>", { noremap = true, silent = true })
