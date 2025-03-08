@@ -2,7 +2,7 @@
 *.ignore
 ignore.*
 *.ignore.*
-lazy-lock.json
+**/lazy-lock.json
 
 # Python cache files
 __pycache__/
