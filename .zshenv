@@ -1,14 +1,17 @@
-export EDITOR=nvim
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
-export TERMINAL=alacritty
-export BC_ENV_ARGS="$HOME/.bc"
-export PATH=${PATH}:`go env GOPATH`/bin
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export EDITOR='nvim'
+PATH="$HOME/.local/bin:$HOME/.cargo/bin:$(go env GOPATH)/bin:$HOME/.spicetify:$HOME/.npm-global/bin:$PATH"
+DOTFILES="${HOME}/.dotfiles"
+PATH="$HOME/.local/bin:$HOME/.cargo/bin:$(go env GOPATH)/bin:$HOME/.spicetify:$HOME/.npm-global/bin:$PATH"
+BC_ENV_ARGS="$HOME/.bc"
+TERMINAL="alacritty"
+EDITOR="nvim"
+HISTFILE=/dev/null
+LISTEN_ADDR="127.0.0.1:9021"
 
-export PATH=$PATH:/home/mars/.spicetify
-export HISTFILE=/dev/null
-export LISTEN_ADDR="127.0.0.1:9021"
-export PATH=~/.npm-global/bin:$PATH
+# Then export them
+export DOTFILES
+export PATH
+export BC_ENV_ARGS
+export TERMINAL
+export EDITOR
+export HISTFILE
+export LISTEN_ADDR
