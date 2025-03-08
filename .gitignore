@@ -2,6 +2,7 @@
 *.ignore
 ignore.*
 *.ignore.*
+lazy-lock.json
 
 # Python cache files
 __pycache__/
@@ -10,3 +11,7 @@ __pycache__/
 
 # Init files
 **/__init__.py
+
+# Neovim spell files
+*.spl
+*.sug
