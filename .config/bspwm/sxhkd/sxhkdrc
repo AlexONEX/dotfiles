@@ -35,7 +35,7 @@ super + F7
 
 #Thunar
 super + F8
-    thunar
+    alacritty -e ranger
 
 #Audio player
 super + F9
