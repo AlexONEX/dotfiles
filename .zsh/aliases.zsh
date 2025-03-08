@@ -2,6 +2,7 @@
 alias hacker-news='hackernews_tui'
 alias dotfiles='~/dotfiles/scripts/sync_dotfiles.sh'
 alias initpy='touch __init__.py'
+alias btc='better-commits'
 
 bak() {
     cp "$1" "$1.bak"

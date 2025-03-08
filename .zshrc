@@ -10,43 +10,11 @@ zstyle ':completion:*' max-errors 2 numeric
 zstyle ':completion:*' menu select=5
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
 
-
 autoload -U colors && colors
 autoload -Uz compinit
 compinit
 
 bindkey -v
-
-if [ -f ~/.zsh/aliases.zsh ]; then
-    . ~/.zsh/aliases.zsh
-fi
-
-if [ -f ~/.zsh/git.plugin.zsh ]; then
-    . ~/.zsh/git.plugin.zsh
-fi
-
-#-------Plugin Management-------#
-ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.zsh}/plugins}
-
-if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
-  git clone --quiet https://github.com/mattmc3/zsh_unplugged $ZPLUGINDIR/zsh_unplugged
-fi
-source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
-
-repos=(
-    romkatv/powerlevel10k
-    zsh-users/zsh-autosuggestions
-    zsh-users/zsh-syntax-highlighting
-)
-
-plugin-load $repos
-function plugin-update {
-  ZPLUGINDIR=${ZPLUGINDIR:-$HOME/.config/zsh/plugins}
-  for d in $ZPLUGINDIR/*/.git(/); do
-    echo "Updating ${d:h:t}"
-    command git -C "${d:h}" pull --ff --recurse-submodules --depth 1 --rebase --autostash
-  done
-}
 
 setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_ALL_DUPS
@@ -72,36 +40,65 @@ if [ -d ~/secure ]; then
     export $(grep -v '^#' ~/secure/credentials.env | xargs)
 fi
 
-export EDITOR='nvim'
+if command -v nvim &>/dev/null; then
+  export VISUAL=nvim
+else
+  export VISUAL=vim
+fi
+export EDITOR="${VISUAL}"
 
-# Function to copy last command output to clipboard
-last_cmd_output() {
-    # Get the last command excluding 'lcopy' itself
-    local last_cmd=$(fc -ln -1 | grep -v "lcopy")
-
-    # Execute the command and capture output
-    local output=$(eval "$last_cmd" 2>&1)
-
-    if [[ -n "$output" ]]; then
-        if command -v xclip >/dev/null 2>&1; then
-            printf '%s\n' "$output" | xclip -selection clipboard
-        elif command -v xsel >/dev/null 2>&1; then
-            printf '%s\n' "$output" | xsel --clipboard --input
-        elif command -v pbcopy >/dev/null 2>&1; then
-            printf '%s\n' "$output" | pbcopy
-        else
-            echo "Error: No clipboard command found. Please install xclip, xsel, or pbcopy"
-            return 1
-        fi
-        echo "Output copied to clipboard:"
-        echo "--------------------------"
-        echo "$output"
-    else
-        echo "No command output found"
-    fi
-}
+if command -v fd &>/dev/null; then
+  export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git --color=always'
+  export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
+  export FZF_DEFAULT_OPTS='--ansi'
+elif command -v rg &>/dev/null; then
+  export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+  export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
+fi
+export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS} --bind ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up,ctrl-d:half-page-down,ctrl-u:half-page-up,ctrl-/:toggle-preview --border --height 50% --min-height 20 --preview-window right,40%,follow"
 
 ## [Completion]
 ## Completion scripts setup. Remove the following line to uninstall
 [[ -f /home/mars/.dart-cli-completion/zsh-config.zsh ]] && . /home/mars/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
+
+# ------------------------------------------------------------------------
+# | Load external modules
+# ------------------------------------------------------------------------
+#
+ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.zsh}/plugins}
+
+if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
+  git clone --quiet https://github.com/mattmc3/zsh_unplugged $ZPLUGINDIR/zsh_unplugged
+fi
+source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
+
+repos=(
+    romkatv/powerlevel10k
+    zsh-users/zsh-autosuggestions
+    zsh-users/zsh-syntax-highlighting
+)
+
+plugin-load $repos
+function plugin-update {
+  ZPLUGINDIR=${ZPLUGINDIR:-$HOME/.config/zsh/plugins}
+  for d in $ZPLUGINDIR/*/.git(/); do
+    echo "Updating ${d:h:t}"
+    command git -C "${d:h}" pull --ff --recurse-submodules --depth 1 --rebase --autostash
+  done
+}
+
+# Load user aliases
+if [ -f ~/.zsh/aliases.zsh ]; then
+    . ~/.zsh/aliases.zsh
+fi
+
+if [ -f ~/.zsh/git.plugin.zsh ]; then
+    . ~/.zsh/git.plugin.zsh
+fi
+
+# Source fzf and cargo
+command -v fzf &>/dev/null && eval "$(fzf --zsh)"
+[[ -f ${HOME}/.cargo/env ]] && source "${HOME}/.cargo/env"
+alias dotman='/home/mars/dotman/dotman.sh'
+alias dotman='/home/mars/dotman/dotman.sh'
