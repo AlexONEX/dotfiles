@@ -479,3 +479,53 @@ mount_ntfs() {
         return 1
     fi
 }
+
+lookup() {
+  #function that receives string and search for files including that fixed, in name file
+  if [[ $# -eq 0 ]]; then
+      echo "Error: Please provide a string to search for"
+      return 1
+  fi
+
+  # Get the string to search for
+  local search_string="$1"
+
+  # Search for files including the provided string in dir and subdirs
+  find . -type f -iname "*$search_string*" -print
+}
+
+alias magnet2aria='function _magnet2aria() { curl --header "Content-Type: application/json" --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.addUri\",\"id\":\"qwer\",\"params\":[[\"$1\"]]}" http://localhost:6800/jsonrpc; }; _magnet2aria'
+alias link2aria='function _link2aria() { curl --header "Content-Type: application/json" --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.addUri\",\"id\":\"qwer\",\"params\":[[\"$1\"]]}" http://localhost:6800/jsonrpc; }; _link2aria'
+
+alias aria2list='
+echo "=== ACTIVE DOWNLOADS ===";
+curl -s --header "Content-Type: application/json" \
+     --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.tellActive\",\"id\":\"qwer\"}" \
+     http://localhost:6800/jsonrpc | \
+jq -r ".result[] | \"[\(.status)] \(.bittorrent.info.name // .files[0].path): \
+\((.completedLength|tonumber)/1048576)MB/\((.totalLength|tonumber)/1048576)MB - \
+\((.downloadSpeed|tonumber)/1048576)MB/s - \
+Up: \((.uploadLength|tonumber)/1048576)MB\"";
+
+echo -e "\n=== WAITING DOWNLOADS ===";
+curl -s --header "Content-Type: application/json" \
+     --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.tellWaiting\",\"id\":\"qwer\",\"params\":[0,100]}" \
+     http://localhost:6800/jsonrpc | \
+jq -r ".result[] | \"[\(.status)] \(.bittorrent.info.name // .files[0].path): \
+\((.completedLength|tonumber)/1048576)MB/\((.totalLength|tonumber)/1048576)MB - \
+Up: \((.uploadLength|tonumber)/1048576)MB\"";
+
+echo -e "\n=== COMPLETED DOWNLOADS ===";
+curl -s --header "Content-Type: application/json" \
+     --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.tellStopped\",\"id\":\"qwer\",\"params\":[0,100]}" \
+     http://localhost:6800/jsonrpc | \
+jq -r ".result[] | \"[\(.status)] \(.bittorrent.info.name // .files[0].path): \
+\((.completedLength|tonumber)/1048576)MB/\((.totalLength|tonumber)/1048576)MB - \
+Up: \((.uploadLength|tonumber)/1048576)MB\"";
+'
+
+alias aria2-active='curl --silent --header "Content-Type: application/json" --data '"'"'{"jsonrpc":"2.0","method":"aria2.tellActive","id":"qwer","params":[]}'"'"' http://localhost:6800/jsonrpc | jq -r ".result[] | \"GID: \(.gid) | Nombre: \(.files[0].path | split(\"/\") | last) | Progreso: \(.completedLength | tonumber)/\(.totalLength | tonumber)*100 | % | Velocidad: \(.downloadSpeed | tonumber)/1024 | KB/s\""'
+# Para ver descargas en espera
+alias aria2-waiting='curl --silent --header "Content-Type: application/json" --data '"'"'{"jsonrpc":"2.0","method":"aria2.tellWaiting","id":"qwer","params":[0,100]}'"'"' http://localhost:6800/jsonrpc | jq -r ".result[] | \"GID: \(.gid) | Nombre: \(.files[0].path | split(\"/\") | last) | Estado: \(.status)\""'
+
+alias aria2-done='curl --silent --header "Content-Type: application/json" --data '"'"'{"jsonrpc":"2.0","method":"aria2.tellStopped","id":"qwer","params":[0,100]}'"'"' http://localhost:6800/jsonrpc | jq -r ".result[] | \"GID: \(.gid) | Nombre: \(.files[0].path | split(\"/\") | last) | Tamaño: \(.totalLength | tonumber)/1024/1024 | MB\""'
