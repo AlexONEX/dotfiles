@@ -389,6 +389,33 @@ if utils.executable("typescript-language-server") then
 else
 	vim.notify("typescript-language-server not found!", vim.log.levels.WARN, { title = "Nvim-config" })
 end
+
+if utils.executable("haskell-language-server-wrapper") then
+	lspconfig.hls.setup({
+		on_attach = custom_attach,
+		capabilities = capabilities,
+		filetypes = { "haskell", "lhaskell" },
+		settings = {
+			haskell = {
+				formattingProvider = "fourmolu",
+				plugin = {
+					stan = { globalOn = true },
+					hlint = { globalOn = true },
+					haddockComments = { globalOn = true },
+					class = { globalOn = true },
+					retrie = { globalOn = true },
+					rename = { globalOn = true },
+					importLens = { globalOn = true },
+					alternateNumberFormat = { globalOn = true },
+					eval = { globalOn = true },
+				},
+			},
+		},
+	})
+else
+	vim.notify("haskell-language-server-wrapper not found!", vim.log.levels.WARN, { title = "Nvim-config" })
+end
+
 -- Change diagnostic signs.
 fn.sign_define("DiagnosticSignError", { text = "🆇", texthl = "DiagnosticSignError" })
 fn.sign_define("DiagnosticSignWarn", { text = "⚠️", texthl = "DiagnosticSignWarn" })
