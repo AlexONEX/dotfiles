@@ -11,6 +11,7 @@ require("nvim-treesitter.configs").setup({
 		"bibtex",
 		"markdown",
 		"markdown_inline",
+		"haskell",
 	},
 	ignore_install = {}, -- List of parsers to ignore installing
 	sync_install = false,
