@@ -1,5 +1,4 @@
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
@@ -100,5 +99,3 @@ fi
 # Source fzf and cargo
 command -v fzf &>/dev/null && eval "$(fzf --zsh)"
 [[ -f ${HOME}/.cargo/env ]] && source "${HOME}/.cargo/env"
-alias dotman='/home/mars/dotman/dotman.sh'
-alias dotman='/home/mars/dotman/dotman.sh'
