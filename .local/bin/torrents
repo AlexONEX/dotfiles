@@ -1,0 +1,151 @@
+#!/usr/bin/env zsh
+
+# Configuration
+DOWNLOAD_DIR="${HOME}/Downloads/Torrents"
+SEARCH_SITE="https://1337x.to"
+LOG_FILE="${HOME}/.torrent-searcher.log"
+
+# Logging function
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
+}
+
+# Sanitize input for search
+sanitize_input() {
+    echo "$1" | tr -cd '[:alnum:] [:space:].-' | tr '[:upper:]' '[:lower:]'
+}
+
+# Extract season and episode
+extract_season_episode() {
+    local query="$1"
+    local sanitized_query=$(sanitize_input "$query")
+
+    # Extract season
+    local season=$(echo "$sanitized_query" | grep -oP '(?:s|season\s*)(\d{1,2})' | grep -oP '\d+' | head -1)
+    if [[ -z "$season" ]]; then
+        season=$(echo "$sanitized_query" | grep -oP '(\d{1,2})x\d{2}' | grep -oP '^\d+' | head -1)
+    fi
+    season=$(printf "%02d" ${season:-1})
+
+    # Extract episode
+    local episode=$(echo "$sanitized_query" | grep -oP '(?:e|episode\s*)(\d{1,2})' | grep -oP '\d+' | head -1)
+    if [[ -z "$episode" ]]; then
+        episode=$(echo "$sanitized_query" | grep -oP '\d{1,2}x(\d{2})' | grep -oP 'x\d+' | sed 's/x//' | head -1)
+    fi
+    episode=$(printf "%02d" ${episode:-1})
+
+    # Clean query
+    local clean_query=$(echo "$sanitized_query" | sed -E "s/(\[.*\]|s[0-9]{1,2}e[0-9]{1,2}|season\s*[0-9]{1,2}\s*episode\s*[0-9]{1,2}|[0-9]{1,2}x[0-9]{2})//g" | xargs)
+
+    echo "$clean_query $season $episode"
+}
+
+# Build search URL
+build_search_url() {
+    local query=$(sanitize_input "$1")
+    local encoded_query=$(echo "$query" | sed 's/ /+/g')
+    echo "${SEARCH_SITE}/search/${encoded_query}/1/"
+}
+
+# Fetch and filter torrents
+search_torrents() {
+    local query="$1"
+    local parsed_result=(${(z)$(extract_season_episode "$query")})
+
+    if [[ ${#parsed_result} -lt 3 ]]; then
+        log "Failed to parse query: $query"
+        return 1
+    fi
+
+    local clean_query="${parsed_result[1,-3]}"
+    local season="${parsed_result[-2]}"
+    local episode="${parsed_result[-1]}"
+
+    local search_url=$(build_search_url "$clean_query")
+    log "Searching: $clean_query (S${season}E${episode})"
+    log "Search URL: $search_url"
+
+    # Fetch torrent links
+    local results=$(curl -s -H "User-Agent: Mozilla/5.0" "$search_url" | pup 'tbody tr a[href^="/torrent/"] attr{href}')
+
+    if [[ -z "$results" ]]; then
+        log "No results found for '$query'"
+        return 1
+    fi
+
+    # Process results and filter
+    local best_torrent=""
+    local best_score=0
+
+    while read -r result; do
+        [[ -z "$result" ]] && continue
+
+        local torrent_url="${SEARCH_SITE}${result}"
+        local torrent_html=$(curl -s -H "User-Agent: Mozilla/5.0" "$torrent_url")
+        local title=$(echo "$torrent_html" | pup 'div.box-info-heading h1 text{}' | tr -d '\n')
+        local title_lower=$(sanitize_input "$title")
+
+        # Basic matching logic
+        if [[ "$title_lower" == *"s${season}e${episode}"* ||
+              "$title_lower" == *"${season}x${episode}"* ]]; then
+
+            # Score calculation (simplified)
+            local score=0
+
+            # Resolution scoring
+            if [[ "$title_lower" == *"2160p"* || "$title_lower" == *"4k"* ]]; then
+                score=$((score + 8))
+            elif [[ "$title_lower" == *"1080p"* ]]; then
+                score=$((score + 5))
+            elif [[ "$title_lower" == *"720p"* ]]; then
+                score=$((score + 3))
+            fi
+
+            # Source quality scoring
+            if [[ "$title_lower" == *"bluray"* ]]; then
+                score=$((score + 7))
+            elif [[ "$title_lower" == *"web-dl"* ]]; then
+                score=$((score + 5))
+            elif [[ "$title_lower" == *"hdtv"* ]]; then
+                score=$((score + 2))
+            fi
+
+            # Extract magnet link
+            local magnet_link=$(echo "$torrent_html" | pup 'a[href^="magnet:"] attr{href}')
+
+            if [[ -n "$magnet_link" ]]; then
+                if [[ $score -gt $best_score ]]; then
+                    best_score=$score
+                    best_torrent="$magnet_link"
+                fi
+            fi
+        fi
+    done <<< "$results"
+
+    if [[ -z "$best_torrent" ]]; then
+        log "No suitable torrent found"
+        return 1
+    fi
+
+    # Output the best magnet link
+    echo "$best_torrent"
+}
+
+# Main function
+main() {
+    if [[ $# -eq 0 ]]; then
+        echo "Usage: $0 <search query>"
+        echo "Example: $0 'daredevil born again s01e05'"
+        return 1
+    fi
+
+    local magnet_link=$(search_torrents "$*")
+
+    if [[ -n "$magnet_link" ]]; then
+        echo "$magnet_link"
+        # Optional: automatically pass to aria2c
+        # aria2c --dir="${DOWNLOAD_DIR}" "$magnet_link"
+    fi
+}
+
+main "$@"
