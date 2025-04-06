@@ -139,12 +139,36 @@ main() {
         return 1
     fi
 
-    local magnet_link=$(search_torrents "$*")
+        # Create download directory if it doesn't exist
+    mkdir -p "${DOWNLOAD_DIR}"
+
+    local magnet_link=$(search_movie_torrents "$*")
 
     if [[ -n "$magnet_link" ]]; then
         echo "$magnet_link"
-        # Optional: automatically pass to aria2c
-        # aria2c --dir="${DOWNLOAD_DIR}" "$magnet_link"
+
+        # Check if aria2c service is running, otherwise start it
+        if ! pgrep -x "aria2c" > /dev/null; then
+            log "aria2c service not running, starting it..."
+            aria2c --enable-rpc --rpc-listen-all=true --rpc-allow-origin-all \
+                  --dir="${DOWNLOAD_DIR}" --daemon=true
+            sleep 2  # Give it a moment to start
+        fi
+
+        # Send magnet link to aria2c RPC service
+        if command -v aria2p &> /dev/null; then
+            # If aria2p is installed (Python client for aria2)
+            aria2p add "$magnet_link"
+ari         a2p add "$magnet_link" --options='{"pause":"false", "select-file":"1-999999"}'
+            log "Sent magnet link to aria2c service using aria2p"
+        else
+            # Fallback to curl for RPC communication
+            # Fallback to curl for RPC communication
+            curl -s "http://localhost:6800/jsonrpc" \
+                --header "Content-Type: application/json" \
+                --data '{"jsonrpc":"2.0","id":"1","method":"aria2.addUri","params":[["'"$magnet_link"'"], {"pause":"false", "select-file":"1-999999"}]}'
+            log "Sent magnet link to aria2c service using curl with auto-start and all files selected"
+        fi
     fi
 }
 

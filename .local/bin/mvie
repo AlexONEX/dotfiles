@@ -1,0 +1,258 @@
+#!/usr/bin/env zsh
+# Configuration
+DOWNLOAD_DIR="${HOME}/Downloads/Torrents/Movies"
+SEARCH_SITE="https://1337x.to"
+LOG_FILE="${HOME}/.movie-torrent-searcher.log"
+
+# Logging function
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
+}
+
+# Sanitize input for search
+sanitize_input() {
+    echo "$1" | tr -cd '[:alnum:] [:space:].-' | tr '[:upper:]' '[:lower:]'
+}
+
+# Extract year from movie title
+extract_year() {
+    local query="$1"
+    local year=$(echo "$query" | grep -oP '\(\d{4}\)|\[\d{4}\]|\d{4}' | grep -oP '\d{4}' | head -1)
+    # Clean query by removing the year
+    local clean_query=$(echo "$query" | sed -E "s/\(${year}\)|\[${year}\]|${year}//g" | xargs)
+    echo "$clean_query $year"
+}
+
+# Build search URL
+build_search_url() {
+    local query=$(sanitize_input "$1")
+    local encoded_query=$(echo "$query" | sed 's/ /+/g')
+    echo "${SEARCH_SITE}/search/${encoded_query}/1/"
+}
+
+# Download torrent via aria2c
+download_torrent() {
+    local magnet_link="$1"
+    local title="$2"
+    log "Downloading \"$title\" via aria2c"
+    # Check if aria2c service is running, otherwise start it
+    if ! pgrep -x "aria2c" > /dev/null; then
+        log "aria2c service not running, starting it..."
+        aria2c --enable-rpc --rpc-listen-all=true --rpc-allow-origin-all \
+              --dir="${DOWNLOAD_DIR}" --daemon=true
+        sleep 2  # Give it a moment to start
+    fi
+    # Clean the magnet link of any problematic characters
+    local clean_magnet=$(echo "$magnet_link" | sed 's/\xe2\x80\x8b//g')
+    # Create a temporary file for the JSON payload with options to override default config
+    local tmp_json="/tmp/aria2c_request_$.json"
+    cat > "$tmp_json" << EOF
+{
+    "jsonrpc": "2.0",
+    "id": "1",
+    "method": "aria2.addUri",
+    "params": [["$clean_magnet"], {"pause":"false", "select-file":"1-999999"}]
+}
+EOF
+    # Send request to aria2c
+    local response=$(curl -s "http://localhost:6800/jsonrpc" \
+        --header "Content-Type: application/json" \
+        --data @"$tmp_json")
+    log "aria2c response: $response"
+    # Clean up
+    rm -f "$tmp_json"
+    # Check response
+    if [[ "$response" == *"error"* ]]; then
+        log "Error from aria2c: $response"
+        return 1
+    fi
+    log "Download started successfully with auto-start and all files selected"
+    return 0
+}
+
+# Fetch and filter torrents
+search_movie_torrents() {
+    local query="$1"
+    local parsed_result=(${(z)$(extract_year "$query")})
+
+    if [[ ${#parsed_result} -lt 2 ]]; then
+        # If no year is found, use just the sanitized query
+        local clean_query=$(sanitize_input "$query")
+        local year=""
+    else
+        local clean_query="${parsed_result[1,-2]}"
+        local year="${parsed_result[-1]}"
+    fi
+
+    local search_url=$(build_search_url "$clean_query")
+
+    if [[ -n "$year" ]]; then
+        log "Searching: $clean_query ($year)"
+    else
+        log "Searching: $clean_query"
+    fi
+    log "Search URL: $search_url"
+
+    # Fetch torrent links - add debugging
+    local html_content=$(curl -s -H "User-Agent: Mozilla/5.0" "$search_url")
+    local results=$(echo "$html_content" | grep -o '/torrent/[^"]*' | grep -v '#')
+
+    # Debug - check if we're getting any results
+    if [[ -n "$html_content" && -z "$results" ]]; then
+        log "DEBUG: Got HTML content but no torrent links found. First 200 chars:"
+        log "$(echo "$html_content" | head -c 200)"
+
+        # Try alternative extraction method
+        results=$(echo "$html_content" | grep -o 'href="/torrent/[^"]*' | sed 's/href="//')
+    fi
+
+    if [[ -z "$results" ]]; then
+        log "No results found for '$query'"
+        return 1
+    fi
+
+    # Process results and filter
+    local best_torrent=""
+    local best_score=0
+    local best_title=""
+
+    while read -r result; do
+        [[ -z "$result" ]] && continue
+
+        local torrent_url="${SEARCH_SITE}${result}"
+        log "Processing: $torrent_url"
+
+        local html_content=$(curl -s -H "User-Agent: Mozilla/5.0" "$torrent_url")
+        local title=$(echo "$html_content" | grep -o '<h1>[^<]*</h1>' | sed 's/<[^>]*>//g' | xargs)
+
+        if [[ -z "$title" ]]; then
+            log "Couldn't extract title for $torrent_url, skipping"
+            continue
+        fi
+
+        local title_lower=$(sanitize_input "$title")
+
+        # Basic matching logic - for movies we're more concerned with quality
+        # Score calculation
+        local score=0
+
+        # If year is specified, prioritize matches with the correct year
+        if [[ -n "$year" && "$title_lower" == *"$year"* ]]; then
+            score=$((score + 10))
+        fi
+
+        # Resolution scoring - prioritize 1080p over 4K/2160p
+        if [[ "$title_lower" == *"1080p"* ]]; then
+            score=$((score + 10))  # Higher score for 1080p
+        elif [[ "$title_lower" == *"720p"* ]]; then
+            score=$((score + 8))   # Medium score for 720p
+        elif [[ "$title_lower" == *"2160p"* || "$title_lower" == *"4k"* ]]; then
+            score=$((score + 2))   # Lower score for 4K to avoid selecting it
+        fi
+
+        # Source quality scoring
+        if [[ "$title_lower" == *"bluray"* || "$title_lower" == *"blu-ray"* ]]; then
+            score=$((score + 7))
+        elif [[ "$title_lower" == *"web-dl"* || "$title_lower" == *"webrip"* ]]; then
+            score=$((score + 5))
+        elif [[ "$title_lower" == *"hdtv"* ]]; then
+            score=$((score + 2))
+        fi
+
+        # Audio quality scoring
+        if [[ "$title_lower" == *"atmos"* || "$title_lower" == *"truehd"* ]]; then
+            score=$((score + 4))
+        elif [[ "$title_lower" == *"dts-hd"* || "$title_lower" == *"dtshd"* ]]; then
+            score=$((score + 3))
+        elif [[ "$title_lower" == *"dts"* || "$title_lower" == *"dd5.1"* ]]; then
+            score=$((score + 2))
+        fi
+
+        # Encoding quality
+        if [[ "$title_lower" == *"remux"* ]]; then
+            score=$((score + 6))
+        elif [[ "$title_lower" == *"x265"* || "$title_lower" == *"hevc"* ]]; then
+            score=$((score + 4))
+        elif [[ "$title_lower" == *"x264"* ]]; then
+            score=$((score + 3))
+        fi
+
+        # Extract magnet link directly with grep - print debug info
+        local magnet_link=$(echo "$html_content" | grep -o 'magnet:[^"]*' | head -n1)
+
+        # If magnet link extraction fails, try an alternative method
+        if [[ -z "$magnet_link" ]]; then
+            log "DEBUG: First method failed to extract magnet link, trying alternative extraction"
+            magnet_link=$(echo "$html_content" | grep -o 'href="magnet:[^"]*' | sed 's/href="//' | head -n1)
+        fi
+
+        if [[ -n "$magnet_link" ]]; then
+            # Decode any HTML entities and clean up zero-width spaces
+            magnet_link=$(echo "$magnet_link" | sed 's/&amp;/\&/g' | sed 's/\xe2\x80\x8b//g')
+
+            # Dump first part of magnet link for debugging
+            log "DEBUG: Found magnet link starting with: ${magnet_link:0:40}..."
+
+            log "Found magnet link for \"$title\" with score $score"
+
+            if [[ $score -gt $best_score ]]; then
+                best_score=$score
+                best_torrent="$magnet_link"
+                best_title="$title"
+                log "New best match: \"$title\" with score $score"
+            fi
+        else
+            log "No magnet link found for \"$title\""
+        fi
+    done <<< "$results"
+
+    if [[ -z "$best_torrent" ]]; then
+        log "No suitable torrent found"
+        return 1
+    fi
+
+    # Write to a temporary file to avoid issues with newlines and special chars
+    local tmp_result="/tmp/torrent_result_$$.txt"
+    echo "$best_torrent" > "$tmp_result"
+    echo "$best_title" >> "$tmp_result"
+    cat "$tmp_result"
+
+    # Keep the temp file for debugging (will be cleaned up on next run)
+    log "DEBUG: Results written to $tmp_result for debugging"
+}
+
+# Main function
+main() {
+    if [[ $# -eq 0 ]]; then
+        echo "Usage: $0 <movie title> [year]"
+        echo "Example: $0 'The Godfather 1972'"
+        echo "Example: $0 'Inception (2010)'"
+        return 1
+    fi
+
+    # Search for movie torrents and get results
+    local output=$(search_movie_torrents "$*")
+
+    if [[ -n "$output" ]]; then
+        # Rather than relying on array splitting, use grep to extract lines
+        local magnet_link=$(echo "$output" | grep -m1 "^magnet:" || echo "")
+        local title=$(echo "$output" | grep -v "^magnet:" | head -n1 || echo "")
+
+        if [[ -n "$magnet_link" && "$magnet_link" == magnet:?xt=urn:btih:* ]]; then
+            echo "Selected torrent: \"$title\""
+            echo "Magnet link: ${magnet_link:0:60}..."
+
+            # Download the torrent
+            download_torrent "$magnet_link" "$title"
+        else
+            log "Invalid magnet link: $magnet_link"
+            echo "ERROR: Could not get a valid magnet link."
+            return 1
+        fi
+    else
+        echo "No suitable torrents found for \"$*\""
+        return 1
+    fi
+}
+
+main "$@"
