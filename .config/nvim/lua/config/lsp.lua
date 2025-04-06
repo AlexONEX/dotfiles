@@ -8,18 +8,6 @@ local typescript_tools = require("typescript-tools")
 
 local utils = require("utils")
 
--- set quickfix list from diagnostics in a certain buffer, not the whole workspace
-local set_qflist = function(buf_num, severity)
-  local diagnostics = nil
-  diagnostics = diagnostic.get(buf_num, { severity = severity })
-
-  local qf_items = diagnostic.toqflist(diagnostics)
-  vim.fn.setqflist({}, " ", { title = "Diagnostics", items = qf_items })
-
-  -- open quickfix by default
-  vim.cmd([[copen]])
-end
-
 local custom_attach = function(client, bufnr)
   -- Mappings.
   local map = function(mode, l, r, opts)
@@ -32,7 +20,7 @@ local custom_attach = function(client, bufnr)
   map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
   map("n", "<C-]>", vim.lsp.buf.definition)
   map("n", "K", function()
-    vim.lsp.buf.hover { border = "single", max_height = 25 }
+    vim.lsp.buf.hover { border = "single", max_height = 25, max_width = 120 }
   end)
   map("n", "<C-k>", vim.lsp.buf.signature_help)
   map("n", "<space>rn", vim.lsp.buf.rename, { desc = "varialbe rename" })
@@ -42,13 +30,7 @@ local custom_attach = function(client, bufnr)
   map("n", "]d", function()
     diagnostic.jump { count = 1 }
   end, { desc = "next diagnostic" })
-  -- this puts diagnostics from opened files to quickfix
-  map("n", "gr", vim.lsp.buf.references, { desc = "show references" })
-  map("n", "<space>qw", diagnostic.setqflist, { desc = "put window diagnostics to qf" })
-  -- this puts diagnostics from current buffer to quickfix
-  map("n", "<space>qb", function()
-    set_qflist(bufnr)
-  end, { desc = "put buffer diagnostics to qf" })
+
   map("n", "<space>ca", vim.lsp.buf.code_action, { desc = "LSP code action" })
   map("n", "<space>wa", vim.lsp.buf.add_workspace_folder, { desc = "add workspace folder" })
   map("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, { desc = "remove workspace folder" })
