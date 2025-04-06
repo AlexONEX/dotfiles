@@ -1,6 +1,63 @@
 # SHORTCUTS
-alias hacker-news='hackernews_tui'
-alias dotfiles='~/dotfiles/scripts/sync_dotfiles.sh'
+# Add these to your ~/.zshrc
+
+dotfiles-add() {
+  local input_path="$1"
+  local home_path="$HOME"
+  local dotfiles_path="$HOME/.dotfiles"
+  local full_path=""
+
+  # Handle "." as current directory
+  if [ "$input_path" = "." ]; then
+    full_path="$(pwd)"
+  else
+    # If path doesn't start with /, assume it's in .config
+    if [[ "$input_path" != /* && "$input_path" != .* && "$input_path" != ~* ]]; then
+      full_path="$home_path/.config/$input_path"
+    # Convert to absolute path if needed
+    elif [[ "$input_path" = /* ]]; then
+      full_path="$input_path"
+    else
+      full_path="$(pwd)/$input_path"
+    fi
+  fi
+
+  # Ensure path is under home directory
+  if [[ "$full_path" != "$home_path"* ]]; then
+    echo "Error: Path must be under home directory"
+    return 1
+  fi
+
+  # Check if path exists
+  if [ ! -e "$full_path" ]; then
+    echo "Error: $full_path does not exist"
+    return 1
+  fi
+
+  # Get relative path from home
+  local rel_path="${full_path#$home_path/}"
+  local package_name=$(echo "$rel_path" | cut -d/ -f1)
+
+  # Get directory structure
+  local target_dir="$(dirname "$dotfiles_path/$rel_path")"
+
+  # Create necessary directories
+  mkdir -p "$target_dir"
+
+  # Copy the file/directory
+  if [ -d "$full_path" ]; then
+    cp -r "$full_path" "$target_dir/"
+  else
+    cp "$full_path" "$target_dir/"
+  fi
+
+  # Only stow the specific package
+  cd "$dotfiles_path"
+  stow --adopt --target="$HOME" "$package_name" 2>/dev/null || true
+
+  echo "Added $rel_path to dotfiles repository"
+}
+
 alias initpy='touch __init__.py'
 alias btc='better-commits'
 
@@ -149,7 +206,6 @@ alias dsize='du -hsx * | sort -rh'
 alias neofetch='fastfetch'
 alias open='handlr open'
 alias c='clear'
-alias vim='nvim'
 alias cat='bat'
 
 alias purge='paru -Rns'
@@ -503,6 +559,7 @@ curl -s --header "Content-Type: application/json" \
      --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.tellActive\",\"id\":\"qwer\"}" \
      http://localhost:6800/jsonrpc | \
 jq -r ".result[] | \"[\(.status)] \(.bittorrent.info.name // .files[0].path): \
+\((.completedLength|tonumber)/(.totalLength|tonumber) * 100 | floor)% - \
 \((.completedLength|tonumber)/1048576)MB/\((.totalLength|tonumber)/1048576)MB - \
 \((.downloadSpeed|tonumber)/1048576)MB/s - \
 Up: \((.uploadLength|tonumber)/1048576)MB\"";
@@ -512,6 +569,7 @@ curl -s --header "Content-Type: application/json" \
      --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.tellWaiting\",\"id\":\"qwer\",\"params\":[0,100]}" \
      http://localhost:6800/jsonrpc | \
 jq -r ".result[] | \"[\(.status)] \(.bittorrent.info.name // .files[0].path): \
+\((.completedLength|tonumber)/(.totalLength|tonumber) * 100 | floor)% - \
 \((.completedLength|tonumber)/1048576)MB/\((.totalLength|tonumber)/1048576)MB - \
 Up: \((.uploadLength|tonumber)/1048576)MB\"";
 
@@ -520,12 +578,7 @@ curl -s --header "Content-Type: application/json" \
      --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.tellStopped\",\"id\":\"qwer\",\"params\":[0,100]}" \
      http://localhost:6800/jsonrpc | \
 jq -r ".result[] | \"[\(.status)] \(.bittorrent.info.name // .files[0].path): \
+\((.completedLength|tonumber)/(.totalLength|tonumber) * 100 | floor)% - \
 \((.completedLength|tonumber)/1048576)MB/\((.totalLength|tonumber)/1048576)MB - \
 Up: \((.uploadLength|tonumber)/1048576)MB\"";
 '
-
-alias aria2-active='curl --silent --header "Content-Type: application/json" --data '"'"'{"jsonrpc":"2.0","method":"aria2.tellActive","id":"qwer","params":[]}'"'"' http://localhost:6800/jsonrpc | jq -r ".result[] | \"GID: \(.gid) | Nombre: \(.files[0].path | split(\"/\") | last) | Progreso: \(.completedLength | tonumber)/\(.totalLength | tonumber)*100 | % | Velocidad: \(.downloadSpeed | tonumber)/1024 | KB/s\""'
-# Para ver descargas en espera
-alias aria2-waiting='curl --silent --header "Content-Type: application/json" --data '"'"'{"jsonrpc":"2.0","method":"aria2.tellWaiting","id":"qwer","params":[0,100]}'"'"' http://localhost:6800/jsonrpc | jq -r ".result[] | \"GID: \(.gid) | Nombre: \(.files[0].path | split(\"/\") | last) | Estado: \(.status)\""'
-
-alias aria2-done='curl --silent --header "Content-Type: application/json" --data '"'"'{"jsonrpc":"2.0","method":"aria2.tellStopped","id":"qwer","params":[0,100]}'"'"' http://localhost:6800/jsonrpc | jq -r ".result[] | \"GID: \(.gid) | Nombre: \(.files[0].path | split(\"/\") | last) | Tamaño: \(.totalLength | tonumber)/1024/1024 | MB\""'
