@@ -16,7 +16,7 @@ vim.api.nvim_create_user_command("CopyPath", function(context)
       return
     end
 
-        file_path = vim.fn.substitute(full_path, project_root, "<project-root>", "g")
+    file_path = vim.fn.substitute(full_path, project_root, "<project-root>", "g")
   end
 
   if context["args"] == "absolute" then
@@ -50,7 +50,8 @@ vim.api.nvim_create_user_command("JSONFormat", function(context)
     local cmd_str = string.format("%s,%s!python -m json.tool", line1, line2)
     vim.fn.execute(cmd_str)
   else
-    vim.api.nvim_err_write(string.format("unsupported range: %s", range))
+    local msg = string.format("unsupported range: %s", range)
+    vim.api.nvim_echo({ { msg } }, true, { err = true })
   end
 end, {
   desc = "Format JSON string",
