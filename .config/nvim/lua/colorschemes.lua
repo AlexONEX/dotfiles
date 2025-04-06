@@ -102,7 +102,4 @@ M.load_colorscheme = function(colorscheme)
   end
 end
 
--- Load nord colorscheme by default
-M.load_colorscheme("nord")
-
 return M
