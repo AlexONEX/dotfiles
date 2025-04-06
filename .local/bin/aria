@@ -1,0 +1,163 @@
+#!/usr/bin/env zsh
+# Script para listar y eliminar descargas de aria2c
+
+# Listar todas las descargas activas con sus GIDs
+list_active() {
+    local response=$(curl -s --header "Content-Type: application/json" \
+         --data '{"jsonrpc":"2.0","method":"aria2.tellActive","id":"list"}' \
+         http://localhost:6800/jsonrpc)
+    
+    if [[ "$response" == *'"result":[]'* ]]; then
+        echo "No hay descargas activas."
+        return
+    fi
+    
+    echo "=== DESCARGAS ACTIVAS ==="
+    echo "$response" | jq -r '.result[] | "[" + .gid + "] " + 
+        (.bittorrent.info.name // .files[0].path) + 
+        ": " + (.completedLength|tonumber|./1048576|round|tostring) + 
+        "MB/" + (.totalLength|tonumber|./1048576|round|tostring) + "MB"'
+}
+
+# Listar todas las descargas en espera
+list_waiting() {
+    local response=$(curl -s --header "Content-Type: application/json" \
+         --data '{"jsonrpc":"2.0","method":"aria2.tellWaiting","id":"list","params":[0,100]}' \
+         http://localhost:6800/jsonrpc)
+    
+    if [[ "$response" == *'"result":[]'* ]]; then
+        echo "No hay descargas en espera."
+        return
+    fi
+    
+    echo "=== DESCARGAS EN ESPERA ==="
+    echo "$response" | jq -r '.result[] | "[" + .gid + "] " + 
+        (.bittorrent.info.name // .files[0].path) + 
+        ": " + (.completedLength|tonumber|./1048576|round|tostring) + 
+        "MB/" + (.totalLength|tonumber|./1048576|round|tostring) + "MB"'
+}
+
+# Listar todas las descargas completadas o detenidas
+list_stopped() {
+    local response=$(curl -s --header "Content-Type: application/json" \
+         --data '{"jsonrpc":"2.0","method":"aria2.tellStopped","id":"list","params":[0,100]}' \
+         http://localhost:6800/jsonrpc)
+    
+    if [[ "$response" == *'"result":[]'* ]]; then
+        echo "No hay descargas completadas o detenidas."
+        return
+    fi
+    
+    echo "=== DESCARGAS COMPLETADAS/DETENIDAS ==="
+    echo "$response" | jq -r '.result[] | "[" + .gid + "] " + 
+        (.bittorrent.info.name // .files[0].path) + 
+        ": " + (.completedLength|tonumber|./1048576|round|tostring) + 
+        "MB/" + (.totalLength|tonumber|./1048576|round|tostring) + "MB"'
+}
+
+# Eliminar una descarga activa por GID
+remove_download() {
+    local gid="$1"
+    
+    if [[ -z "$gid" ]]; then
+        echo "Error: Debes proporcionar un GID."
+        return 1
+    fi
+    
+    echo "Eliminando descarga con GID: $gid"
+    local response=$(curl -s --header "Content-Type: application/json" \
+         --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.remove\",\"id\":\"remove\",\"params\":[\"$gid\"]}" \
+         http://localhost:6800/jsonrpc)
+    
+    if [[ "$response" == *"error"* ]]; then
+        echo "Error al eliminar la descarga: $response"
+        return 1
+    fi
+    
+    echo "Descarga eliminada correctamente."
+    return 0
+}
+
+# Limpiar descarga completada o detenida por GID
+clean_download() {
+    local gid="$1"
+    
+    if [[ -z "$gid" ]]; then
+        echo "Error: Debes proporcionar un GID."
+        return 1
+    fi
+    
+    echo "Limpiando descarga con GID: $gid"
+    local response=$(curl -s --header "Content-Type: application/json" \
+         --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.removeDownloadResult\",\"id\":\"clean\",\"params\":[\"$gid\"]}" \
+         http://localhost:6800/jsonrpc)
+    
+    if [[ "$response" == *"error"* ]]; then
+        echo "Error al limpiar la descarga: $response"
+        return 1
+    fi
+    
+    echo "Descarga limpiada correctamente."
+    return 0
+}
+
+# Limpiar todas las descargas completadas
+clean_all_completed() {
+    echo "Limpiando todas las descargas completadas"
+    local response=$(curl -s --header "Content-Type: application/json" \
+         --data '{"jsonrpc":"2.0","method":"aria2.purgeDownloadResult","id":"purge"}' \
+         http://localhost:6800/jsonrpc)
+    
+    if [[ "$response" == *"error"* ]]; then
+        echo "Error al limpiar las descargas: $response"
+        return 1
+    fi
+    
+    echo "Todas las descargas completadas han sido limpiadas."
+    return 0
+}
+
+# Mostrar ayuda
+show_help() {
+    echo "Uso: $0 [opción] [GID]"
+    echo ""
+    echo "Opciones:"
+    echo "  -l, --list      Listar todas las descargas"
+    echo "  -r, --remove    Eliminar una descarga activa (requiere GID)"
+    echo "  -c, --clean     Limpiar una descarga completada (requiere GID)"
+    echo "  -a, --all       Limpiar todas las descargas completadas"
+    echo "  -h, --help      Mostrar esta ayuda"
+    echo ""
+    echo "Ejemplos:"
+    echo "  $0 -l           # Listar todas las descargas"
+    echo "  $0 -r 2089b05   # Eliminar la descarga con GID 2089b05"
+    echo "  $0 -c 2089b05   # Limpiar la descarga completada con GID 2089b05"
+    echo "  $0 -a           # Limpiar todas las descargas completadas"
+}
+
+# Función principal
+main() {
+    case "$1" in
+        -l|--list)
+            list_active
+            echo ""
+            list_waiting
+            echo ""
+            list_stopped
+            ;;
+        -r|--remove)
+            remove_download "$2"
+            ;;
+        -c|--clean)
+            clean_download "$2"
+            ;;
+        -a|--all)
+            clean_all_completed
+            ;;
+        -h|--help|*)
+            show_help
+            ;;
+    esac
+}
+
+main "$@"
