@@ -79,11 +79,6 @@ M.rand_colorscheme = function()
 
   -- Load the colorscheme and its settings
   M.colorscheme_conf[colorscheme]()
-
-  if vim.g.logging_level == "debug" then
-    local msg = "Colorscheme: " .. colorscheme
-    vim.notify(msg, vim.log.levels.DEBUG, { title = "nvim-config" })
-  end
 end
 
 M.load_colorscheme = function(colorscheme)
