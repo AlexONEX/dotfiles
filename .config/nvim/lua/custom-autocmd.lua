@@ -222,8 +222,11 @@ api.nvim_create_autocmd("BufReadPre", {
 
     if fn.getfsize(f) > file_size_limit or fn.getfsize(f) == -2 then
       vim.o.eventignore = "all"
-      --  turning off relative number helps a lot
+      -- show ruler
+      vim.o.ruler = true
+
       vim.wo.relativenumber = false
+      vim.wo.number = false
 
       vim.bo.swapfile = false
       vim.bo.bufhidden = "unload"
