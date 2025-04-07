@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<channel name="xfce4-notifyd" version="1.0">
+  <property name="applications" type="empty">
+    <property name="known_applications" type="array">
+      <value type="string" value="com.rtosta.zapzap"/>
+      <value type="string" value="flameshot"/>
+      <value type="string" value="notify-send"/>
+      <value type="string" value="org.nicotine_plus.Nicotine"/>
+      <value type="string" value="org.qbittorrent.qBittorrent"/>
+      <value type="string" value="org.xfce.Thunar"/>
+      <value type="string" value="Strawberry"/>
+      <value type="string" value="Thunderbird"/>
+      <value type="string" value="xfce4-power-manager"/>
+    </property>
+    <property name="denied-critical-notifications" type="array">
+      <value type="string" value="org.nicotine_plus.Nicotine"/>
+    </property>
+    <property name="muted_applications" type="array">
+      <value type="string" value="org.nicotine_plus.Nicotine"/>
+    </property>
+  </property>
+  <property name="log-max-size-enabled" type="bool" value="true"/>
+  <property name="date-time-custom-format" type="string" value="%a %H:%M:%S"/>
+  <property name="expire-timeout" type="int" value="2"/>
+</channel>
