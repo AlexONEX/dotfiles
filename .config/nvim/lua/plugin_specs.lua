@@ -85,10 +85,7 @@ local plugin_specs = {
   {
     "vlime/vlime",
     enabled = function()
-      if utils.executable("sbcl") then
-        return true
-      end
-      return false
+      return utils.executable("sbcl")
     end,
     config = function(plugin)
       vim.opt.rtp:append(plugin.dir .. "/vim")
@@ -248,11 +245,7 @@ local plugin_specs = {
       vim.g.netrw_nogx = 1 -- disable netrw gx
     end,
     enabled = function()
-      if vim.g.is_win or vim.g.is_mac then
-        return true
-      else
-        return false
-      end
+      return vim.g.is_win or vim.g.is_mac
     end,
     dependencies = { "nvim-lua/plenary.nvim" },
     config = true, -- default settings
@@ -264,11 +257,7 @@ local plugin_specs = {
   {
     "liuchengxu/vista.vim",
     enabled = function()
-      if utils.executable("ctags") then
-        return true
-      else
-        return false
-      end
+      return utils.executable("ctags")
     end,
     cmd = "Vista",
   },
@@ -325,10 +314,7 @@ local plugin_specs = {
   {
     "lyokha/vim-xkbswitch",
     enabled = function()
-      if vim.g.is_mac and utils.executable("xkbswitch") then
-        return true
-      end
-      return false
+      return vim.g.is_mac and utils.executable("xkbswitch")
     end,
     event = { "InsertEnter" },
   },
@@ -336,10 +322,7 @@ local plugin_specs = {
   {
     "Neur1n/neuims",
     enabled = function()
-      if vim.g.is_win then
-        return true
-      end
-      return false
+      return vim.g.is_win
     end,
     event = { "InsertEnter" },
   },
@@ -394,16 +377,13 @@ local plugin_specs = {
   { "vim-pandoc/vim-markdownfootnotes", ft = { "markdown" } },
 
   -- Vim tabular plugin for manipulate tabular, required by markdown plugins
-  { "godlygeek/tabular", cmd = { "Tabularize" } },
+  { "godlygeek/tabular", { ft = { "markdown" } } },
 
   -- Markdown previewing (only for Mac and Windows)
   {
     "iamcco/markdown-preview.nvim",
     enabled = function()
-      if vim.g.is_win or vim.g.is_mac then
-        return true
-      end
-      return false
+      return vim.g.is_win or vim.g.is_mac
     end,
     build = "cd app && npm install && git restore .",
     ft = { "markdown" },
@@ -412,10 +392,7 @@ local plugin_specs = {
   {
     "rhysd/vim-grammarous",
     enabled = function()
-      if vim.g.is_mac then
-        return true
-      end
-      return false
+      return vim.g.is_mac
     end,
     ft = { "markdown" },
   },
@@ -436,6 +413,9 @@ local plugin_specs = {
   {
     "lervag/vimtex",
     ft = { "tex" },
+    enabled = function()
+      return utils.executable("latex")
+    end,
     config = function()
       vim.g.vimtex_view_method = "zathura"
       vim.g.vimtex_compiler_method = "latexmk"
@@ -455,10 +435,7 @@ local plugin_specs = {
   {
     "tmux-plugins/vim-tmux",
     enabled = function()
-      if utils.executable("tmux") then
-        return true
-      end
-      return false
+      return utils.executable("tmux")
     end,
     ft = { "tmux" },
   },
@@ -473,8 +450,7 @@ local plugin_specs = {
   {
     "glacambre/firenvim",
     enabled = function()
-      local result = vim.g.is_win or vim.g.is_mac
-      return result
+      return vim.g.is_win or vim.g.is_mac
     end,
     -- it seems that we can only call the firenvim function directly.
     -- Using vim.fn or vim.cmd to call this function will fail.
@@ -497,10 +473,7 @@ local plugin_specs = {
   {
     "sakhnik/nvim-gdb",
     enabled = function()
-      if vim.g.is_win or vim.g.is_linux then
-        return true
-      end
-      return false
+      return vim.g.is_win or vim.g.is_linux
     end,
     build = { "bash install.sh" },
     lazy = true,
@@ -512,10 +485,7 @@ local plugin_specs = {
   {
     "ojroques/vim-oscyank",
     enabled = function()
-      if vim.g.is_linux then
-        return true
-      end
-      return false
+      return vim.g.is_linux
     end,
     cmd = { "OSCYank", "OSCYankReg" },
   },
