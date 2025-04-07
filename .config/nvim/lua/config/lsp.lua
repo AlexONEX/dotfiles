@@ -5,6 +5,7 @@ local lsp = vim.lsp
 local diagnostic = vim.diagnostic
 local lspconfig = require("lspconfig")
 local typescript_tools = require("typescript-tools")
+local utils = require("utils")
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("buf_behavior_conf", { clear = true }),
