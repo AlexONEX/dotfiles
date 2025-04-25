@@ -1,258 +1,349 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env python3
+
+import os
+import re
+import json
+import html
+import time
+import logging
+import requests
+import subprocess
+import tempfile
+from pathlib import Path
+from datetime import datetime
+from bs4 import BeautifulSoup
+from urllib.parse import quote_plus
+
 # Configuration
-DOWNLOAD_DIR="${HOME}/Downloads/Torrents/Movies"
-SEARCH_SITE="https://1337x.to"
-LOG_FILE="${HOME}/.movie-torrent-searcher.log"
+DOWNLOAD_DIR = os.path.expanduser("~/Downloads/Torrents/Movies")
+SEARCH_SITE = "https://1337x.to"
+LOG_FILE = os.path.expanduser("~/.movie-torrent-searcher.log")
+RPC_URL = "http://localhost:6800/jsonrpc"
+USER_AGENT = "Mozilla/5.0"
 
-# Logging function
-log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
-}
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(asctime)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler(LOG_FILE),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
-# Sanitize input for search
-sanitize_input() {
-    echo "$1" | tr -cd '[:alnum:] [:space:].-' | tr '[:upper:]' '[:lower:]'
-}
+def sanitize_input(query):
+    """Clean input for searching"""
+    if not query:
+        return ""
+    # Only allow alphanumeric, spaces, dots, and hyphens
+    return re.sub(r'[^\w\s.-]', '', query.lower())
 
-# Extract year from movie title
-extract_year() {
-    local query="$1"
-    local year=$(echo "$query" | grep -oP '\(\d{4}\)|\[\d{4}\]|\d{4}' | grep -oP '\d{4}' | head -1)
-    # Clean query by removing the year
-    local clean_query=$(echo "$query" | sed -E "s/\(${year}\)|\[${year}\]|${year}//g" | xargs)
-    echo "$clean_query $year"
-}
+def extract_year(query):
+    """Extract year from movie title"""
+    # Look for patterns like (2022), [2022], or standalone 2022
+    year_match = re.search(r'\((\d{4})\)|\[(\d{4})\]|(\d{4})', query)
+    
+    if year_match:
+        # Find the first non-None group (the actual year)
+        year = next(group for group in year_match.groups() if group is not None)
+        
+        # Clean query by removing the year and any brackets
+        clean_query = re.sub(r'\(\d{4}\)|\[\d{4}\]|\d{4}', '', query).strip()
+        return clean_query, year
+    
+    return query, ""
 
-# Build search URL
-build_search_url() {
-    local query=$(sanitize_input "$1")
-    local encoded_query=$(echo "$query" | sed 's/ /+/g')
-    echo "${SEARCH_SITE}/search/${encoded_query}/1/"
-}
+def build_search_url(query):
+    """Build search URL for the torrent site"""
+    sanitized = sanitize_input(query)
+    encoded = quote_plus(sanitized)
+    return f"{SEARCH_SITE}/search/{encoded}/1/"
 
-# Download torrent via aria2c
-download_torrent() {
-    local magnet_link="$1"
-    local title="$2"
-    log "Downloading \"$title\" via aria2c"
-    # Check if aria2c service is running, otherwise start it
-    if ! pgrep -x "aria2c" > /dev/null; then
-        log "aria2c service not running, starting it..."
-        aria2c --enable-rpc --rpc-listen-all=true --rpc-allow-origin-all \
-              --dir="${DOWNLOAD_DIR}" --daemon=true
-        sleep 2  # Give it a moment to start
-    fi
-    # Clean the magnet link of any problematic characters
-    local clean_magnet=$(echo "$magnet_link" | sed 's/\xe2\x80\x8b//g')
-    # Create a temporary file for the JSON payload with options to override default config
-    local tmp_json="/tmp/aria2c_request_$.json"
-    cat > "$tmp_json" << EOF
-{
-    "jsonrpc": "2.0",
-    "id": "1",
-    "method": "aria2.addUri",
-    "params": [["$clean_magnet"], {"pause":"false", "select-file":"1-999999"}]
-}
-EOF
-    # Send request to aria2c
-    local response=$(curl -s "http://localhost:6800/jsonrpc" \
-        --header "Content-Type: application/json" \
-        --data @"$tmp_json")
-    log "aria2c response: $response"
-    # Clean up
-    rm -f "$tmp_json"
-    # Check response
-    if [[ "$response" == *"error"* ]]; then
-        log "Error from aria2c: $response"
-        return 1
-    fi
-    log "Download started successfully with auto-start and all files selected"
-    return 0
-}
+def fetch_html(url):
+    """Fetch HTML content from URL with proper headers"""
+    headers = {"User-Agent": USER_AGENT}
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        return response.text
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error fetching {url}: {e}")
+        return None
 
-# Fetch and filter torrents
-search_movie_torrents() {
-    local query="$1"
-    local parsed_result=(${(z)$(extract_year "$query")})
+def extract_torrent_links(html_content):
+    """Extract torrent detail page links from search results"""
+    if not html_content:
+        return []
+    
+    # Try BeautifulSoup first
+    soup = BeautifulSoup(html_content, 'html.parser')
+    links = soup.select('a[href^="/torrent/"]')
+    
+    if links:
+        return [link.get('href') for link in links if link and not link.get('href').endswith('#')]
+    
+    # Fallback to regex if BeautifulSoup doesn't find anything
+    matches = re.findall(r'href="(/torrent/[^"#]+)"', html_content)
+    return matches
 
-    if [[ ${#parsed_result} -lt 2 ]]; then
-        # If no year is found, use just the sanitized query
-        local clean_query=$(sanitize_input "$query")
-        local year=""
-    else
-        local clean_query="${parsed_result[1,-2]}"
-        local year="${parsed_result[-1]}"
-    fi
+def extract_magnet_link(html_content):
+    """Extract and properly decode magnet link from torrent detail page"""
+    if not html_content:
+        return None
+    
+    # Try BeautifulSoup first
+    soup = BeautifulSoup(html_content, 'html.parser')
+    magnet_element = soup.select_one('a[href^="magnet:"]')
+    
+    if magnet_element:
+        # Properly decode HTML entities in the magnet link
+        return html.unescape(magnet_element.get('href'))
+    
+    # Fallback to regex
+    match = re.search(r'href="(magnet:[^"]+)"', html_content)
+    if match:
+        return html.unescape(match.group(1))
+    
+    return None
 
-    local search_url=$(build_search_url "$clean_query")
+def extract_title(html_content):
+    """Extract title from torrent detail page"""
+    if not html_content:
+        return None
+    
+    # Try BeautifulSoup first
+    soup = BeautifulSoup(html_content, 'html.parser')
+    title_element = soup.select_one('div.box-info-heading h1')
+    
+    if title_element:
+        return title_element.get_text(strip=True)
+    
+    # Fallback to regex
+    match = re.search(r'<h1>([^<]+)</h1>', html_content)
+    if match:
+        return match.group(1).strip()
+    
+    return None
 
-    if [[ -n "$year" ]]; then
-        log "Searching: $clean_query ($year)"
-    else
-        log "Searching: $clean_query"
-    fi
-    log "Search URL: $search_url"
+def calculate_movie_score(title, year=""):
+    """Calculate quality score for a movie torrent based on title with emphasis on best audio quality and BluRay source"""
+    score = 0
+    title_lower = title.lower()
+    
+    # Year matching
+    if year and year in title_lower:
+        score += 10
+    
+    # Resolution scoring - strongly prioritize 1080p for movies
+    if "1080p" in title_lower:
+        score += 15  # Increased from 10
+    elif "720p" in title_lower:
+        score += 5   # Decreased from 8
+    elif "2160p" in title_lower or "4k" in title_lower:
+        score -= 10  # Strongly penalize 4K/2160p
+    
+    # Source quality scoring - heavily prioritize BluRay
+    if "remux" in title_lower and ("bluray" in title_lower or "blu-ray" in title_lower):
+        score += 25  # Highest score for BluRay remux (best quality)
+    elif "bluray" in title_lower or "blu-ray" in title_lower:
+        score += 20  # Significantly increased from 7
+    elif "web-dl" in title_lower or "webrip" in title_lower:
+        score += 5   # Same value
+    elif "hdtv" in title_lower:
+        score += 1   # Decreased from 2
+    
+    # Audio quality scoring - significantly increased weights
+    if "atmos" in title_lower:
+        score += 10  # Increased from 4
+    elif "truehd" in title_lower:
+        score += 10  # Increased from 4
+    elif "dts-hd ma" in title_lower:
+        score += 9   # New specific category for DTS-HD Master Audio
+    elif "dts-hd" in title_lower or "dtshd" in title_lower:
+        score += 8   # Increased from 3
+    elif "dts" in title_lower:
+        score += 7   # Increased from 2
+    elif "dd5.1" in title_lower or "ac3" in title_lower:
+        score += 5   # Increased from 2
+    
+    # Encoding quality
+    if "remux" in title_lower:
+        score += 8   # Increased from 6 (but less important than source)
+    elif "x265" in title_lower or "hevc" in title_lower:
+        score += 4   # Same value
+    elif "x264" in title_lower:
+        score += 3   # Same value
+    
+    logger.debug(f"Score breakdown for '{title}': {score}")
+    return score
 
-    # Fetch torrent links - add debugging
-    local html_content=$(curl -s -H "User-Agent: Mozilla/5.0" "$search_url")
-    local results=$(echo "$html_content" | grep -o '/torrent/[^"]*' | grep -v '#')
-
-    # Debug - check if we're getting any results
-    if [[ -n "$html_content" && -z "$results" ]]; then
-        log "DEBUG: Got HTML content but no torrent links found. First 200 chars:"
-        log "$(echo "$html_content" | head -c 200)"
-
-        # Try alternative extraction method
-        results=$(echo "$html_content" | grep -o 'href="/torrent/[^"]*' | sed 's/href="//')
-    fi
-
-    if [[ -z "$results" ]]; then
-        log "No results found for '$query'"
-        return 1
-    fi
-
-    # Process results and filter
-    local best_torrent=""
-    local best_score=0
-    local best_title=""
-
-    while read -r result; do
-        [[ -z "$result" ]] && continue
-
-        local torrent_url="${SEARCH_SITE}${result}"
-        log "Processing: $torrent_url"
-
-        local html_content=$(curl -s -H "User-Agent: Mozilla/5.0" "$torrent_url")
-        local title=$(echo "$html_content" | grep -o '<h1>[^<]*</h1>' | sed 's/<[^>]*>//g' | xargs)
-
-        if [[ -z "$title" ]]; then
-            log "Couldn't extract title for $torrent_url, skipping"
+def find_best_movie_torrent(links, year=""):
+    """Find the best matching movie torrent based on quality"""
+    best_torrent = None
+    best_score = -1
+    best_title = None
+    
+    for link in links:
+        torrent_url = f"{SEARCH_SITE}{link}"
+        logger.info(f"Processing: {torrent_url}")
+        
+        html_content = fetch_html(torrent_url)
+        title = extract_title(html_content)
+        
+        if not title:
+            logger.warning(f"Couldn't extract title for {torrent_url}, skipping")
             continue
-        fi
+        
+        score = calculate_movie_score(title, year)
+        magnet_link = extract_magnet_link(html_content)
+        
+        if magnet_link:
+            logger.info(f"Found magnet link for \"{title}\" with score {score}")
+            
+            if score > best_score:
+                best_score = score
+                best_torrent = magnet_link
+                best_title = title
+                logger.info(f"New best match: \"{title}\" with score {score}")
+        else:
+            logger.warning(f"No magnet link found for \"{title}\"")
+    
+    return best_torrent, best_title
 
-        local title_lower=$(sanitize_input "$title")
+def is_aria2c_running():
+    """Check if aria2c is running"""
+    try:
+        subprocess.run(["pgrep", "-x", "aria2c"], check=True, capture_output=True)
+        return True
+    except subprocess.CalledProcessError:
+        return False
 
-        # Basic matching logic - for movies we're more concerned with quality
-        # Score calculation
-        local score=0
+def start_aria2c():
+    """Start aria2c if it's not running"""
+    logger.info("aria2c service not running, starting it...")
+    cmd = [
+        "aria2c", 
+        "--enable-rpc", 
+        "--rpc-listen-all=true", 
+        "--rpc-allow-origin-all",
+        f"--dir={DOWNLOAD_DIR}", 
+        "--daemon=true"
+    ]
+    subprocess.run(cmd)
+    time.sleep(2)  # Give it a moment to start
 
-        # If year is specified, prioritize matches with the correct year
-        if [[ -n "$year" && "$title_lower" == *"$year"* ]]; then
-            score=$((score + 10))
-        fi
+def download_via_aria2c(magnet_link, title):
+    """Download torrent via aria2c RPC"""
+    if not magnet_link or not magnet_link.startswith("magnet:?"):
+        logger.error(f"Invalid magnet link: {magnet_link}")
+        return False
+    
+    logger.info(f"Downloading \"{title}\" via aria2c")
+    
+    if not is_aria2c_running():
+        start_aria2c()
+    
+    # Create temp file for JSON payload
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp:
+        json_payload = {
+            "jsonrpc": "2.0",
+            "id": "1",
+            "method": "aria2.addUri",
+            "params": [
+                [magnet_link], 
+                {
+                    "pause": "false", 
+                    "select-file": "1-999999",
+                    "bt-metadata-only": "false",
+                    "follow-torrent": "true"
+                }
+            ]
+        }
+        json.dump(json_payload, temp)
+        temp_path = temp.name
+    
+    # Send request to aria2c
+    try:
+        result = subprocess.run(
+            ["curl", "-s", "http://localhost:6800/jsonrpc",
+             "--header", "Content-Type: application/json",
+             "--data", f"@{temp_path}"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        
+        # Parse the response
+        response = json.loads(result.stdout)
+        os.unlink(temp_path)  # Clean up temp file
+        
+        if "result" in response:
+            gid = response["result"]
+            logger.info(f"Download started successfully with GID: {gid}")
+            return True
+        else:
+            logger.error(f"Error from aria2c: {response}")
+            return False
+    
+    except (subprocess.CalledProcessError, json.JSONDecodeError) as e:
+        logger.error(f"Error sending to aria2c: {e}")
+        os.unlink(temp_path)  # Clean up temp file
+        return False
 
-        # Resolution scoring - prioritize 1080p over 4K/2160p
-        if [[ "$title_lower" == *"1080p"* ]]; then
-            score=$((score + 10))  # Higher score for 1080p
-        elif [[ "$title_lower" == *"720p"* ]]; then
-            score=$((score + 8))   # Medium score for 720p
-        elif [[ "$title_lower" == *"2160p"* || "$title_lower" == *"4k"* ]]; then
-            score=$((score + 2))   # Lower score for 4K to avoid selecting it
-        fi
+def search_movie_torrents(query):
+    """Search for movie torrents and return the best match"""
+    clean_query, year = extract_year(query)
+    
+    search_url = build_search_url(clean_query)
+    if year:
+        logger.info(f"Searching: {clean_query} ({year})")
+    else:
+        logger.info(f"Searching: {clean_query}")
+    logger.info(f"Search URL: {search_url}")
+    
+    html_content = fetch_html(search_url)
+    if not html_content:
+        logger.error(f"No results found for '{query}'")
+        return None, None
+    
+    links = extract_torrent_links(html_content)
+    if not links:
+        logger.error(f"No results found for '{query}'")
+        return None, None
+    
+    return find_best_movie_torrent(links, year)
 
-        # Source quality scoring
-        if [[ "$title_lower" == *"bluray"* || "$title_lower" == *"blu-ray"* ]]; then
-            score=$((score + 7))
-        elif [[ "$title_lower" == *"web-dl"* || "$title_lower" == *"webrip"* ]]; then
-            score=$((score + 5))
-        elif [[ "$title_lower" == *"hdtv"* ]]; then
-            score=$((score + 2))
-        fi
+def main():
+    """Main entry point"""
+    import sys
+    
+    if len(sys.argv) < 2:
+        print(f"Usage: {sys.argv[0]} <movie title> [year]")
+        print(f"Example: {sys.argv[0]} 'The Godfather 1972'")
+        print(f"Example: {sys.argv[0]} 'Inception (2010)'")
+        sys.exit(1)
+    
+    # Create download directory if it doesn't exist
+    os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+    
+    # Search for torrents
+    query = " ".join(sys.argv[1:])
+    magnet_link, title = search_movie_torrents(query)
+    
+    if magnet_link and title:
+        print(f"Selected torrent: \"{title}\"")
+        print(f"Magnet link: {magnet_link[:60]}...")
+        
+        # Download the torrent
+        success = download_via_aria2c(magnet_link, title)
+        if not success:
+            print("ERROR: Failed to start download")
+            sys.exit(1)
+    else:
+        print(f"No suitable torrents found for \"{query}\"")
+        sys.exit(1)
 
-        # Audio quality scoring
-        if [[ "$title_lower" == *"atmos"* || "$title_lower" == *"truehd"* ]]; then
-            score=$((score + 4))
-        elif [[ "$title_lower" == *"dts-hd"* || "$title_lower" == *"dtshd"* ]]; then
-            score=$((score + 3))
-        elif [[ "$title_lower" == *"dts"* || "$title_lower" == *"dd5.1"* ]]; then
-            score=$((score + 2))
-        fi
-
-        # Encoding quality
-        if [[ "$title_lower" == *"remux"* ]]; then
-            score=$((score + 6))
-        elif [[ "$title_lower" == *"x265"* || "$title_lower" == *"hevc"* ]]; then
-            score=$((score + 4))
-        elif [[ "$title_lower" == *"x264"* ]]; then
-            score=$((score + 3))
-        fi
-
-        # Extract magnet link directly with grep - print debug info
-        local magnet_link=$(echo "$html_content" | grep -o 'magnet:[^"]*' | head -n1)
-
-        # If magnet link extraction fails, try an alternative method
-        if [[ -z "$magnet_link" ]]; then
-            log "DEBUG: First method failed to extract magnet link, trying alternative extraction"
-            magnet_link=$(echo "$html_content" | grep -o 'href="magnet:[^"]*' | sed 's/href="//' | head -n1)
-        fi
-
-        if [[ -n "$magnet_link" ]]; then
-            # Decode any HTML entities and clean up zero-width spaces
-            magnet_link=$(echo "$magnet_link" | sed 's/&amp;/\&/g' | sed 's/\xe2\x80\x8b//g')
-
-            # Dump first part of magnet link for debugging
-            log "DEBUG: Found magnet link starting with: ${magnet_link:0:40}..."
-
-            log "Found magnet link for \"$title\" with score $score"
-
-            if [[ $score -gt $best_score ]]; then
-                best_score=$score
-                best_torrent="$magnet_link"
-                best_title="$title"
-                log "New best match: \"$title\" with score $score"
-            fi
-        else
-            log "No magnet link found for \"$title\""
-        fi
-    done <<< "$results"
-
-    if [[ -z "$best_torrent" ]]; then
-        log "No suitable torrent found"
-        return 1
-    fi
-
-    # Write to a temporary file to avoid issues with newlines and special chars
-    local tmp_result="/tmp/torrent_result_$$.txt"
-    echo "$best_torrent" > "$tmp_result"
-    echo "$best_title" >> "$tmp_result"
-    cat "$tmp_result"
-
-    # Keep the temp file for debugging (will be cleaned up on next run)
-    log "DEBUG: Results written to $tmp_result for debugging"
-}
-
-# Main function
-main() {
-    if [[ $# -eq 0 ]]; then
-        echo "Usage: $0 <movie title> [year]"
-        echo "Example: $0 'The Godfather 1972'"
-        echo "Example: $0 'Inception (2010)'"
-        return 1
-    fi
-
-    # Search for movie torrents and get results
-    local output=$(search_movie_torrents "$*")
-
-    if [[ -n "$output" ]]; then
-        # Rather than relying on array splitting, use grep to extract lines
-        local magnet_link=$(echo "$output" | grep -m1 "^magnet:" || echo "")
-        local title=$(echo "$output" | grep -v "^magnet:" | head -n1 || echo "")
-
-        if [[ -n "$magnet_link" && "$magnet_link" == magnet:?xt=urn:btih:* ]]; then
-            echo "Selected torrent: \"$title\""
-            echo "Magnet link: ${magnet_link:0:60}..."
-
-            # Download the torrent
-            download_torrent "$magnet_link" "$title"
-        else
-            log "Invalid magnet link: $magnet_link"
-            echo "ERROR: Could not get a valid magnet link."
-            return 1
-        fi
-    else
-        echo "No suitable torrents found for \"$*\""
-        return 1
-    fi
-}
-
-main "$@"
+if __name__ == "__main__":
+    main()
