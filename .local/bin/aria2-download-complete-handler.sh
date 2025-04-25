@@ -1,35 +1,42 @@
-#!/bin/sh
+#!/bin/bash
+    # aria2-download-complete-handler.sh
+# This script is called by aria2 when a download completes
 
-# Logging function
-log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "${HOME}/.local/share/aria2/completion.log"
+# Log file for debugging
+LOG_FILE="${HOME}/.config/aria2/event-handler.log"
+
+# Function to log messages
+log_message() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >>"$LOG_FILE"
 }
 
-# Arguments passed by aria2:
-# $1 - GID
-# $2 - Number of files
-# $3 - Path to the first file
+# Create log directory if it doesn't exist
+mkdir -p "$(dirname "$LOG_FILE")"
 
-# Remove .aria2 control file
-rm -f "$3.aria2"
+# Log start of handler
+log_message "Download complete handler started with args: $*"
 
-# Log the completed download
-log "Download completed: $3"
-log "GID: $1"
-log "Number of files: $2"
+# Get parameters from aria2
+GID="$1"
+FILE_NUM="$2"
+FILE_PATH="$3"
 
-# Optional: Send desktop notification
-notify-send "Download Complete" "$(basename "$3")"
+# Log the download details
+log_message "GID: $GID, File Number: $FILE_NUM, File Path: $FILE_PATH"
 
-# Optional: Verify torrent integrity
-if command -v ctorrent-checkfiles >/dev/null 2>&1; then
-    ctorrent-checkfiles "$3"
+# Check if we're dealing with a magnet link that saved metadata
+if [[ "$GID" == *".torrent"* ]]; then
+  log_message "This appears to be a torrent metadata file: $GID"
+
+  # Path to your torrent directory (where .torrent files are saved)
+  TORRENT_DIR="${HOME}/Downloads/Torrents"
+
+  # Run the torrent renamer script
+  log_message "Running torrent renamer on ${TORRENT_DIR}"
+  "${HOME}/.local/bin/torrent-renamer.sh" "${TORRENT_DIR}"
+
+  log_message "Torrent renamer completed"
 fi
 
-# Optional: Automatically seed with higher priority
-if [ -f "$3" ]; then
-    # If it's a torrent file, ensure continuous seeding
-    if echo "$3" | grep -q "\.torrent$"; then
-        aria2c --seed-time=525600 --seed-ratio=2.0 "$3"
-    fi
-fi
+log_message "Download complete handler finished"
+exit 0
