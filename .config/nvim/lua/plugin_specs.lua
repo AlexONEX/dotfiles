@@ -9,7 +9,7 @@ if not vim.uv.fs_stat(lazypath) then
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
+    "--branch=stable",
     lazypath,
   }
 end
@@ -22,18 +22,17 @@ end
 
 local plugin_specs = {
   -- auto-completion engine
+  { "hrsh7th/cmp-nvim-lsp", lazy = true },
+  { "hrsh7th/cmp-path", lazy = true },
+  { "hrsh7th/cmp-buffer", lazy = true },
+  { "hrsh7th/cmp-omni", lazy = true },
+  { "quangnguyen30192/cmp-nvim-ultisnips", lazy = true },
   {
     "hrsh7th/nvim-cmp",
     name = "nvim-cmp",
-    -- event = 'InsertEnter',
     event = "VeryLazy",
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "onsails/lspkind-nvim",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-omni",
-      "quangnguyen30192/cmp-nvim-ultisnips",
+      "echasnovski/mini.icons",
     },
     config = function()
       require("config.nvim-cmp")
@@ -62,7 +61,7 @@ local plugin_specs = {
       end
       return false
     end,
-    event = "VeryLazy",
+    lazy = true,
     build = ":TSUpdate",
     config = function()
       require("config.treesitter")
@@ -96,21 +95,11 @@ local plugin_specs = {
   -- Super fast buffer jump
   {
     "smoka7/hop.nvim",
-    event = "VeryLazy",
+    keys = { "f" },
     config = function()
       require("config.nvim_hop")
     end,
   },
-
-  -- Show match number and index for searching
-  --{
-  --  "kevinhwang91/nvim-hlslens",
-  --  branch = "main",
-  --  keys = { "*", "#", "n", "N" },
-  --  config = function()
-  --    require("config.hlslens")
-  --  end,
-  --},
 
   {
     "nvim-telescope/telescope.nvim",
@@ -122,8 +111,6 @@ local plugin_specs = {
 
   {
     "ibhagwan/fzf-lua",
-    -- optional for icon support
-    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       -- calling `setup` is optional for customization
       require("config.fzf-lua")
@@ -132,9 +119,10 @@ local plugin_specs = {
   {
     "MeanderingProgrammer/markdown.nvim",
     main = "render-markdown",
+    ft = { "markdown" },
     opts = {},
-    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
   },
+
   -- A list of colorscheme plugin you may want to try. Find what suits you.
   { "navarasu/onedark.nvim", lazy = true },
   { "sainnhe/edge", lazy = true },
@@ -153,11 +141,22 @@ local plugin_specs = {
     branch = "v2",
   },
   { "rebelot/kanagawa.nvim", lazy = true },
-  { "nvim-tree/nvim-web-devicons", event = "VeryLazy" },
+
+  -- plugins to provide nerdfont icons
+  {
+    "echasnovski/mini.icons",
+    version = false,
+    config = function()
+      -- this is the compatibility fix for plugins that only support nvim-web-devicons
+      require("mini.icons").mock_nvim_web_devicons()
+      require("mini.icons").tweak_lsp_kind()
+    end,
+    lazy = false,
+  },
 
   {
     "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
+    event = "BufRead",
     cond = firenvim_not_active,
     config = function()
       require("config.lualine")
@@ -183,11 +182,16 @@ local plugin_specs = {
   },
 
   {
-    "lukas-reineke/indent-blankline.nvim",
-    event = "VeryLazy",
-    main = "ibl",
+    "echasnovski/mini.indentscope",
+    version = false,
     config = function()
-      require("config.indent-blankline")
+      local mini_indent = require("mini.indentscope")
+      mini_indent.setup {
+        draw = {
+          animation = mini_indent.gen_animation.none(),
+        },
+        symbol = "▏",
+      }
     end,
   },
   {
@@ -213,7 +217,9 @@ local plugin_specs = {
     end,
   },
   -- Highlight URLs inside vim
-  { "itchyny/vim-highlighturl", event = "VeryLazy" },
+  { "itchyny/vim-highlighturl", event = "BufReadPost" },
+
+  { "nvim-lua/plenary.nvim", lazy = true },
 
   -- notification plugin
   {
@@ -236,7 +242,6 @@ local plugin_specs = {
     enabled = function()
       return vim.g.is_win or vim.g.is_mac
     end,
-    dependencies = { "nvim-lua/plenary.nvim" },
     config = true, -- default settings
     submodules = false, -- not needed, submodules are required only for tests
   },
@@ -275,7 +280,10 @@ local plugin_specs = {
   },
 
   -- Comment plugin
-  { "tpope/vim-commentary", event = "VeryLazy" },
+  { "tpope/vim-commentary", keys = {
+    { "gc", mode = "n" },
+    { "gc", mode = "v" },
+  } },
 
   -- Multiple cursor plugin like Sublime Text?
   { "mg979/vim-visual-multi" },
@@ -289,7 +297,7 @@ local plugin_specs = {
     config = function()
       require("config.yanky")
     end,
-    event = "VeryLazy",
+    cmd = "YankyRingHistory",
   },
 
   -- Handy unix command inside Vim (Rename, Move etc.)
@@ -316,9 +324,6 @@ local plugin_specs = {
     event = { "InsertEnter" },
   },
 
-  -- Auto format tools
-  { "sbdchd/neoformat", cmd = { "Neoformat" } },
-
   -- Git command inside vim
   {
     "tpope/vim-fugitive",
@@ -330,7 +335,14 @@ local plugin_specs = {
 
   -- Better git log display
   { "rbong/vim-flog", cmd = { "Flog" } },
-  { "akinsho/git-conflict.nvim", version = "*", config = true },
+  {
+    "akinsho/git-conflict.nvim",
+    version = "*",
+    event = "VeryLazy",
+    config = function()
+      require("config.git-conflict")
+    end,
+  },
   {
     "ruifm/gitlinker.nvim",
     event = "User InGitRepo",
@@ -349,6 +361,7 @@ local plugin_specs = {
 
   {
     "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen" },
   },
 
   {
@@ -386,7 +399,7 @@ local plugin_specs = {
     ft = { "markdown" },
   },
 
-  { "chrisbra/unicode.vim", event = "VeryLazy" },
+  { "chrisbra/unicode.vim", keys = { "ga" }, cmd = { "UnicodeSearch" } },
 
   -- Additional powerful text object for vim, this plugin should be studied
   -- carefully to use its full power
@@ -394,9 +407,6 @@ local plugin_specs = {
 
   -- Plugin to manipulate character pairs quickly
   { "machakann/vim-sandwich", event = "VeryLazy" },
-
-  -- Add indent object for vim (useful for languages like Python)
-  { "michaeljsmith/vim-indent-object", event = "VeryLazy" },
 
   -- Only use these plugin on Windows and Mac and when LaTeX is installed
   {
@@ -499,8 +509,6 @@ local plugin_specs = {
     priority = 1000,
     lazy = false,
     opts = {
-      input = { enabled = true },
-      -- more beautiful vim.ui.input
       input = {
         enabled = true,
         win = {
@@ -508,8 +516,6 @@ local plugin_specs = {
           backdrop = true,
         },
       },
-      -- more beautiful vim.ui.select
-      picker = { enabled = true },
     },
   },
 
@@ -519,8 +525,7 @@ local plugin_specs = {
   -- file explorer
   {
     "nvim-tree/nvim-tree.lua",
-    event = "VeryLazy",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    keys = { "<space>s" },
     config = function()
       require("config.nvim-tree")
     end,
@@ -528,14 +533,13 @@ local plugin_specs = {
   {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
-    event = "VeryLazy",
     config = function()
       require("config.copilot")
     end,
   },
   {
     "j-hui/fidget.nvim",
-    event = "VeryLazy",
+    event = "BufRead",
     tag = "legacy",
     config = function()
       require("config.fidget-nvim")
@@ -563,55 +567,34 @@ local plugin_specs = {
     event = "VeryLazy",
   },
   {
+    "nvim-neorg/neorg",
+    ft = "norg",
+    build = ":Neorg sync-parsers",
+    dependencies = {
+      "nvim-neorg/lua-utils.nvim",
+    },
+    config = function()
+      require("config.neorg")
+    end,
+  },
+  {
     -- show hint for code actions, the user can also implement code actions themselves,
     -- see discussion here: https://github.com/neovim/neovim/issues/14869
     "kosayoda/nvim-lightbulb",
     config = function()
       require("config.lightbulb")
     end,
+    event = "LspAttach",
   },
 
   {
     "Bekaboo/dropbar.nvim",
+    event = "VeryLazy",
   },
   {
     "catgoose/nvim-colorizer.lua",
     event = "BufReadPre",
     opts = { -- set to setup table
-    },
-  },
-
-  {
-    "pmizio/typescript-tools.nvim",
-    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-    ft = { "typescript", "typescriptreact" },
-    opts = {
-      settings = {
-        -- Enable separate diagnostic server for better performance
-        separate_diagnostic_server = true,
-        -- Publish diagnostics on insert leave for better performance
-        publish_diagnostic_on = "insert_leave",
-        -- Code actions to expose
-        expose_as_code_action = {
-          "fix_all",
-          "add_missing_imports",
-          "remove_unused",
-          "remove_unused_imports",
-          "organize_imports",
-        },
-        -- TSServer settings for better performance
-        tsserver_file_preferences = {
-          includeInlayParameterNameHints = "all",
-          includeCompletionsForModuleExports = true,
-          quotePreference = "single",
-        },
-        tsserver_format_options = {
-          allowIncompleteCompletions = false,
-          allowRenameOfImportPath = false,
-        },
-        -- Increase memory limit for large projects
-        tsserver_max_memory = "auto",
-      },
     },
   },
 }
