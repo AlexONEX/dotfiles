@@ -1,1 +1,0 @@
-vim.opt.isfname:remove("=")
