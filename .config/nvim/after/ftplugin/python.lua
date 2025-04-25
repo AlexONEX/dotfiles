@@ -9,10 +9,6 @@ vim.opt_local.shiftwidth = 4
 vim.opt_local.expandtab = true
 vim.opt_local.formatoptions:remove({ "o", "r" })
 
-local function run_python()
-	vim.cmd('AsyncRun python -u "%"')
-end
-
 -- Automatically make the current string an f-string when typing `{`.
 vim.api.nvim_create_autocmd("InsertCharPre", {
 	pattern = { "*.py" },
@@ -21,17 +17,13 @@ vim.api.nvim_create_autocmd("InsertCharPre", {
 		if vim.v.char ~= "{" then
 			return
 		end
-
 		local node = vim.treesitter.get_node({})
-
 		if not node then
 			return
 		end
-
 		if node:type() ~= "string" then
 			node = node:parent()
 		end
-
 		if not node or node:type() ~= "string" then
 			return
 		end
@@ -40,21 +32,25 @@ vim.api.nvim_create_autocmd("InsertCharPre", {
 		if first_char == "f" or first_char == "r" then
 			return
 		end
-
 		vim.api.nvim_input("<Esc>m'" .. row + 1 .. "gg" .. col + 1 .. "|if<esc>`'la")
 	end,
 })
 
--- Format con Ruff
+-- Make these functions local to avoid global variable warning
+local function run_python()
+	vim.cmd('AsyncRun python -u "%"')
+end
+
 local function format_and_save()
 	vim.cmd("silent !ruff format %")
 	vim.cmd("silent !ruff check --fix %")
-	vim.cmd("edit") -- Recarga el archivo
+	vim.cmd("edit")
 	vim.cmd("write")
 end
 
 vim.api.nvim_create_user_command("RunPython", run_python, {})
 vim.api.nvim_create_user_command("FormatAndSavePython", format_and_save, {})
 
-vim.api.nvim_buf_set_keymap(0, "n", "<F9>", ":RunPython<CR>", { noremap = true, silent = true })
-vim.api.nvim_buf_set_keymap(0, "n", "<C-s>", ":FormatAndSavePython<CR>", { noremap = true, silent = true })
+-- Use vim.keymap.set instead of vim.api.nvim_buf_set_keymap
+vim.keymap.set("n", "<F9>", ":RunPython<CR>", { noremap = true, silent = true, buffer = 0 })
+vim.keymap.set("n", "<C-s>", ":FormatAndSavePython<CR>", { noremap = true, silent = true, buffer = 0 })

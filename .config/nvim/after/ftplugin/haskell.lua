@@ -45,7 +45,7 @@ function M.compile_run_haskell()
 		local cmd = string.format("term ghc %s %s -o %s && %s", haskell_flags, src_path, src_noext, src_noext)
 		vim.cmd(cmd)
 	else
-		vim.api.nvim_err_writeln("GHC not found on the system!")
+		vim.notify("GHC not found on the system!", vim.log.levels.ERROR)
 		return
 	end
 	vim.cmd("startinsert")
@@ -58,7 +58,7 @@ function M.run_haskell()
 		local cmd = string.format("term runhaskell %s", src_path)
 		vim.cmd(cmd)
 	else
-		vim.api.nvim_err_writeln("runhaskell not found on the system!")
+		vim.notify("runhaskell not found on the system!", vim.log.levels.ERROR)
 		return
 	end
 	vim.cmd("startinsert")
@@ -73,40 +73,31 @@ function M.run_hlint()
 end
 
 function M.setup()
-	vim.api.nvim_buf_set_keymap(
-		0,
+	-- Use vim.keymap.set instead of vim.api.nvim_buf_set_keymap
+	vim.keymap.set(
 		"n",
 		"<F9>",
 		":lua HaskellUtils.compile_run_haskell()<CR>",
-		{ noremap = true, silent = true }
+		{ noremap = true, silent = true, buffer = 0 }
 	)
-	vim.api.nvim_buf_set_keymap(
-		0,
-		"n",
-		"<F10>",
-		":lua HaskellUtils.run_haskell()<CR>",
-		{ noremap = true, silent = true }
-	)
-	vim.api.nvim_buf_set_keymap(
-		0,
+	vim.keymap.set("n", "<F10>", ":lua HaskellUtils.run_haskell()<CR>", { noremap = true, silent = true, buffer = 0 })
+	vim.keymap.set(
 		"n",
 		"<F11>",
 		":lua HaskellUtils.compile_run_haskell()<CR>",
-		{ noremap = true, silent = true }
+		{ noremap = true, silent = true, buffer = 0 }
 	)
-	vim.api.nvim_buf_set_keymap(
-		0,
+	vim.keymap.set(
 		"n",
 		"<C-s>",
 		":lua HaskellUtils.format_haskell()<CR>",
-		{ noremap = true, silent = true }
+		{ noremap = true, silent = true, buffer = 0 }
 	)
-	vim.api.nvim_buf_set_keymap(
-		0,
+	vim.keymap.set(
 		"n",
 		"<leader>hl",
 		":lua HaskellUtils.run_hlint()<CR>",
-		{ noremap = true, silent = true }
+		{ noremap = true, silent = true, buffer = 0 }
 	)
 
 	local lspconfig = require("lspconfig")
@@ -118,9 +109,14 @@ function M.setup()
 			},
 		},
 	})
+
 	vim.g.neoformat_enabled_haskell = { "ormolu" }
 	vim.g.neoformat_try_formatprg = 1
 end
 
 _G.HaskellUtils = M
+
+-- Call setup immediately, no need to call it from other places
+M.setup()
+
 return M
