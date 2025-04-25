@@ -1,175 +1,294 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env python3
+
+import os
+import re
+import html as html_module
+import time
+import logging
+import requests
+import subprocess
+from bs4 import BeautifulSoup
+from urllib.parse import quote_plus
 
 # Configuration
-DOWNLOAD_DIR="${HOME}/Downloads/Torrents"
-SEARCH_SITE="https://1337x.to"
-LOG_FILE="${HOME}/.torrent-searcher.log"
+DOWNLOAD_DIR = os.path.expanduser("~/Downloads/Torrents/TV")
+SEARCH_SITE = "https://1337x.to"
+LOG_FILE = "./.torrent-searcher.log"
+RPC_URL = "http://localhost:6800/jsonrpc"
+USER_AGENT = "Mozilla/5.0"
 
-# Logging function
-log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
-}
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(asctime)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
+)
+logger = logging.getLogger(__name__)
 
-# Sanitize input for search
-sanitize_input() {
-    echo "$1" | tr -cd '[:alnum:] [:space:].-' | tr '[:upper:]' '[:lower:]'
-}
 
-# Extract season and episode
-extract_season_episode() {
-    local query="$1"
-    local sanitized_query=$(sanitize_input "$query")
+def sanitize_input(query):
+    """Clean input for searching"""
+    return re.sub(r"[^\w\s.-]", "", query.lower())
+
+
+def extract_season_episode(query):
+    """Extract season and episode numbers from query"""
+    sanitized = sanitize_input(query)
 
     # Extract season
-    local season=$(echo "$sanitized_query" | grep -oP '(?:s|season\s*)(\d{1,2})' | grep -oP '\d+' | head -1)
-    if [[ -z "$season" ]]; then
-        season=$(echo "$sanitized_query" | grep -oP '(\d{1,2})x\d{2}' | grep -oP '^\d+' | head -1)
-    fi
-    season=$(printf "%02d" ${season:-1})
+    season_patterns = [r"(?:s|season\s*)(\d{1,2})", r"(\d{1,2})x\d{2}"]
+
+    season = None
+    for pattern in season_patterns:
+        match = re.search(pattern, sanitized)
+        if match:
+            season = int(match.group(1))
+            break
+
+    if season is None:
+        season = 1
 
     # Extract episode
-    local episode=$(echo "$sanitized_query" | grep -oP '(?:e|episode\s*)(\d{1,2})' | grep -oP '\d+' | head -1)
-    if [[ -z "$episode" ]]; then
-        episode=$(echo "$sanitized_query" | grep -oP '\d{1,2}x(\d{2})' | grep -oP 'x\d+' | sed 's/x//' | head -1)
-    fi
-    episode=$(printf "%02d" ${episode:-1})
+    episode_patterns = [r"(?:e|episode\s*)(\d{1,2})", r"\d{1,2}x(\d{2})"]
 
-    # Clean query
-    local clean_query=$(echo "$sanitized_query" | sed -E "s/(\[.*\]|s[0-9]{1,2}e[0-9]{1,2}|season\s*[0-9]{1,2}\s*episode\s*[0-9]{1,2}|[0-9]{1,2}x[0-9]{2})//g" | xargs)
+    episode = None
+    for pattern in episode_patterns:
+        match = re.search(pattern, sanitized)
+        if match:
+            episode = int(match.group(1))
+            break
 
-    echo "$clean_query $season $episode"
-}
+    if episode is None:
+        episode = 1
 
-# Build search URL
-build_search_url() {
-    local query=$(sanitize_input "$1")
-    local encoded_query=$(echo "$query" | sed 's/ /+/g')
-    echo "${SEARCH_SITE}/search/${encoded_query}/1/"
-}
+    # Clean show name
+    clean_query = re.sub(
+        r"(\[.*\]|s\d{1,2}e\d{1,2}|season\s*\d{1,2}\s*episode\s*\d{1,2}|\d{1,2}x\d{2})",
+        "",
+        sanitized,
+    ).strip()
 
-# Fetch and filter torrents
-search_torrents() {
-    local query="$1"
-    local parsed_result=(${(z)$(extract_season_episode "$query")})
+    return clean_query, f"{season:02d}", f"{episode:02d}"
 
-    if [[ ${#parsed_result} -lt 3 ]]; then
-        log "Failed to parse query: $query"
-        return 1
-    fi
 
-    local clean_query="${parsed_result[1,-3]}"
-    local season="${parsed_result[-2]}"
-    local episode="${parsed_result[-1]}"
+def build_search_url(query):
+    """Build search URL for the torrent site"""
+    sanitized = sanitize_input(query)
+    encoded = quote_plus(sanitized)
+    return f"{SEARCH_SITE}/search/{encoded}/1/"
 
-    local search_url=$(build_search_url "$clean_query")
-    log "Searching: $clean_query (S${season}E${episode})"
-    log "Search URL: $search_url"
 
-    # Fetch torrent links
-    local results=$(curl -s -H "User-Agent: Mozilla/5.0" "$search_url" | pup 'tbody tr a[href^="/torrent/"] attr{href}')
+def fetch_html(url):
+    """Fetch HTML content from URL with proper headers"""
+    headers = {"User-Agent": USER_AGENT}
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        return response.text
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error fetching {url}: {e}")
+        return None
 
-    if [[ -z "$results" ]]; then
-        log "No results found for '$query'"
-        return 1
-    fi
 
-    # Process results and filter
-    local best_torrent=""
-    local best_score=0
+def extract_torrent_links(html):
+    """Extract torrent detail page links from search results"""
+    if not html:
+        return []
 
-    while read -r result; do
-        [[ -z "$result" ]] && continue
+    soup = BeautifulSoup(html, "html.parser")
+    links = soup.select('tbody tr a[href^="/torrent/"]')
+    return [link.get("href") for link in links if link]
 
-        local torrent_url="${SEARCH_SITE}${result}"
-        local torrent_html=$(curl -s -H "User-Agent: Mozilla/5.0" "$torrent_url")
-        local title=$(echo "$torrent_html" | pup 'div.box-info-heading h1 text{}' | tr -d '\n')
-        local title_lower=$(sanitize_input "$title")
 
-        # Basic matching logic
-        if [[ "$title_lower" == *"s${season}e${episode}"* ||
-              "$title_lower" == *"${season}x${episode}"* ]]; then
+def calculate_score(title):
+    """Calculate quality score for a torrent based on title"""
+    score = 0
+    title_lower = title.lower()
 
-            # Score calculation (simplified)
-            local score=0
+    # Resolution scoring
+    if "2160p" in title_lower or "4k" in title_lower:
+        score += 8
+    elif "1080p" in title_lower:
+        score += 5
+    elif "720p" in title_lower:
+        score += 3
 
-            # Resolution scoring
-            if [[ "$title_lower" == *"2160p"* || "$title_lower" == *"4k"* ]]; then
-                score=$((score + 8))
-            elif [[ "$title_lower" == *"1080p"* ]]; then
-                score=$((score + 5))
-            elif [[ "$title_lower" == *"720p"* ]]; then
-                score=$((score + 3))
-            fi
+    # Source quality scoring
+    if "bluray" in title_lower:
+        score += 7
+    elif "web-dl" in title_lower:
+        score += 5
+    elif "hdtv" in title_lower:
+        score += 2
 
-            # Source quality scoring
-            if [[ "$title_lower" == *"bluray"* ]]; then
-                score=$((score + 7))
-            elif [[ "$title_lower" == *"web-dl"* ]]; then
-                score=$((score + 5))
-            elif [[ "$title_lower" == *"hdtv"* ]]; then
-                score=$((score + 2))
-            fi
+    return score
 
-            # Extract magnet link
-            local magnet_link=$(echo "$torrent_html" | pup 'a[href^="magnet:"] attr{href}')
 
-            if [[ -n "$magnet_link" ]]; then
-                if [[ $score -gt $best_score ]]; then
-                    best_score=$score
-                    best_torrent="$magnet_link"
-                fi
-            fi
-        fi
-    done <<< "$results"
+def extract_magnet_link(html_content):
+    """Extract and properly decode magnet link from torrent detail page"""
+    if not html_content:
+        return None
 
-    if [[ -z "$best_torrent" ]]; then
-        log "No suitable torrent found"
-        return 1
-    fi
+    soup = BeautifulSoup(html_content, "html.parser")
+    magnet_element = soup.select_one('a[href^="magnet:"]')
+    if not magnet_element:
+        return None
 
-    # Output the best magnet link
-    echo "$best_torrent"
-}
+    # Properly decode HTML entities in the magnet link
+    magnet_link = html_module.unescape(magnet_element.get("href"))
+    return magnet_link
 
-# Main function
-main() {
-    if [[ $# -eq 0 ]]; then
-        echo "Usage: $0 <search query>"
-        echo "Example: $0 'daredevil born again s01e05'"
-        return 1
-    fi
 
-        # Create download directory if it doesn't exist
-    mkdir -p "${DOWNLOAD_DIR}"
+def extract_title(html):
+    """Extract title from torrent detail page"""
+    if not html:
+        return None
 
-    local magnet_link=$(search_movie_torrents "$*")
+    soup = BeautifulSoup(html, "html.parser")
+    title_element = soup.select_one("div.box-info-heading h1")
+    if not title_element:
+        return None
 
-    if [[ -n "$magnet_link" ]]; then
-        echo "$magnet_link"
+    return title_element.get_text(strip=True)
 
-        # Check if aria2c service is running, otherwise start it
-        if ! pgrep -x "aria2c" > /dev/null; then
-            log "aria2c service not running, starting it..."
-            aria2c --enable-rpc --rpc-listen-all=true --rpc-allow-origin-all \
-                  --dir="${DOWNLOAD_DIR}" --daemon=true
-            sleep 2  # Give it a moment to start
-        fi
 
-        # Send magnet link to aria2c RPC service
-        if command -v aria2p &> /dev/null; then
-            # If aria2p is installed (Python client for aria2)
-            aria2p add "$magnet_link"
-ari         a2p add "$magnet_link" --options='{"pause":"false", "select-file":"1-999999"}'
-            log "Sent magnet link to aria2c service using aria2p"
-        else
-            # Fallback to curl for RPC communication
-            # Fallback to curl for RPC communication
-            curl -s "http://localhost:6800/jsonrpc" \
-                --header "Content-Type: application/json" \
-                --data '{"jsonrpc":"2.0","id":"1","method":"aria2.addUri","params":[["'"$magnet_link"'"], {"pause":"false", "select-file":"1-999999"}]}'
-            log "Sent magnet link to aria2c service using curl with auto-start and all files selected"
-        fi
-    fi
-}
+def check_season_episode_match(title, season, episode):
+    """Check if title contains the correct season and episode"""
+    title_lower = title.lower()
+    patterns = [f"s{season}e{episode}", f"{season}x{episode}"]
+    return any(pattern in title_lower for pattern in patterns)
 
-main "$@"
+
+def find_best_torrent(links, season, episode):
+    """Find the best matching torrent based on quality and season/episode"""
+    best_torrent = None
+    best_score = -1
+
+    for link in links:
+        torrent_url = f"{SEARCH_SITE}{link}"
+        html = fetch_html(torrent_url)
+        title = extract_title(html)
+
+        if not title:
+            continue
+
+        if not check_season_episode_match(title, season, episode):
+            continue
+
+        score = calculate_score(title)
+        magnet_link = extract_magnet_link(html)
+
+        if magnet_link and score > best_score:
+            best_score = score
+            best_torrent = magnet_link
+
+    return best_torrent
+
+
+def is_aria2c_running():
+    """Check if aria2c is running"""
+    try:
+        subprocess.run(["pgrep", "-x", "aria2c"], check=True, capture_output=True)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+
+def start_aria2c():
+    """Start aria2c if it's not running"""
+    logger.info("aria2c service not running, starting it...")
+    cmd = [
+        "aria2c",
+        "--enable-rpc",
+        "--rpc-listen-all=true",
+        "--rpc-allow-origin-all",
+        f"--dir={DOWNLOAD_DIR}",
+        "--daemon=true",
+    ]
+    subprocess.run(cmd)
+    time.sleep(2)  # Give it a moment to start
+
+
+def send_to_aria2c(magnet_link):
+    """Send magnet link to aria2c via RPC"""
+    if not is_aria2c_running():
+        start_aria2c()
+
+    try:
+        # Check if aria2p is installed
+        subprocess.run(["which", "aria2p"], check=True, capture_output=True)
+        subprocess.run(["aria2p", "add", magnet_link])
+        subprocess.run(
+            [
+                "aria2p",
+                "add",
+                magnet_link,
+                '--options=\'{"pause":"false", "select-file":"1-999999"}\'',
+            ]
+        )
+        logger.info("Sent magnet link to aria2c service using aria2p")
+    except subprocess.CalledProcessError:
+        # Fallback to curl for RPC communication
+        headers = {"Content-Type": "application/json"}
+        data = {
+            "jsonrpc": "2.0",
+            "id": "1",
+            "method": "aria2.addUri",
+            "params": [[magnet_link], {"pause": "false", "select-file": "1-999999"}],
+        }
+        response = requests.post(RPC_URL, headers=headers, json=data)
+        logger.info(
+            "Sent magnet link to aria2c service using curl with auto-start and all files selected"
+        )
+        if not response.ok:
+            logger.error(f"Error sending magnet link: {response.text}")
+
+
+def search_torrents(query):
+    """Main function to search for torrents"""
+    clean_query, season, episode = extract_season_episode(query)
+
+    search_url = build_search_url(clean_query)
+    logger.info(f"Searching: {clean_query} (S{season}E{episode})")
+    logger.info(f"Search URL: {search_url}")
+
+    html = fetch_html(search_url)
+    if not html:
+        logger.error(f"No results found for '{query}'")
+        return None
+
+    links = extract_torrent_links(html)
+    if not links:
+        logger.error(f"No results found for '{query}'")
+        return None
+
+    return find_best_torrent(links, season, episode)
+
+
+def main():
+    """Main entry point"""
+    import sys
+
+    if len(sys.argv) < 2:
+        print(f"Usage: {sys.argv[0]} <search query>")
+        print(f"Example: {sys.argv[0]} 'daredevil born again s01e05'")
+        sys.exit(1)
+
+    # Create download directory if it doesn't exist
+    os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+
+    # Search for torrents
+    query = " ".join(sys.argv[1:])
+    magnet_link = search_torrents(query)
+
+    if magnet_link:
+        print(magnet_link)
+        send_to_aria2c(magnet_link)
+    else:
+        logger.error("No suitable torrent found")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
