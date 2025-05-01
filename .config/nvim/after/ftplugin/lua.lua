@@ -2,20 +2,20 @@ vim.bo.expandtab = true
 vim.bo.shiftwidth = 2
 vim.bo.softtabstop = 2
 vim.bo.tabstop = 2
-vim.opt_local.formatoptions:remove { "o", "r" }
+vim.opt_local.formatoptions:remove({ "o", "r" })
 
 if not _G.format_and_save then
-  _G.format_and_save = function()
-    vim.cmd("silent !stylua %")
-    vim.cmd("edit")
-    vim.cmd("write")
-  end
+	_G.format_and_save = function()
+		vim.cmd("silent !stylua %")
+		vim.cmd("edit")
+		vim.cmd("write")
+	end
 end
 
 if not _G.run_lua then
-  _G.run_lua = function()
-    vim.cmd("luafile %")
-  end
+	_G.run_lua = function()
+		vim.cmd("luafile %")
+	end
 end
 
 -- Key mappings
