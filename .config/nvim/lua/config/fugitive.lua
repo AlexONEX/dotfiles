@@ -11,16 +11,16 @@ keymap.set("v", "<leader>gb", ":Git blame<cr>", { desc = "Git: blame selected li
 vim.fn["utils#Cabbrev"]("git", "Git")
 
 keymap.set("n", "<leader>gbn", function()
-  vim.ui.input({ prompt = "Enter a new branch name" }, function(user_input)
-    if user_input == nil or user_input == "" then
-      return
-    end
+	vim.ui.input({ prompt = "Enter a new branch name" }, function(user_input)
+		if user_input == nil or user_input == "" then
+			return
+		end
 
-    local cmd_str = string.format("G checkout -b %s", user_input)
-    vim.cmd(cmd_str)
-  end)
+		local cmd_str = string.format("G checkout -b %s", user_input)
+		vim.cmd(cmd_str)
+	end)
 end, {
-  desc = "Git: create new branch",
+	desc = "Git: create new branch",
 })
 
 keymap.set("n", "<leader>gf", ":Git fetch ", { desc = "Git: prune branches" })

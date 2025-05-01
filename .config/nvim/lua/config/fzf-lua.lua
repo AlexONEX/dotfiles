@@ -1,15 +1,15 @@
-require("fzf-lua").setup {
-  defaults = {
-    file_icons = "mini",
-  },
-  winopts = {
-    row = 0.5,
-    height = 0.7,
-  },
-  files = {
-    previewer = false,
-  },
-}
+require("fzf-lua").setup({
+	defaults = {
+		file_icons = "mini",
+	},
+	winopts = {
+		row = 0.5,
+		height = 0.7,
+	},
+	files = {
+		previewer = false,
+	},
+})
 
 vim.keymap.set("n", "<leader>ff", "<cmd>FzfLua files<cr>", { desc = "Fuzzy find files" })
 vim.keymap.set("n", "<leader>fg", "<cmd>FzfLua live_grep<cr>", { desc = "Fuzzy grep files" })
