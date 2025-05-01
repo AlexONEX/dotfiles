@@ -1,10 +1,19 @@
 local cmp = require("cmp")
-
 require("cmp_nvim_lsp")
 require("cmp_path")
 require("cmp_buffer")
 require("cmp_omni")
 require("cmp_nvim_ultisnips")
+
+-- Add this: safely require mini.icons
+local has_mini_icons, MiniIcons = pcall(require, "mini.icons")
+if not has_mini_icons then
+	vim.notify(
+		"mini.icons not found! Please install it or adjust nvim-cmp configuration.",
+		vim.log.levels.WARN,
+		{ title = "Nvim-config" }
+	)
+end
 
 cmp.setup({
 	snippet = {
@@ -47,17 +56,18 @@ cmp.setup({
 	view = {
 		entries = "custom",
 	},
-	-- solution taken from https://github.com/echasnovski/mini.nvim/issues/1007#issuecomment-2258929830
+	-- Modified formatting with null check for MiniIcons
 	formatting = {
 		format = function(_, vim_item)
-			local icon, hl = MiniIcons.get("lsp", vim_item.kind)
-			vim_item.kind = icon .. " " .. vim_item.kind
-			vim_item.kind_hl_group = hl
+			if has_mini_icons then
+				local icon, hl = MiniIcons.get("lsp", vim_item.kind)
+				vim_item.kind = icon .. " " .. vim_item.kind
+				vim_item.kind_hl_group = hl
+			end
 			return vim_item
 		end,
 	},
 })
-
 cmp.setup.filetype("tex", {
 	sources = {
 		{ name = "omni" },
@@ -66,7 +76,6 @@ cmp.setup.filetype("tex", {
 		{ name = "path" }, -- for path completion
 	},
 })
-
 --  see https://github.com/hrsh7th/nvim-cmp/wiki/Menu-Appearance#how-to-add-visual-studio-code-dark-theme-colors-to-the-menu
 vim.cmd([[
   highlight! link CmpItemMenu Comment
