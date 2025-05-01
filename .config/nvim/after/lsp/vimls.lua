@@ -1,5 +1,5 @@
 return {
-  flags = {
-    debounce_text_changes = 500,
-  },
+	flags = {
+		debounce_text_changes = 500,
+	},
 }
