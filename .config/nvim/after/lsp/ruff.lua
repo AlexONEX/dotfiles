@@ -1,7 +1,7 @@
 return {
-  init_options = {
-    settings = {
-      organizeImports = true,
-    },
-  },
+	init_options = {
+		settings = {
+			organizeImports = true,
+		},
+	},
 }
