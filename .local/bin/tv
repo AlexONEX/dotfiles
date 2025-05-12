@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import quote_plus
 
 # Configuration
-DOWNLOAD_DIR = os.path.expanduser("~/Downloads/Torrents/TV")
+DOWNLOAD_DIR = os.path.expanduser("~/Downloads/Torrents")
 SEARCH_SITE = "https://1337x.to"
 LOG_FILE = "./.torrent-searcher.log"
 RPC_URL = "http://localhost:6800/jsonrpc"
@@ -274,9 +274,6 @@ def main():
         print(f"Usage: {sys.argv[0]} <search query>")
         print(f"Example: {sys.argv[0]} 'daredevil born again s01e05'")
         sys.exit(1)
-
-    # Create download directory if it doesn't exist
-    os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
     # Search for torrents
     query = " ".join(sys.argv[1:])
