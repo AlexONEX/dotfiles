@@ -3,6 +3,7 @@
 <channel name="xfce4-notifyd" version="1.0">
   <property name="applications" type="empty">
     <property name="known_applications" type="array">
+      <value type="string" value="calibre"/>
       <value type="string" value="com.rtosta.zapzap"/>
       <value type="string" value="discord"/>
       <value type="string" value="Firefox"/>
@@ -12,7 +13,9 @@
       <value type="string" value="org.qbittorrent.qBittorrent"/>
       <value type="string" value="org.xfce.Thunar"/>
       <value type="string" value="Spotify"/>
+      <value type="string" value="spotify_player"/>
       <value type="string" value="Strawberry"/>
+      <value type="string" value="tauonmb"/>
       <value type="string" value="Thunderbird"/>
       <value type="string" value="xfce4-power-manager"/>
     </property>
