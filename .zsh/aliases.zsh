@@ -1,5 +1,4 @@
 # SHORTCUTS
-# Add these to your ~/.zshrc
 
 dotfiles-add() {
   local input_path="$1"
@@ -319,23 +318,12 @@ alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
 alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
 
-#yta-best-mp3
-function yta(){
-    yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" "$1"
-}
+alias ytpa='noglob yt-dlp --extract-audio --audio-format mp3 --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist'
+alias yta='noglob yt-dlp --extract-audio --audio-format mp3 --audio-quality 0 --output "%(title)s.%(ext)s"'
+alias yta-best='noglob yt-dlp --extract-audio --audio-format wav --audio-quality 0 --output "%(title)s.%(ext)s"'
+alias ytp-abest='noglob yt-dlp --extract-audio --audio-format wav --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist'
+alias ytv-best='noglob yt-dlp -f bestvideo+bestaudio'
 
-function ytpa(){
-    yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist "$1"
-}
-
-
-# Improved function to replace yta-best alias
-yta-best() {
-    eval yt-dlp --extract-audio --audio-format "wav" --output '"%(title)s.%(ext)s"' -- '"$1"'
-}
-
-alias ytp-abest='yt-dlp --extract-audio --audio-format "wav" --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist '
-alias ytv-best="yt-dlp -f bestvideo+bestaudio "
 alias spotdl='spotdl --cookie-file /home/alex/Music/music.youtube.com_cookies.txt'
 
 alias disks='gdu'
