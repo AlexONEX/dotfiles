@@ -15,3 +15,4 @@ export TERMINAL
 export EDITOR
 export HISTFILE
 export LISTEN_ADDR
+export LEDGER_FILE=~/OneDrive/Backups/finance.journal
