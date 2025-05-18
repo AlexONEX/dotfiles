@@ -256,7 +256,7 @@ super + q
 	bspc node -c
 
 # Increase/decrease window gap on focused desktop
-super + bracket{left,right}
+super + bracket{h,l}
 	bspc config -d focused window_gap $((`bspc config -d focused window_gap` {-,+} 5 ))
 
 #dmenu
