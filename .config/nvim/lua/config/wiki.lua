@@ -93,7 +93,6 @@ function Open_wiki_directory()
     print("Wiki root directory does not exist: " .. wiki_root)
     return
   end
-
   vim.cmd("cd " .. vim.fn.fnameescape(wiki_root))
   vim.cmd("edit .")
 end
@@ -124,10 +123,8 @@ function Open_journal_with_template()
         "",
       }
 
-      -- Insertamos el template
       vim.api.nvim_buf_set_lines(0, 0, -1, false, template)
 
-      -- Intentamos encontrar el archivo de journal del día anterior
       local journal_root = vim.fn.expand(vim.g.wiki_journal.root)
       local yesterday = os.date("%Y-%m-%d", os.time() - 86400) -- 86400 segundos = 1 día
       local yesterday_format = string.gsub(vim.g.wiki_journal.date_format.daily, "%%", "")
@@ -164,12 +161,10 @@ function Open_journal_with_template()
 
           if done_pos > 0 then
             table.insert(done_tasks, 1, "### From " .. yesterday)
-            vim.api.nvim_buf_set_lines(0, done_pos, done_pos + 1, false,
-              {lines[done_pos], "", done_tasks[1]})
+            vim.api.nvim_buf_set_lines(0, done_pos, done_pos + 1, false, { lines[done_pos], "", done_tasks[1] })
 
             if #done_tasks > 1 then
-              vim.api.nvim_buf_set_lines(0, done_pos + 3, done_pos + 3, false,
-                vim.list_slice(done_tasks, 2))
+              vim.api.nvim_buf_set_lines(0, done_pos + 3, done_pos + 3, false, vim.list_slice(done_tasks, 2))
             end
           end
         end
@@ -177,7 +172,7 @@ function Open_journal_with_template()
 
       for i, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do
         if line:match("^%- %[ %]") then
-          vim.api.nvim_win_set_cursor(0, {i, 6})
+          vim.api.nvim_win_set_cursor(0, { i, 6 })
           vim.cmd("startinsert")
           break
         end
@@ -185,7 +180,6 @@ function Open_journal_with_template()
     end
   end, 100)
 end
-
 
 function Toggle_task()
   local line_nr = vim.fn.line(".")
@@ -198,16 +192,64 @@ function Toggle_task()
       line = line:gsub("^%- %[x%]", "- [ ]")
     end
 
-    vim.api.nvim_buf_set_lines(0, line_nr - 1, line_nr, false, {line})
+    vim.api.nvim_buf_set_lines(0, line_nr - 1, line_nr, false, { line })
   end
 end
 
 vim.cmd("command! WikiJournalTemplate lua Open_journal_with_template()")
 vim.cmd("command! WikiToggleTask lua Toggle_task()")
+
+function Create_working_day_journal()
+  local journal_root = vim.fn.expand(vim.g.wiki_journal.root)
+  if vim.fn.isdirectory(journal_root) ~= 1 then
+    vim.fn.mkdir(journal_root, "p")
+  end
+
+  local today = os.date("%Y-%m-%d")
+  local filename = today .. ".md"
+  local full_path = journal_root .. "/" .. filename
+  -- Verificar si el archivo ya existe
+  if vim.fn.filereadable(full_path) == 1 then
+    vim.cmd("edit " .. vim.fn.fnameescape(full_path))
+    print("Opened existing journal: " .. filename)
+    return
+  end
+
+  local lines = {
+    "---",
+    "title: Working Day - " .. today,
+    "date: " .. today,
+    "---",
+    "",
+    ":journal:",
+    "",
+    "# Working Day - " .. today,
+    "",
+    "## Tasks",
+    "",
+    "## Notes",
+    "",
+    "## Reflections",
+    "",
+  }
+
+  local result = vim.fn.writefile(lines, full_path)
+  if result == 0 then
+    vim.cmd("edit " .. vim.fn.fnameescape(full_path))
+    vim.cmd("normal! G")
+    print("Created working day journal: " .. filename)
+  else
+    print("Failed to create journal file. Error code: " .. result)
+    print("Journal root: " .. journal_root)
+    print("Full path: " .. full_path)
+  end
+end
+
 vim.cmd("command! WikiCreateProject lua Create_project_note()")
 vim.cmd("command! WikiCreateArea lua Create_area_note()")
 vim.cmd("command! WikiCreateResource lua Create_resource_note()")
 vim.cmd("command! WikiCreateArchive lua Create_archive_note()")
+vim.cmd("command! WikiWorkingDay lua Create_working_day_journal()")
 
 vim.api.nvim_set_keymap("n", "<leader>np", ":WikiCreateProject<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<leader>na", ":WikiCreateArea<CR>", { noremap = true, silent = true })
