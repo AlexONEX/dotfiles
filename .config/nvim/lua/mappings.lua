@@ -290,4 +290,4 @@ keymap.set("n", "<space>x", function()
   vim.api.nvim_set_current_line(new_line)
 end, { desc = "toggle todo completion status" })
 
-keymap.set("n", "gx", require("utils").open_url_under_cursor, { desc = "open URL under cursor in Firefox" })
+--keymap.set("n", "gx", require("utils").open_url_under_cursor, { desc = "open URL under cursor in Firefox" })
