@@ -39,7 +39,6 @@ function Create_para_note(para_type)
 
   local additional_tags = vim.fn.input("Additional tags (Example - Programming:JavaScript): ")
 
-  -- Construir las tags según el formato de wiki.vim (:tag:)
   local tags = ":" .. para_type .. ":"
   if additional_tags ~= "" then
     tags = tags .. additional_tags .. ":"
@@ -72,7 +71,6 @@ function Create_para_note(para_type)
   end
 end
 
--- Funciones específicas para cada tipo PARA
 function Create_project_note()
   Create_para_note("Project")
 end
@@ -96,26 +94,129 @@ function Open_wiki_directory()
     return
   end
 
-  -- Opción 1: Cambia el directorio de trabajo Y abre netrw
   vim.cmd("cd " .. vim.fn.fnameescape(wiki_root))
   vim.cmd("edit .")
 end
 
--- Comandos para cada tipo
+function Open_journal_with_template()
+  -- Primero, abrimos el diario actual con WikiJournal
+  vim.cmd("WikiJournal")
+
+  -- Esperamos a que se abra el archivo
+  vim.defer_fn(function()
+    -- Verificamos si el archivo está vacío (nuevo) comprobando si tiene contenido
+    local line_count = vim.fn.line("$")
+    local is_empty = line_count <= 1 and vim.fn.getline(1) == ""
+
+    if is_empty then
+      -- Obtenemos la fecha de hoy en formato YYYY-MM-DD
+      local today = os.date("%Y-%m-%d")
+
+      -- Creamos el template básico
+      local template = {
+        "# Journal: " .. today,
+        "",
+        "## Todo",
+        "",
+        "- [ ] ",
+        "",
+        "## Done",
+        "",
+      }
+
+      -- Insertamos el template
+      vim.api.nvim_buf_set_lines(0, 0, -1, false, template)
+
+      -- Intentamos encontrar el archivo de journal del día anterior
+      local journal_root = vim.fn.expand(vim.g.wiki_journal.root)
+      local yesterday = os.date("%Y-%m-%d", os.time() - 86400) -- 86400 segundos = 1 día
+      local yesterday_format = string.gsub(vim.g.wiki_journal.date_format.daily, "%%", "")
+      yesterday_format = string.gsub(yesterday_format, "Y", os.date("%Y", os.time() - 86400))
+      yesterday_format = string.gsub(yesterday_format, "m", os.date("%m", os.time() - 86400))
+      yesterday_format = string.gsub(yesterday_format, "d", os.date("%d", os.time() - 86400))
+
+      local yesterday_file = journal_root .. "/" .. yesterday_format .. ".md"
+
+      if vim.fn.filereadable(yesterday_file) == 1 then
+        local yesterday_content = vim.fn.readfile(yesterday_file)
+        local done_tasks = {}
+        local in_done_section = false
+
+        for _, line in ipairs(yesterday_content) do
+          if line:match("^## Done") then
+            in_done_section = true
+          elseif line:match("^##") and in_done_section then
+            in_done_section = false
+          elseif in_done_section and line:match("^%- %[x%]") then
+            table.insert(done_tasks, line)
+          end
+        end
+
+        if #done_tasks > 0 then
+          local done_pos = 0
+          local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+          for i, line in ipairs(lines) do
+            if line:match("^## Done") then
+              done_pos = i
+              break
+            end
+          end
+
+          if done_pos > 0 then
+            table.insert(done_tasks, 1, "### From " .. yesterday)
+            vim.api.nvim_buf_set_lines(0, done_pos, done_pos + 1, false,
+              {lines[done_pos], "", done_tasks[1]})
+
+            if #done_tasks > 1 then
+              vim.api.nvim_buf_set_lines(0, done_pos + 3, done_pos + 3, false,
+                vim.list_slice(done_tasks, 2))
+            end
+          end
+        end
+      end
+
+      for i, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do
+        if line:match("^%- %[ %]") then
+          vim.api.nvim_win_set_cursor(0, {i, 6})
+          vim.cmd("startinsert")
+          break
+        end
+      end
+    end
+  end, 100)
+end
+
+
+function Toggle_task()
+  local line_nr = vim.fn.line(".")
+  local line = vim.api.nvim_buf_get_lines(0, line_nr - 1, line_nr, false)[1]
+
+  if line:match("^%- %[.%]") then
+    if line:match("^%- %[ %]") then
+      line = line:gsub("^%- %[ %]", "- [x]")
+    else
+      line = line:gsub("^%- %[x%]", "- [ ]")
+    end
+
+    vim.api.nvim_buf_set_lines(0, line_nr - 1, line_nr, false, {line})
+  end
+end
+
+vim.cmd("command! WikiJournalTemplate lua Open_journal_with_template()")
+vim.cmd("command! WikiToggleTask lua Toggle_task()")
 vim.cmd("command! WikiCreateProject lua Create_project_note()")
 vim.cmd("command! WikiCreateArea lua Create_area_note()")
 vim.cmd("command! WikiCreateResource lua Create_resource_note()")
 vim.cmd("command! WikiCreateArchive lua Create_archive_note()")
 
--- Keymaps para el sistema PARA
 vim.api.nvim_set_keymap("n", "<leader>np", ":WikiCreateProject<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<leader>na", ":WikiCreateArea<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<leader>nr", ":WikiCreateResource<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<leader>nc", ":WikiCreateArchive<CR>", { noremap = true, silent = true })
 
--- Keymaps adicionales para navegación
 vim.api.nvim_set_keymap("n", "<leader>wt", ":WikiTagList<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<leader>ws", ":WikiTagSearch<CR>", { noremap = true, silent = true })
 
--- Keymap to open the wiki directory
 vim.api.nvim_set_keymap("n", "<leader>wo", ":lua Open_wiki_directory()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>nj", ":WikiJournalTemplate<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>x", ":WikiToggleTask<CR>", { noremap = true, silent = true })
