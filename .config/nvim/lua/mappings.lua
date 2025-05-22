@@ -34,11 +34,6 @@ keymap.set("n", [[\d]], "<cmd>bprevious <bar> bdelete #<cr>", {
   desc = "delete current buffer",
 })
 
-keymap.set("n", "<space>D", <cmd>bprevious <bar> bdelete #<cr>", {
-  silent = true,
-  desc = "delete current buffer",
-})
-
 keymap.set("n", [[\D]], function()
   local buf_ids = vim.api.nvim_list_bufs()
   local cur_buf = vim.api.nvim_win_get_buf(0)
@@ -51,6 +46,11 @@ keymap.set("n", [[\D]], function()
   end
 end, {
   desc = "delete other buffers",
+})
+
+keymap.set("n", "<space>D", "<cmd>bprevious <bar> bdelete #<cr>", {
+  silent = true,
+  desc = "delete current buffer",
 })
 
 -- Telescope mappings
@@ -295,4 +295,11 @@ keymap.set("n", "<space>x", function()
   vim.api.nvim_set_current_line(new_line)
 end, { desc = "toggle todo completion status" })
 
---keymap.set("n", "gx", require("utils").open_url_under_cursor, { desc = "open URL under cursor in Firefox" })
+keymap.set("n", "<space>gx", function()
+  local url = vim.fn.expand("<cfile>")
+  if url:match("^https?://") then
+    vim.fn.system("firefox " .. url)
+  else
+    print("Not a valid URL")
+  end
+end, { desc = "open URL under cursor in Firefox" })
