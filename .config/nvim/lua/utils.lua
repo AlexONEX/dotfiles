@@ -183,4 +183,82 @@ function M.get_cmd_from_venv(cmd)
 	end
 end
 
+function M.open_url_under_cursor()
+	local line = vim.api.nvim_get_current_line()
+
+	-- Imprimir la línea actual para depurar
+	print("Current line:", line)
+
+	-- Buscar enlaces Markdown
+	local markdown_pattern = "%[(.-)%]%((.-)%)"
+	for text, url in line:gmatch(markdown_pattern) do
+		print("Found Markdown link:", text, "with URL:", url)
+
+		-- Verificar que la URL es válida
+		if url and url:match("^https?://") then
+			local cmd
+			if vim.fn.has("unix") == 1 then
+				if vim.fn.executable("firefox") == 1 then
+					cmd = string.format("firefox '%s' &", url)
+					print("Command to execute:", cmd)
+				elseif vim.fn.executable("xdg-open") == 1 then
+					cmd = string.format("xdg-open '%s' &", url)
+					print("Command to execute:", cmd)
+				end
+			elseif vim.fn.has("mac") == 1 then
+				cmd = string.format("open -a Firefox '%s'", url)
+			elseif vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
+				cmd = string.format('start firefox "%s"', url)
+			end
+
+			if cmd then
+				print("Executing command:", cmd)
+				local result = vim.fn.system(cmd)
+				print("Command result:", result)
+				vim.notify("Opening: " .. url, vim.log.levels.INFO)
+				return true
+			else
+				vim.notify("No browser found to open URL", vim.log.levels.ERROR)
+				return false
+			end
+		end
+	end
+
+	-- Buscar URLs simples si no se encontró un enlace Markdown
+	local url_pattern = "https?://[%w%-%._~:/%?#%[%]@!%$&'%(%)%*%+,;=%%]+"
+	for url in line:gmatch(url_pattern) do
+		print("Found URL:", url)
+
+		local cmd
+		if vim.fn.has("unix") == 1 then
+			if vim.fn.executable("firefox") == 1 then
+				cmd = string.format("firefox '%s' &", url)
+				print("Command to execute:", cmd)
+			elseif vim.fn.executable("xdg-open") == 1 then
+				cmd = string.format("xdg-open '%s' &", url)
+				print("Command to execute:", cmd)
+			end
+		elseif vim.fn.has("mac") == 1 then
+			cmd = string.format("open -a Firefox '%s'", url)
+		elseif vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
+			cmd = string.format('start firefox "%s"', url)
+		end
+
+		if cmd then
+			print("Executing command:", cmd)
+			local result = vim.fn.system(cmd)
+			print("Command result:", result)
+			vim.notify("Opening: " .. url, vim.log.levels.INFO)
+			return true
+		else
+			vim.notify("No browser found to open URL", vim.log.levels.ERROR)
+			return false
+		end
+	end
+
+	-- Si llegamos aquí, no se encontró ningún enlace
+	vim.notify("No URL found in the current line", vim.log.levels.WARN)
+	return false
+end
+
 return M
