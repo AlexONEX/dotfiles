@@ -271,3 +271,23 @@ keymap.set("n", "<leader>cb", function()
     end)
   )
 end, { desc = "show cursor" })
+
+-- Mapping para crear un nuevo todo con <leader>td
+keymap.set("n", "<space>nt", "i- [ ] <Esc>A", { desc = "insert new todo item" })
+
+keymap.set("n", "<space>x", function()
+  local line = vim.api.nvim_get_current_line()
+  local new_line
+
+  if line:match("- %[ %]") then
+    new_line = line:gsub("- %[ %]", "- [x]", 1)
+  elseif line:match("- %[x%]") then
+    new_line = line:gsub("- %[x%]", "- [ ]", 1)
+  else
+    return
+  end
+
+  vim.api.nvim_set_current_line(new_line)
+end, { desc = "toggle todo completion status" })
+
+keymap.set("n", "gx", require("utils").open_url_under_cursor, { desc = "open URL under cursor in Firefox" })
