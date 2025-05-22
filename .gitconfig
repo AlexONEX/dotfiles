@@ -2,14 +2,14 @@
   sort = -committerdate
 	autoSetupMerge = always
 [commit]
-  verbolse = true
+  verbose= true
   cleanup = scissors
 [core]
 	editor = nvim
 	pager = diff-so-fancy | less --tabs=4 -RF
 	excludesFile = ~/.gitignore
 [diff]
-  alorithm = histogram
+  algorithm = histogram
   submodule = log
   tool =  nvimdiff
   context = 10
@@ -24,7 +24,7 @@
 [log]
   date = iso
 [merge]
-  conlfictStyle = diff3
+  conflictStyle = diff3
   keepbackup = false
   tool =  nvimdiff
 [user]
