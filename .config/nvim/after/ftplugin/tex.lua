@@ -4,16 +4,27 @@ if vim.fn.filereadable(vim.fn.stdpath("config") .. "/lua/config/vimtex.lua") the
   vimtex_config.setup()
 end
 
--- Disable TreeSitter highlight for LaTeX files (para que funcione concealment de VimTeX)
-vim.cmd("TSBufDisable highlight")
+-- Disable TreeSitter highlight for LaTeX files
+local function disable_treesitter()
+  if vim.fn.exists(":TSBufDisable") == 2 then
+    vim.cmd("TSBufDisable highlight")
+  else
+    vim.defer_fn(function()
+      if vim.fn.exists(":TSBufDisable") == 2 then
+        vim.cmd("TSBufDisable highlight")
+      end
+    end, 500)
+  end
+end
 
--- Configurar concealment específico para LaTeX
+-- Llamar la función con un pequeño delay para asegurar que Treesitter esté cargado
+vim.defer_fn(disable_treesitter, 100)
+
 vim.api.nvim_set_option_value("conceallevel", 2, { scope = "local" })
 vim.api.nvim_set_option_value("concealcursor", "nc", { scope = "local" })
 
 -- Buffer configuration
 local function setup_buffer()
-  -- Configuración de texto y formato
   vim.opt_local.textwidth = 120
   vim.opt_local.wrap = true
   vim.opt_local.linebreak = true
@@ -37,12 +48,9 @@ local function format_and_save()
   vim.cmd("write")
 end
 
--- Configurar keymaps genéricos para LaTeX
 local function setup_latex_keymaps()
-  -- Guardar y formatear
   vim.keymap.set("n", "<C-s>", format_and_save, { buffer = true, silent = true })
 
-  -- Toggle concealment específico para este buffer
   vim.keymap.set("n", "<leader>lh", function()
     local current_level = vim.api.nvim_get_option_value("conceallevel", { scope = "local" })
     if current_level == 0 then
@@ -54,7 +62,6 @@ local function setup_latex_keymaps()
     end
   end, { buffer = true, silent = true })
 
-  -- Snippets y completion (si no usas VimTeX para esto)
   vim.keymap.set("i", ";;", "\\", { buffer = true })
   vim.keymap.set("i", "$$", "$$ $$<left><left><left>", { buffer = true })
 end
