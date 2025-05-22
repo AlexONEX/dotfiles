@@ -34,6 +34,11 @@ keymap.set("n", [[\d]], "<cmd>bprevious <bar> bdelete #<cr>", {
   desc = "delete current buffer",
 })
 
+keymap.set("n", "<space>D", <cmd>bprevious <bar> bdelete #<cr>", {
+  silent = true,
+  desc = "delete current buffer",
+})
+
 keymap.set("n", [[\D]], function()
   local buf_ids = vim.api.nvim_list_bufs()
   local cur_buf = vim.api.nvim_win_get_buf(0)
