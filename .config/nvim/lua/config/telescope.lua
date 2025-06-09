@@ -1,16 +1,16 @@
 local telescope = require("telescope")
 local actions = require("telescope.actions")
 
-telescope.setup({
-	defaults = {
-		mappings = {
-			i = {
-				["<C-j>"] = actions.move_selection_next,
-				["<C-k>"] = actions.move_selection_previous,
-			},
-		},
-	},
-})
+telescope.setup {
+  defaults = {
+    mappings = {
+      i = {
+        ["<C-j>"] = actions.move_selection_next,
+        ["<C-k>"] = actions.move_selection_previous,
+      },
+    },
+  },
+}
 
 -- Mappings de Telescope
 local keymap = vim.keymap
@@ -34,5 +34,3 @@ keymap.set("n", "<leader>tt", "<cmd>Telescope treesitter<cr>", { desc = "Find tr
 keymap.set("n", "<leader>tq", "<cmd>Telescope quickfix<cr>", { desc = "Find quickfix entries" })
 keymap.set("n", "<leader>tl", "<cmd>Telescope loclist<cr>", { desc = "Find loclist entries" })
 keymap.set("n", "<leader>td", "<cmd>Telescope diagnostics<cr>", { desc = "Find diagnostics" })
-
--- Puedes agregar más configuraciones o funciones relacionadas con Telescope aquí
