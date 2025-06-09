@@ -96,6 +96,10 @@ if [ -f ~/.zsh/git.plugin.zsh ]; then
     . ~/.zsh/git.plugin.zsh
 fi
 
+if [ -f ~/.zsh/mappings.sh ]; then
+    . ~/.zsh/mappings.sh
+fi
+
 # Source fzf and cargo
 command -v fzf &>/dev/null && eval "$(fzf --zsh)"
 [[ -f ${HOME}/.cargo/env ]] && source "${HOME}/.cargo/env"
