@@ -16,3 +16,4 @@ __pycache__/
 *.spl
 *.sug
 **/*.log
+**/Session.vim
