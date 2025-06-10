@@ -4,22 +4,27 @@ vim.bo.softtabstop = 2
 vim.bo.tabstop = 2
 vim.opt_local.formatoptions:remove({ "o", "r" })
 
-if not _G.format_and_save then
-	_G.format_and_save = function()
-		vim.cmd("silent !stylua %")
-		vim.cmd("edit")
-		vim.cmd("write")
-	end
+local M = {}
+
+function M.format_and_save()
+	vim.cmd("silent !stylua %")
+	vim.cmd("edit")
+	vim.cmd("write")
 end
 
-if not _G.run_lua then
-	_G.run_lua = function()
-		vim.cmd("luafile %")
-	end
+function M.run_lua()
+	vim.cmd("luafile %")
 end
 
--- Key mappings
+_G.Ftplugin_Lua = M
+
 local opts = { buffer = true, silent = true }
-vim.keymap.set("n", "<C-s>", _G.format_and_save, opts)
-vim.keymap.set("n", "<F9>", _G.run_lua, opts)
-vim.keymap.set("n", "<space>f", _G.format_and_save, opts)
+vim.keymap.set("n", "<C-s>", function()
+	Ftplugin_Lua.format_and_save()
+end, opts)
+vim.keymap.set("n", "<F9>", function()
+	Ftplugin_Lua.run_lua()
+end, opts)
+vim.keymap.set("n", "<space>f", function()
+	Ftplugin_Lua.format_and_save()
+end, opts)

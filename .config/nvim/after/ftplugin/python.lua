@@ -1,4 +1,3 @@
--- General config
 vim.opt_local.wrap = false
 vim.opt_local.sidescroll = 5
 vim.opt_local.sidescrolloff = 2
@@ -9,7 +8,8 @@ vim.opt_local.shiftwidth = 4
 vim.opt_local.expandtab = true
 vim.opt_local.formatoptions:remove({ "o", "r" })
 
--- Automatically make the current string an f-string when typing `{`.
+local M = {}
+
 vim.api.nvim_create_autocmd("InsertCharPre", {
 	pattern = { "*.py" },
 	group = vim.api.nvim_create_augroup("py-fstring", { clear = true }),
@@ -36,21 +36,23 @@ vim.api.nvim_create_autocmd("InsertCharPre", {
 	end,
 })
 
--- Make these functions local to avoid global variable warning
-local function run_python()
+function M.run_python()
 	vim.cmd('AsyncRun python -u "%"')
 end
 
-local function format_and_save()
+function M.format_and_save()
 	vim.cmd("silent !ruff format %")
 	vim.cmd("silent !ruff check --fix %")
 	vim.cmd("edit")
 	vim.cmd("write")
 end
 
-vim.api.nvim_create_user_command("RunPython", run_python, {})
-vim.api.nvim_create_user_command("FormatAndSavePython", format_and_save, {})
+_G.Ftplugin_Python = M
 
--- Use vim.keymap.set instead of vim.api.nvim_buf_set_keymap
-vim.keymap.set("n", "<F9>", ":RunPython<CR>", { noremap = true, silent = true, buffer = 0 })
-vim.keymap.set("n", "<C-s>", ":FormatAndSavePython<CR>", { noremap = true, silent = true, buffer = 0 })
+vim.keymap.set("n", "<F9>", ":lua Ftplugin_Python.run_python()<CR>", { noremap = true, silent = true, buffer = 0 })
+vim.keymap.set(
+	"n",
+	"<C-s>",
+	":lua Ftplugin_Python.format_and_save()<CR>",
+	{ noremap = true, silent = true, buffer = 0 }
+)

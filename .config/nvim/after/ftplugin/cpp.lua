@@ -35,8 +35,7 @@ function M.compile_run_cpp()
 	vim.cmd("startinsert")
 end
 
-_G.CppUtils = M
+_G.Ftplugin_Cpp = M
 
--- Use vim.keymap.set instead of vim.api.nvim_buf_set_keymap
-vim.keymap.set("n", "<F9>", ":lua CppUtils.compile_run_cpp()<CR>", { noremap = true, silent = true, buffer = 0 })
-vim.keymap.set("n", "<F11>", ":lua CppUtils.compile_run_cpp()<CR>", { noremap = true, silent = true, buffer = 0 })
+vim.keymap.set("n", "<F9>", ":lua Ftplugin_Cpp.compile_run_cpp()<CR>", { noremap = true, silent = true, buffer = 0 })
+vim.keymap.set("n", "<F11>", ":lua Ftplugin_Cpp.compile_run_cpp()<CR>", { noremap = true, silent = true, buffer = 0 })
