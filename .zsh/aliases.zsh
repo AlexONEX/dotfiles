@@ -596,58 +596,6 @@ lookup() {
 }
 
 #═══════════════════════════════════════════════════════════════════════════════
-# NTFS MOUNTING
-#═══════════════════════════════════════════════════════════════════════════════
-
-mount_ntfs() {
-    sudo mkdir -p /mnt/external
-
-    local drives=($(lsblk -o NAME,FSTYPE -n -l | grep "ntfs" | awk '{print $1}'))
-
-    if [ ${#drives[@]} -eq 0 ]; then
-        echo "❌ No NTFS hard drive connected"
-        return 1
-    fi
-
-    echo "💾 Discos NTFS encontrados:"
-    local i=1
-    for drive in "${drives[@]}"; do
-        local label=$(lsblk -o NAME,LABEL -n -l | grep "$drive" | awk '{$1=""; print $0}' | xargs)
-        local size=$(lsblk -o NAME,SIZE -n -l | grep "$drive" | awk '{print $2}')
-        echo "[$i] /dev/$drive (${label:-Sin etiqueta}, $size)"
-        ((i++))
-    done
-
-    local selected_drive
-    if [ ${#drives[@]} -gt 1 ]; then
-        echo "\nNumber of disk to mount (1-${#drives[@]}):"
-        read -k 1 selection
-        if [[ $selection -lt 1 ]] || [[ $selection -gt ${#drives[@]} ]]; then
-            echo "\n❌ Invalid selection"
-            return 1
-        fi
-        selected_drive="/dev/${drives[$selection-1]}"
-    else
-        selected_drive="/dev/${drives[0]}"
-    fi
-
-    sudo umount $selected_drive 2>/dev/null
-    sudo fuser -k $selected_drive 2>/dev/null
-
-    echo "\n🔧 Repairing disk..."
-    sudo ntfsfix $selected_drive
-    echo "🚀 Mounting..."
-    if sudo mount -t ntfs-3g -o rw,uid=$(id -u),gid=$(id -g),windows_names $selected_drive /mnt/external; then
-        echo "✅ Mounted in /mnt/external"
-    else
-        echo "❌ Error"
-        return 1
-    fi
-}
-
-#═══════════════════════════════════════════════════════════════════════════════
 # MISC ALIASES
 #═══════════════════════════════════════════════════════════════════════════════
-
 alias btc='better-commits'
-alias webToPdf='curl -u 'api:
