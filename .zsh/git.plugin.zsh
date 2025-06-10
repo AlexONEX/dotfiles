@@ -246,9 +246,9 @@ fvim() {
 }
 
 # Grep and edit files with vim
-fgrep() {
+gfgrep() {
     if [[ $# -eq 0 ]]; then
-        echo "Usage: fgrep <search_term> [path]"
+        echo "Usage: gfgrep <search_term> [path]"
         return 1
     fi
     local files
