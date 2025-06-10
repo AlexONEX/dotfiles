@@ -17,3 +17,9 @@ __pycache__/
 *.sug
 **/*.log
 **/Session.vim
+
+
+# Dirs
+.config/yazi/plugins
+.config/tmux/plugins
+.config/lazygit/config.yml
