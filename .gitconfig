@@ -1,3 +1,6 @@
+[alias]
+	aliases = "!git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /"
+	pr=!open https://github.com/$(git repo)/compare/$(git current)?expand=1
 [branch]
   sort = -committerdate
 	autoSetupMerge = always
