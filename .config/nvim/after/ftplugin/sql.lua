@@ -1,4 +1,4 @@
-vim.opt_local.commentstring = "--\\ %s"
+vim.bo.commentstring = "--\\ %s"
 vim.opt_local.formatoptions:remove({ "o", "r" })
 
 local M = {}
@@ -10,4 +10,7 @@ end
 
 _G.Ftplugin_Sql = M
 
-vim.keymap.set("n", "<C-s>", ":lua Ftplugin_Sql.format_and_save()<CR>", { noremap = true, silent = true, buffer = 0 })
+local opts = { buffer = true, silent = true }
+vim.keymap.set("n", "<C-s>", function()
+	Ftplugin_Sql.format_and_save()
+end, opts)

@@ -5,15 +5,22 @@ vim.bo.tabstop = 2
 vim.opt_local.formatoptions:remove({ "o", "r" })
 
 local M = {}
+local utils = require("utils")
 
 function M.format_and_save()
-	vim.cmd("silent !stylua %")
-	vim.cmd("edit")
-	vim.cmd("write")
+	if utils.executable("stylua") then
+		vim.cmd("silent !stylua %")
+		vim.cmd("edit")
+		vim.cmd("write")
+		vim.notify("Formatted with StyLua", vim.log.levels.INFO)
+	else
+		vim.notify("StyLua not found. Install with: cargo install stylua", vim.log.levels.WARN)
+	end
 end
 
 function M.run_lua()
 	vim.cmd("luafile %")
+	vim.notify("Lua file executed", vim.log.levels.INFO)
 end
 
 _G.Ftplugin_Lua = M
