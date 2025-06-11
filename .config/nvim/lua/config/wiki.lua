@@ -12,6 +12,10 @@ vim.g.wiki_link_creation = {
       return vim.fn["wiki#toc#get_page_title"](url)
     end,
   },
+  ["_"] = {
+    link_type = "wiki",
+    url_extension = "",
+  },
 }
 vim.g.wiki_tag_scan_num_lines = 25
 vim.g.wiki_journal = {
@@ -24,6 +28,24 @@ vim.g.wiki_journal = {
     monthly = "%Y_m%m",
   },
 }
+
+function create_wiki_link()
+  local filename = vim.fn.input("File name (withouth .md): ")
+  if filename == "" then
+    return
+  end
+
+  local description = vim.fn.input("Title link: ")
+  if description == "" then
+    description = filename
+  end
+
+  local link_text = "[[" .. filename .. "|" .. description .. "]]"
+  vim.api.nvim_put({ link_text }, "c", true, true)
+end
+
+-- Mapear a <leader>wnl
+vim.keymap.set("n", "<leader>wnl", create_wiki_link, { desc = "Create wiki link" })
 
 function Create_para_note(para_type)
   local wiki_root = vim.fn.expand(vim.g.wiki_root)
@@ -71,6 +93,41 @@ function Create_para_note(para_type)
   end
 end
 
+function Create_new_template()
+  local title = vim.fn.input("Title: ")
+  if title == "" then
+    print("Template creation cancelled")
+    return
+  end
+
+  local tags_input = vim.fn.input("Tags: ")
+  local tags = ""
+  if tags_input == "" then
+    tags = ":Tags to fill:"
+  else
+    tags = ":" .. tags_input .. ":"
+  end
+
+  local today = os.date("%Y-%m-%d")
+
+  local template = {
+    "---",
+    "title: " .. title,
+    "date: " .. today,
+    "---",
+    tags,
+    "",
+  }
+
+  -- Insertar el template al inicio del archivo actual
+  vim.api.nvim_buf_set_lines(0, 0, 0, false, template)
+
+  -- Posicionar el cursor después del template
+  vim.api.nvim_win_set_cursor(0, { #template + 1, 0 })
+
+  print("Template created")
+end
+
 function Create_project_note()
   Create_para_note("Project")
 end
@@ -98,20 +155,14 @@ function Open_wiki_directory()
 end
 
 function Open_journal_with_template()
-  -- Primero, abrimos el diario actual con WikiJournal
   vim.cmd("WikiJournal")
-
-  -- Esperamos a que se abra el archivo
   vim.defer_fn(function()
-    -- Verificamos si el archivo está vacío (nuevo) comprobando si tiene contenido
     local line_count = vim.fn.line("$")
     local is_empty = line_count <= 1 and vim.fn.getline(1) == ""
 
     if is_empty then
-      -- Obtenemos la fecha de hoy en formato YYYY-MM-DD
       local today = os.date("%Y-%m-%d")
 
-      -- Creamos el template básico
       local template = {
         "# Journal: " .. today,
         "",
@@ -245,20 +296,20 @@ function Create_working_day_journal()
   end
 end
 
-vim.cmd("command! WikiCreateProject lua Create_project_note()")
-vim.cmd("command! WikiCreateArea lua Create_area_note()")
-vim.cmd("command! WikiCreateResource lua Create_resource_note()")
-vim.cmd("command! WikiCreateArchive lua Create_archive_note()")
-vim.cmd("command! WikiWorkingDay lua Create_working_day_journal()")
+-- Keymaps convertidos a vim.keymap.set
+vim.keymap.set("n", "<leader>np", Create_project_note, { noremap = true, silent = true, desc = "Create project note" })
+vim.keymap.set("n", "<leader>na", Create_area_note, { noremap = true, silent = true, desc = "Create area note" })
+vim.keymap.set(
+  "n",
+  "<leader>nr",
+  Create_resource_note,
+  { noremap = true, silent = true, desc = "Create resource note" }
+)
+vim.keymap.set("n", "<leader>nc", Create_archive_note, { noremap = true, silent = true, desc = "Create archive note" })
+vim.keymap.set("n", "<leader>nl", create_wiki_link, { noremap = true, silent = true, desc = "Create wiki link" })
 
-vim.api.nvim_set_keymap("n", "<leader>np", ":WikiCreateProject<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>na", ":WikiCreateArea<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>nr", ":WikiCreateResource<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>nc", ":WikiCreateArchive<CR>", { noremap = true, silent = true })
-
-vim.api.nvim_set_keymap("n", "<leader>wt", ":WikiTagList<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>ws", ":WikiTagSearch<CR>", { noremap = true, silent = true })
-
-vim.api.nvim_set_keymap("n", "<leader>wo", ":lua Open_wiki_directory()<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>nj", ":WikiJournalTemplate<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>x", ":WikiToggleTask<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>wt", ":WikiTags<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>wo", Open_wiki_directory, { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>nj", ":WikiJournalTemplate<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>x", ":WikiToggleTask<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>nte", Create_new_template, { noremap = true, silent = true, desc = "Create new template" })
