@@ -91,94 +91,40 @@ local function count_consecutive_spaces(str)
 end
 
 local function setup_keymaps()
-	vim.api.nvim_buf_set_keymap(
-		0,
-		"n",
-		"+",
-		":set operatorfunc=v:lua.Ftplugin_Markdown.add_list_symbol<CR>g@",
-		{ noremap = true, silent = true }
-	)
-	vim.api.nvim_buf_set_keymap(
-		0,
+	local opts = { buffer = true, silent = true }
+
+	vim.keymap.set("n", "+", ":set operatorfunc=v:lua.Ftplugin_Markdown.add_list_symbol<CR>g@", opts)
+	vim.keymap.set(
 		"x",
 		"+",
 		':<C-U>lua Ftplugin_Markdown.add_list_symbol(vim.fn.line("\'<"), vim.fn.line("\'>"))<CR>',
-		{ noremap = true, silent = true }
+		opts
 	)
-	vim.api.nvim_buf_set_keymap(
-		0,
-		"n",
-		"\\",
-		":set operatorfunc=v:lua.Ftplugin_Markdown.add_line_break<CR>g@",
-		{ noremap = true, silent = true }
-	)
-	vim.api.nvim_buf_set_keymap(
-		0,
+	vim.keymap.set("n", "\\", ":set operatorfunc=v:lua.Ftplugin_Markdown.add_line_break<CR>g@", opts)
+	vim.keymap.set(
 		"x",
 		"\\",
 		':<C-U>lua Ftplugin_Markdown.add_line_break(vim.fn.line("\'<"), vim.fn.line("\'>"))<CR>',
-		{ noremap = true, silent = true }
+		opts
 	)
-	vim.api.nvim_buf_set_keymap(
-		0,
-		"n",
-		"<C-s>",
-		":lua Ftplugin_Markdown.format_and_save()<CR>",
-		{ noremap = true, silent = true }
-	)
+	vim.keymap.set("n", "<C-s>", function()
+		Ftplugin_Markdown.format_and_save()
+	end, opts)
+	vim.keymap.set("n", "<space>mc", function()
+		Ftplugin_Markdown.insert_code_block()
+	end, opts)
+
 	if vim.fn.exists(":FootnoteNumber") == 1 then
-		vim.api.nvim_buf_set_keymap(
-			0,
-			"n",
-			"^^",
-			":<C-U>call markdownfootnotes#VimFootnotes('i')<CR>",
-			{ noremap = true, silent = true }
-		)
-		vim.api.nvim_buf_set_keymap(
-			0,
-			"i",
-			"^^",
-			"<C-O>:<C-U>call markdownfootnotes#VimFootnotes('i')<CR>",
-			{ noremap = true, silent = true }
-		)
-		vim.api.nvim_buf_set_keymap(0, "i", "@@", "<Plug>ReturnFromFootnote", { silent = true })
-		vim.api.nvim_buf_set_keymap(0, "n", "@@", "<Plug>ReturnFromFootnote", { silent = true })
+		vim.keymap.set("n", "^^", ":<C-U>call markdownfootnotes#VimFootnotes('i')<CR>", opts)
+		vim.keymap.set("i", "^^", "<C-O>:<C-U>call markdownfootnotes#VimFootnotes('i')<CR>", opts)
+		vim.keymap.set("i", "@@", "<Plug>ReturnFromFootnote", { buffer = true })
+		vim.keymap.set("n", "@@", "<Plug>ReturnFromFootnote", { buffer = true })
 	end
-	vim.api.nvim_buf_set_keymap(
-		0,
-		"n",
-		"<Space>mc",
-		":lua Ftplugin_Markdown.insert_code_block()<CR>",
-		{ noremap = true, silent = true }
-	)
-	vim.api.nvim_buf_set_keymap(
-		0,
-		"x",
-		"ic",
-		":<C-U>lua require('text_obj').MdCodeBlock('i')<CR>",
-		{ noremap = true, silent = true }
-	)
-	vim.api.nvim_buf_set_keymap(
-		0,
-		"x",
-		"ac",
-		":<C-U>lua require('text_obj').MdCodeBlock('a')<CR>",
-		{ noremap = true, silent = true }
-	)
-	vim.api.nvim_buf_set_keymap(
-		0,
-		"o",
-		"ic",
-		":<C-U>lua require('text_obj').MdCodeBlock('i')<CR>",
-		{ noremap = true, silent = true }
-	)
-	vim.api.nvim_buf_set_keymap(
-		0,
-		"o",
-		"ac",
-		":<C-U>lua require('text_obj').MdCodeBlock('a')<CR>",
-		{ noremap = true, silent = true }
-	)
+
+	vim.keymap.set("x", "ic", ":<C-U>lua require('text_obj').MdCodeBlock('i')<CR>", opts)
+	vim.keymap.set("x", "ac", ":<C-U>lua require('text_obj').MdCodeBlock('a')<CR>", opts)
+	vim.keymap.set("o", "ic", ":<C-U>lua require('text_obj').MdCodeBlock('i')<CR>", opts)
+	vim.keymap.set("o", "ac", ":<C-U>lua require('text_obj').MdCodeBlock('a')<CR>", opts)
 end
 
 function M.setup()
@@ -197,16 +143,13 @@ function M.setup()
 		desc = "Add reference link at buffer end",
 		nargs = "+",
 		complete = function(arg_lead, cmdline, curpos)
-			vim.print(string.format("arg_lead: '%s', cmdline: '%s', curpos: %d", arg_lead, cmdline, curpos))
 			if count_consecutive_spaces(cmdline) > 1 then
 				return {}
 			end
-			local ref_link_labels = M.get_ref_link_labels()
-			return ref_link_labels
+			return M.get_ref_link_labels()
 		end,
 	})
 end
 
 _G.Ftplugin_Markdown = M
-
 M.setup()
