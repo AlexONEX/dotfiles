@@ -15,12 +15,14 @@ both of them use [mintty](https://github.com/mintty/mintty) as the terminal emul
 For the latest version of Windows 10, you can also try [Windows Terminal](https://github.com/microsoft/terminal).
 
 ## Patched Fonts
+
 Since statusline or file explorer plugins often use Unicode symbols not available in normal font,
 we need to install a patched font from the [nerd-fonts](https://github.com/ryanoasis/nerd-fonts) project.
 
 # Automatic installation
 
 ## Automatic Installation for Linux
+
 To set up a workable Nvim environment on Linux,
 I use [a bash script](nvim_setup_linux.sh) to automatically install necessary dependencies, Nvim itself and configs.
 
@@ -28,15 +30,19 @@ Note that the variable `PYTHON_INSTALLED`, `SYSTEM_PYTHON` and `ADD_TO_SYSTEM_PA
 should be set properly based on your environment.
 
 ## Automatic installation for Windows
+
 Run the script [nvim_setup_windows.ps1](nvim_setup_windows.ps1) in PowerShell **with Administrator rights**:
+
 ```
 .\docs\nvim_setup_windows.ps1
 ```
 
 # Manual install
+
 There are a few dependencies if we want to use Nvim for efficient editing and development work.
 
 ## Dependencies
+
 ### Python
 
 A lot of Nvim plugins are mainly written in Python, so we must install Python 3.
