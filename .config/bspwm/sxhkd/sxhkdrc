@@ -35,7 +35,7 @@ super + F7
 
 #Thunar
 super + F8
-    alacritty -e ranger
+  alacritty -e yazi
 
 #Audio player
 super + F9
@@ -111,7 +111,7 @@ super + Return
 
 #File-Manager
 super + shift + f
-	thunar
+ alacritty -e yazi
 
 #rofi
 super + shift + d
