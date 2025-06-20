@@ -1,4 +1,37 @@
 #═══════════════════════════════════════════════════════════════════════════════
+# BASIC SHELL OPERATIONS
+#═══════════════════════════════════════════════════════════════════════════════
+
+alias cd='z'
+alias r='exec zsh'
+alias c='clear'
+alias rf='rm -rf'
+alias cp='cp -iv'
+alias mv='mv -iv'
+alias mkdir='mkdir -pv'
+
+# Directory navigation
+alias cd..='z ..'
+alias ..='z ..'
+
+# Backup function
+# for either files or directories
+bak() {
+    cp -r "$1" "$1.bak"
+}
+
+# Mark and goto
+mark() {
+    if [ $# -eq 1 ]; then
+        goto -r "$1" "$(pwd)"
+    else
+        echo "Usage: mark <alias>"
+    fi
+}
+
+alias j='goto'
+
+#═══════════════════════════════════════════════════════════════════════════════
 # DOTFILES MANAGEMENT
 #═══════════════════════════════════════════════════════════════════════════════
 
@@ -62,42 +95,11 @@ dotfiles-add() {
 alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/aliases.zsh && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot polybar tmux/tmux.conf zathura && cd nvim/lua/custom && cd /home/alex/.local/share/chezmoi'
 
 #═══════════════════════════════════════════════════════════════════════════════
-# BASIC SHELL OPERATIONS
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias r='exec zsh'
-alias c='clear'
-alias rf='rm -rf'
-alias cp='cp -iv'
-alias mv='mv -iv'
-alias mkdir='mkdir -pv'
-
-# Directory navigation
-alias cd..='cd ..'
-alias ..='cd..'
-
-# Backup function
-bak() {
-    cp "$1" "$1.bak"
-}
-
-# Mark and goto
-mark() {
-    if [ $# -eq 1 ]; then
-        goto -r "$1" "$(pwd)"
-    else
-        echo "Usage: mark <alias>"
-    fi
-}
-
-alias j='goto'
-
-#═══════════════════════════════════════════════════════════════════════════════
 # EDITORS AND CONFIG FILES
 #═══════════════════════════════════════════════════════════════════════════════
 
 alias a='$EDITOR ~/.zsh/aliases.zsh'
-alias z='$EDITOR ~/.zshrc'
+alias cz='$EDITOR ~/.zshrc'
 alias t='$EDITOR $HOME/.config/tmux/tmux.conf'
 alias ct='$EDITOR ~/.config/tmux/tmux.conf'
 
@@ -173,6 +175,33 @@ else
   alias fromcp='echo "No clipboard provider installed (xclip/xsel required)"'
 fi
 
+tocp_all() {
+  "$@" 2>&1 | tocp
+}
+alias tocp_all="tocp_all"
+
+totxt() {
+  local output_file="${1:-output.txt}"
+  shift || true # consume el primer argumento si existe
+  "$@" > "$output_file" 2>&1
+  echo "Salida y errores guardados en '$output_file'"
+}
+alias totxt="totxt"
+
+# Alias más genérico para redirigir a un archivo específico
+# Uso: tu_comando tofile mi_log.txt
+tofile() {
+  if [ -z "$1" ]; then
+    echo "Uso: tu_comando tofile <nombre_archivo>"
+    return 1
+  fi
+  local output_file="$1"
+  shift
+  "$@" > "$output_file" 2>&1
+  echo "Salida y errores guardados en '$output_file'"
+}
+alias tofile="tofile"
+
 alias cf='cat $1 | xclip -sel c'
 
 #═══════════════════════════════════════════════════════════════════════════════
@@ -247,6 +276,7 @@ FSTRING() {
 alias k='pkill -9'
 alias bl='xbacklight -get'
 alias dsize='du -hsx * | sort -rh'
+alias dirsize='du -sh'
 alias neofetch='fastfetch'
 alias open='handlr open'
 alias cat='bat'
