@@ -1,0 +1,70 @@
+snippet if "if statement" w
+if ${1:condition} then
+    ${2:-- body}
+end
+$0
+endsnippet
+
+snippet ife "if-else statement" w
+if ${1:condition} then
+    ${2:-- then body}
+else
+    ${3:-- else body}
+end
+$0
+endsnippet
+
+snippet ifei "if-elseif-else statement" w
+if ${1:condition1} then
+    ${2:-- body1}
+elseif ${3:condition2} then
+    ${4:-- body2}
+else
+    ${5:-- else body}
+end
+$0
+endsnippet
+
+snippet ei "elseif statement" w
+elseif ${1:condition} then
+    ${2:-- body}
+endsnippet
+
+snippet fn "Function" b
+function ${1:FunctionName}(${2:params})
+    ${3:-- body}
+end
+$0
+endsnippet
+
+snippet lfn "Local function" b
+local function ${1:FunctionName}(${2:params})
+    ${3:-- body}
+end
+$0
+endsnippet
+
+snippet req "Require a module" b
+local ${1:module} = require("${2:$1}")$0
+endsnippet
+
+snippet for "For loop" w
+for ${1:i} = ${2:1}, ${3:10} do
+    ${4}
+end
+$0
+endsnippet
+
+snippet forp "For pairs (tables)" w
+for k, v in pairs(${1:table}) do
+    ${2}
+end
+$0
+endsnippet
+
+snippet fori "For ipairs (arrays)" w
+for i, v in ipairs(${1:array}) do
+    ${2}
+end
+$0
+endsnippet
