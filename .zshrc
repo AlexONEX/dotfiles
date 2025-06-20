@@ -103,3 +103,4 @@ fi
 # Source fzf and cargo
 command -v fzf &>/dev/null && eval "$(fzf --zsh)"
 [[ -f ${HOME}/.cargo/env ]] && source "${HOME}/.cargo/env"
+eval "$(zoxide init zsh)"
