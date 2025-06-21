@@ -4,7 +4,7 @@ return {
 	root_markers = { ".git", "." },
 	settings = {
 		ltex = {
-			language = "en-US",
+			language = "auto",
 			dictionary = {},
 			disabledRules = {},
 			hiddenFalsePositives = {},
