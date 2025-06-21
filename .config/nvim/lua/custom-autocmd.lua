@@ -16,6 +16,13 @@ api.nvim_create_autocmd({ "BufRead" }, {
 	end,
 })
 
+api.nvim_create_autocmd("Filetype", {
+	pattern = "markdown",
+	callback = function()
+		vim.opt.conceallevel = 2
+	end,
+})
+
 -- highlight yanked region, see `:h lua-highlight`
 local yank_group = api.nvim_create_augroup("highlight_yank", { clear = true })
 api.nvim_create_autocmd({ "TextYankPost" }, {
