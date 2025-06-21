@@ -1,3 +1,22 @@
-#!/bin/sh
-rclone sync /home/mars/GoogleDrive/ GoogleDrive: -v
-rclone sync /home/mars/OneDrive/ OneDrive: -v
+#!/bin/bash
+
+CONFIG_FILE="/tmp/rclone_dynamic.conf"
+
+cat <<EOF > "$CONFIG_FILE"
+[ODrive]
+type = onedrive
+token = {"access_token":"$ONEDRIVE_ACCESS_TOKEN","expiry":"2025-06-21T10:49:56.029239713-03:00"}
+drive_id = D1C81E2665CCC086
+drive_type = personal
+
+[GDrive]
+type = drive
+scope = drive
+token = {"access_token":"$GOOGLE_DRIVE_ACCESS_TOKEN","expiry":"2025-06-21T10:51:18.112015346-03:00"}
+team_drive =
+EOF
+
+rclone sync /home/mars/GoogleDrive/ GDrive: -v
+rclone sync /home/mars/OneDrive/ ODrive: -v
+
+rm "$CONFIG_FILE"
