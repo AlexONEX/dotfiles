@@ -16,7 +16,7 @@ return {
 		"compile_commands.json",
 		"compile_flags.txt",
 		"configure.ac",
-		".git",
+		".git"
 	},
 	init_options = {
 		usePlaceholders = true,

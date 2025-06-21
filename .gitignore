@@ -1,4 +1,3 @@
-# Ignore a file by renaming it with ignore its name
 *.ignore
 ignore.*
 *.ignore.*

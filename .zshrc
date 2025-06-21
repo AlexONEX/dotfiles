@@ -34,9 +34,8 @@ zstyle ':omz:update' frequency 13
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # if ~/secure/ exists, source all files in it
-if [ -d ~/secure ]; then
-    chmod 600 ~/secure/*
-    export $(grep -v '^#' ~/secure/credentials.env | xargs)
+if [ -d ~/.dotfiles/.password-store/ ]; then
+    export $(grep -v '^#' ~/.dotfiles/.password-store/credentials.env | xargs)
 fi
 
 if command -v nvim &>/dev/null; then
