@@ -295,6 +295,18 @@ keymap.set("n", "<space>x", function()
   vim.api.nvim_set_current_line(new_line)
 end, { desc = "toggle todo completion status" })
 
+keymap.set("n", "<leader>wo", function()
+  local wiki_dir = vim.fn.expand("~/wiki")
+  if vim.fn.isdirectory(wiki_dir) == 1 then
+    -- 2. Cambia el directorio de trabajo de Neovim
+    vim.cmd("cd " .. wiki_dir)
+    -- 3. Muestra un mensaje de confirmación abajo
+    vim.notify("Moved to: " .. wiki_dir, vim.log.levels.INFO)
+  else
+    vim.notify("~/wiki not found: " .. wiki_dir, vim.log.levels.ERROR)
+  end
+end, { desc = "Go to wiki directory" })
+
 keymap.set("n", "<space>gx", function()
   local url = vim.fn.expand("<cfile>")
   if url:match("^https?://") then
