@@ -30,11 +30,11 @@ conf.center = {
 		icon = "󰈢  ",
 		desc = "Recently opened files                   ",
 		action = "FzfLua oldfiles",
-		key = "<Leader> f r",
+		key = "<Leader> f o",
 	},
 	{
 		icon = "󰈬  ",
-		desc = "Project grep                            ",
+		desc = "Grep Files",
 		action = "FzfLua live_grep",
 		key = "<Leader> f g",
 	},
