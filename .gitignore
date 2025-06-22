@@ -22,3 +22,6 @@ __pycache__/
 .config/yazi/plugins
 .config/tmux/plugins
 .config/lazygit/config.yml
+
+**/thunar.xml
+.config/xfce4/xfconf/xfce-perchannel-xml
