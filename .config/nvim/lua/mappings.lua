@@ -53,16 +53,6 @@ keymap.set("n", "<space>D", "<cmd>bprevious <bar> bdelete #<cr>", {
   desc = "delete current buffer",
 })
 
--- Telescope mappings
-keymap.set("n", "<leader>ef", "<cmd>Telescope find_files<cr>", { desc = "Find files in current directory" })
-keymap.set("n", "<leader>eg", "<cmd>Telescope live_grep<cr>", { desc = "Find text in current directory" })
-keymap.set("n", "<leader>eb", "<cmd>Telescope buffers<cr>", { desc = "Find buffers" })
-keymap.set("n", "<leader>eh", "<cmd>Telescope help_tags<cr>", { desc = "Find help tags" })
-keymap.set("n", "<leader>ec", "<cmd>Telescope current_buffer_fuzzy_find<cr>", { desc = "Find text in current file" })
-keymap.set("n", "<leader>er", "<cmd>Telescope oldfiles<cr>", { desc = "Find recent files" })
-keymap.set("n", "<leader>em", "<cmd>Telescope marks<cr>", { desc = "Find marks" })
-keymap.set("n", "<leader>ek", "<cmd>Telescope keymaps<cr>", { desc = "Find keymaps" })
-
 -- Insert a blank line below or above current line (do not move the cursor),
 -- see https://stackoverflow.com/a/16136133/6064933
 keymap.set("n", "<space>o", "printf('m`%so<ESC>``', v:count1)", {

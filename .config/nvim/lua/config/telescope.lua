@@ -1,21 +1,18 @@
 local telescope = require("telescope")
 local actions = require("telescope.actions")
-
-telescope.setup {
-  defaults = {
-    mappings = {
-      i = {
-        ["<C-j>"] = actions.move_selection_next,
-        ["<C-k>"] = actions.move_selection_previous,
-      },
-    },
-  },
-}
-
--- Mappings de Telescope
 local keymap = vim.keymap
 
--- Mappings existentes
+telescope.setup({
+	defaults = {
+		mappings = {
+			i = {
+				["<C-j>"] = actions.move_selection_next,
+				["<C-k>"] = actions.move_selection_previous,
+			},
+		},
+	},
+})
+
 keymap.set("n", "<leader>ef", "<cmd>Telescope find_files<cr>", { desc = "Find files in current directory" })
 keymap.set("n", "<leader>eg", "<cmd>Telescope live_grep<cr>", { desc = "Find text in current directory" })
 keymap.set("n", "<leader>eb", "<cmd>Telescope buffers<cr>", { desc = "Find buffers" })
@@ -25,7 +22,6 @@ keymap.set("n", "<leader>er", "<cmd>Telescope oldfiles<cr>", { desc = "Find rece
 keymap.set("n", "<leader>em", "<cmd>Telescope marks<cr>", { desc = "Find marks" })
 keymap.set("n", "<leader>ek", "<cmd>Telescope keymaps<cr>", { desc = "Find keymaps" })
 
--- Nuevos mappings
 keymap.set("n", "<leader>tg", "<cmd>Telescope git_files<cr>", { desc = "Find files in git project" })
 keymap.set("n", "<leader>ts", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor" })
 keymap.set("n", "<leader>tc", "<cmd>Telescope commands<cr>", { desc = "Find and execute commands" })
