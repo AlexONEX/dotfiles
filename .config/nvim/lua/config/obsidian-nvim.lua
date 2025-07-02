@@ -127,6 +127,17 @@ local function import_yesterday_completed_tasks()
   end, 150)
 end
 
+vim.api.nvim_create_user_command("ObsidianToggleCheckbox", function()
+  local line = vim.api.nvim_get_current_line()
+  if line:match("^%s*%- %[x%]") then
+    vim.api.nvim_set_current_line(line:gsub("^%s*%- %[x%]", "- [ ]"))
+  elseif line:match("^%s*%- %[ %]") then
+    vim.api.nvim_set_current_line(line:gsub("^%s*%- %[ %]", "- [x]"))
+  else
+    vim.api.nvim_set_current_line("- [ ] " .. line)
+  end
+end, {})
+
 vim.api.nvim_create_user_command("ObsidianSmartToday", function()
   vim.cmd("ObsidianToday")
   import_yesterday_completed_tasks()
@@ -150,9 +161,10 @@ end, { desc = "Obsidian: New Archive Note" })
 
 map("n", leader .. "nj", "<cmd>ObsidianSmartToday<cr>", { desc = "Obsidian: Open Today's Note (Smart)" })
 map("n", leader .. "nl", "<cmd>ObsidianLinkNew<cr>", { desc = "Obsidian: New Link" })
-map("n", leader .. "x", "<cmd>ObsidianToggleCheckbox<cr>", { desc = "Obsidian: Toggle Checkbox" })
+map("n", leader .. "nt", "<cmd>ObsidianToggleCheckbox<cr>", { desc = "Obsidian: Create/Toggle Checkbox" })
 map("n", leader .. "wo", "<cmd>ObsidianOpen<cr>", { desc = "Obsidian: Open Vault in File Manager" })
 map("n", leader .. "wf", "<cmd>ObsidianSearch<cr>", { desc = "Obsidian: Search Notes" })
 map("n", leader .. "wb", "<cmd>ObsidianBacklinks<cr>", { desc = "Obsidian: Show Backlinks" })
 map("n", leader .. "nte", "<cmd>ObsidianTemplate<cr>", { desc = "Obsidian: Insert Template" })
 map("n", leader .. "gl", "<cmd>ObsidianFollowLink<cr>", { desc = "Obsidian: Follow link under cursor" })
+--map Ob
