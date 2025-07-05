@@ -1,0 +1,30 @@
+services:
+  server:
+    image: yooooomi/your_spotify_server
+    restart: always
+    ports:
+      - "9191:8080"
+    links:
+      - mongo
+    depends_on:
+      - mongo
+    environment:
+      API_ENDPOINT: http://localhost:9191
+      CLIENT_ENDPOINT: http://localhost:3050
+      SPOTIFY_PUBLIC: "${SPOTIFY_CLIENT_ID}"
+      SPOTIFY_SECRET: "${SPOTIFY_CLIENT_SECRET}"
+
+  mongo:
+    container_name: mongo
+    image: mongo:6
+    volumes:
+      - ./your_spotify_db:/data/db
+
+  web:
+    image: yooooomi/your_spotify_client
+    restart: always
+    ports:
+      - "3050:3000"
+    environment:
+      API_ENDPOINT: http://localhost:9191
+

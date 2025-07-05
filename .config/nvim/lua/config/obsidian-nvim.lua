@@ -130,6 +130,7 @@ local function import_yesterday_completed_tasks()
 end
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 vim.api.nvim_create_user_command("ObsidianToggleCheckbox", function()
   local line = vim.api.nvim_get_current_line()
   if line:match("^%s*%- %[x%]") then
@@ -141,6 +142,29 @@ vim.api.nvim_create_user_command("ObsidianToggleCheckbox", function()
   end
 end, {})
 
+||||||| Stash base
+=======
+local function CreateMarkdownLink()
+  local display_text = vim.fn.input("Title of the link: ")
+  if display_text == "" or display_text == nil then
+    vim.notify("Creation canceled", vim.log.levels.WARN)
+    return
+  end
+
+  local link_target = vim.fn.input("Target (URL or Archivo): ")
+  if link_target == "" or link_target == nil then
+    vim.notify("Creation canceled.", vim.log.levels.WARN)
+    return
+  end
+
+  -- Construye el string del enlace en formato Markdown.
+  local markdown_link = string.format("[%s](%s)", display_text, link_target)
+
+  -- Inserta el enlace en la posición actual del cursor.
+  vim.api.nvim_put({ markdown_link }, "c", false, true)
+end
+
+>>>>>>> Stashed changes
 ||||||| Stash base
 =======
 local function CreateMarkdownLink()
@@ -193,6 +217,15 @@ map("n", leader .. "wf", "<cmd>ObsidianSearch<cr>", { desc = "Obsidian: Search N
 map("n", leader .. "wb", "<cmd>ObsidianBacklinks<cr>", { desc = "Obsidian: Show Backlinks" })
 map("n", leader .. "nte", "<cmd>ObsidianTemplate<cr>", { desc = "Obsidian: Insert Template" })
 map("n", leader .. "gl", "<cmd>ObsidianFollowLink<cr>", { desc = "Obsidian: Follow link under cursor" })
+map("n", leader .. "nL", "<cmd>CreateMarkdownLink", { desc = "Obsidian: Nuevo Enlace Genérico (URL/Archivo)" })
+map("n", leader .. "nj", "<cmd>ObsidianSmartToday<cr>", { desc = "Obsidian: Abrir Nota de Hoy (Inteligente)" })
+map("v", leader .. "nl", "<cmd>ObsidianLinkNew<cr>", { desc = "Obsidian: Nuevo Enlace a Nota" })
+map("n", leader .. "x", "<cmd>ObsidianToggleCheckbox<cr>", { desc = "Obsidian: Alternar Checkbox" })
+map("n", leader .. "wo", "<cmd>ObsidianOpen<cr>", { desc = "Obsidian: Abrir Bóveda en Explorador de Archivos" })
+map("n", leader .. "wf", "<cmd>ObsidianSearch<cr>", { desc = "Obsidian: Buscar Notas" })
+map("n", leader .. "wb", "<cmd>ObsidianBacklinks<cr>", { desc = "Obsidian: Mostrar Backlinks" })
+map("n", leader .. "nte", "<cmd>ObsidianTemplate<cr>", { desc = "Obsidian: Insertar Plantilla" })
+map("n", leader .. "gl", "<cmd>ObsidianFollowLink<cr>", { desc = "Obsidian: Seguir enlace bajo el cursor" })
 map("n", leader .. "nL", "<cmd>CreateMarkdownLink", { desc = "Obsidian: Nuevo Enlace Genérico (URL/Archivo)" })
 map("n", leader .. "nj", "<cmd>ObsidianSmartToday<cr>", { desc = "Obsidian: Abrir Nota de Hoy (Inteligente)" })
 map("v", leader .. "nl", "<cmd>ObsidianLinkNew<cr>", { desc = "Obsidian: Nuevo Enlace a Nota" })
