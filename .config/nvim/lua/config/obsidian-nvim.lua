@@ -2,6 +2,7 @@ local opts = {
   dir = "~/wiki",
 
   new_notes_location = "current_dir",
+
   note_id_func = function(title)
     if title and title ~= "" then
       return title:gsub("%s+", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
@@ -27,6 +28,7 @@ local opts = {
 }
 
 require("obsidian").setup(opts)
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
@@ -40,11 +42,11 @@ local function CreateParaNote(para_type)
 
   local title = vim.fn.input(para_type .. " Title: ")
   if title == "" or title == nil then
-    vim.notify("Note creation cancelled.", vim.log.levels.WARN)
+    vim.notify("Creación de nota cancelada.", vim.log.levels.WARN)
     return
   end
 
-  local additional_tags = vim.fn.input("Additional tags (e.g., Programming:JavaScript): ")
+  local additional_tags = vim.fn.input("Tags adicionales (ej: Programming:JavaScript): ")
 
   local tags = ":" .. para_type .. ":"
   if additional_tags ~= "" then
@@ -55,7 +57,7 @@ local function CreateParaNote(para_type)
   local full_path = vault_path .. "/" .. filename .. ".md"
 
   if vim.fn.filereadable(full_path) == 1 then
-    vim.notify("Error: A note with this name already exists.", vim.log.levels.ERROR)
+    vim.notify("Error: Ya existe una nota con este nombre.", vim.log.levels.ERROR)
     return
   end
 
@@ -75,9 +77,9 @@ local function CreateParaNote(para_type)
   if vim.fn.writefile(lines, full_path) == 0 then
     vim.cmd("edit " .. vim.fn.fnameescape(full_path))
     vim.cmd("normal! G")
-    vim.notify(para_type .. " note created with tags: " .. tags, vim.log.levels.INFO)
+    vim.notify(para_type .. " nota creada con tags: " .. tags, vim.log.levels.INFO)
   else
-    vim.notify("Error: Failed to create note file.", vim.log.levels.ERROR)
+    vim.notify("Error: Fallo al crear el archivo de la nota.", vim.log.levels.ERROR)
   end
 end
 
@@ -127,6 +129,7 @@ local function import_yesterday_completed_tasks()
   end, 150)
 end
 
+<<<<<<< Updated upstream
 vim.api.nvim_create_user_command("ObsidianToggleCheckbox", function()
   local line = vim.api.nvim_get_current_line()
   if line:match("^%s*%- %[x%]") then
@@ -138,6 +141,29 @@ vim.api.nvim_create_user_command("ObsidianToggleCheckbox", function()
   end
 end, {})
 
+||||||| Stash base
+=======
+local function CreateMarkdownLink()
+  local display_text = vim.fn.input("Title of the link: ")
+  if display_text == "" or display_text == nil then
+    vim.notify("Creation canceled", vim.log.levels.WARN)
+    return
+  end
+
+  local link_target = vim.fn.input("Target (URL or Archivo): ")
+  if link_target == "" or link_target == nil then
+    vim.notify("Creation canceled.", vim.log.levels.WARN)
+    return
+  end
+
+  -- Construye el string del enlace en formato Markdown.
+  local markdown_link = string.format("[%s](%s)", display_text, link_target)
+
+  -- Inserta el enlace en la posición actual del cursor.
+  vim.api.nvim_put({ markdown_link }, "c", false, true)
+end
+
+>>>>>>> Stashed changes
 vim.api.nvim_create_user_command("ObsidianSmartToday", function()
   vim.cmd("ObsidianToday")
   import_yesterday_completed_tasks()
@@ -148,16 +174,16 @@ local leader = "<leader>"
 
 map("n", leader .. "np", function()
   CreateParaNote("Project")
-end, { desc = "Obsidian: New Project Note" })
+end, { desc = "Obsidian: Nueva Nota de Proyecto" })
 map("n", leader .. "na", function()
   CreateParaNote("Area")
-end, { desc = "Obsidian: New Area Note" })
+end, { desc = "Obsidian: Nueva Nota de Área" })
 map("n", leader .. "nr", function()
   CreateParaNote("Resource")
-end, { desc = "Obsidian: New Resource Note" })
+end, { desc = "Obsidian: Nueva Nota de Recurso" })
 map("n", leader .. "nc", function()
   CreateParaNote("Archive")
-end, { desc = "Obsidian: New Archive Note" })
+end, { desc = "Obsidian: Nueva Nota de Archivo" })
 
 map("n", leader .. "nj", "<cmd>ObsidianSmartToday<cr>", { desc = "Obsidian: Open Today's Note (Smart)" })
 map("n", leader .. "nl", "<cmd>ObsidianLinkNew<cr>", { desc = "Obsidian: New Link" })
@@ -167,4 +193,12 @@ map("n", leader .. "wf", "<cmd>ObsidianSearch<cr>", { desc = "Obsidian: Search N
 map("n", leader .. "wb", "<cmd>ObsidianBacklinks<cr>", { desc = "Obsidian: Show Backlinks" })
 map("n", leader .. "nte", "<cmd>ObsidianTemplate<cr>", { desc = "Obsidian: Insert Template" })
 map("n", leader .. "gl", "<cmd>ObsidianFollowLink<cr>", { desc = "Obsidian: Follow link under cursor" })
---map Ob
+map("n", leader .. "nL", "<cmd>CreateMarkdownLink", { desc = "Obsidian: Nuevo Enlace Genérico (URL/Archivo)" })
+map("n", leader .. "nj", "<cmd>ObsidianSmartToday<cr>", { desc = "Obsidian: Abrir Nota de Hoy (Inteligente)" })
+map("v", leader .. "nl", "<cmd>ObsidianLinkNew<cr>", { desc = "Obsidian: Nuevo Enlace a Nota" })
+map("n", leader .. "x", "<cmd>ObsidianToggleCheckbox<cr>", { desc = "Obsidian: Alternar Checkbox" })
+map("n", leader .. "wo", "<cmd>ObsidianOpen<cr>", { desc = "Obsidian: Abrir Bóveda en Explorador de Archivos" })
+map("n", leader .. "wf", "<cmd>ObsidianSearch<cr>", { desc = "Obsidian: Buscar Notas" })
+map("n", leader .. "wb", "<cmd>ObsidianBacklinks<cr>", { desc = "Obsidian: Mostrar Backlinks" })
+map("n", leader .. "nte", "<cmd>ObsidianTemplate<cr>", { desc = "Obsidian: Insertar Plantilla" })
+map("n", leader .. "gl", "<cmd>ObsidianFollowLink<cr>", { desc = "Obsidian: Seguir enlace bajo el cursor" })
