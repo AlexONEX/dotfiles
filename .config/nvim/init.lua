@@ -25,7 +25,7 @@ vim.cmd("source " .. vim.fs.joinpath(config_dir, "viml_conf/plugins.vim"))
 require("diagnostic-conf")
 
 -- lsp configuration
-require("lsp")
+require("config.lsp")
 
 -- colorscheme settings
 require("colorschemes")
