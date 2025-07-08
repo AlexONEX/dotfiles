@@ -142,52 +142,6 @@ vim.api.nvim_create_user_command("ObsidianToggleCheckbox", function()
   end
 end, {})
 
-||||||| Stash base
-=======
-local function CreateMarkdownLink()
-  local display_text = vim.fn.input("Title of the link: ")
-  if display_text == "" or display_text == nil then
-    vim.notify("Creation canceled", vim.log.levels.WARN)
-    return
-  end
-
-  local link_target = vim.fn.input("Target (URL or Archivo): ")
-  if link_target == "" or link_target == nil then
-    vim.notify("Creation canceled.", vim.log.levels.WARN)
-    return
-  end
-
-  -- Construye el string del enlace en formato Markdown.
-  local markdown_link = string.format("[%s](%s)", display_text, link_target)
-
-  -- Inserta el enlace en la posición actual del cursor.
-  vim.api.nvim_put({ markdown_link }, "c", false, true)
-end
-
->>>>>>> Stashed changes
-||||||| Stash base
-=======
-local function CreateMarkdownLink()
-  local display_text = vim.fn.input("Title of the link: ")
-  if display_text == "" or display_text == nil then
-    vim.notify("Creation canceled", vim.log.levels.WARN)
-    return
-  end
-
-  local link_target = vim.fn.input("Target (URL or Archivo): ")
-  if link_target == "" or link_target == nil then
-    vim.notify("Creation canceled.", vim.log.levels.WARN)
-    return
-  end
-
-  -- Construye el string del enlace en formato Markdown.
-  local markdown_link = string.format("[%s](%s)", display_text, link_target)
-
-  -- Inserta el enlace en la posición actual del cursor.
-  vim.api.nvim_put({ markdown_link }, "c", false, true)
-end
-
->>>>>>> Stashed changes
 vim.api.nvim_create_user_command("ObsidianSmartToday", function()
   vim.cmd("ObsidianToday")
   import_yesterday_completed_tasks()
