@@ -13,7 +13,7 @@ local pyright_capability = {
 }
 
 return {
-	cmd = { "pyright-langserver", "--stdio" },
+	cmd = { "delance-langserver", "--stdio" },
 	settings = {
 		pyright = {
 			disableOrganizeImports = true,

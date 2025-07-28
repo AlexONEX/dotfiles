@@ -8,7 +8,7 @@ local servers = {
   "hls",
   "ltex",
   "lua_ls",
-  "pyright",
+  "delance-langserver",
   "ruff",
   "rust_analyzer",
   "texlab",
@@ -40,7 +40,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
--- Configuración visual de los diagnósticos
 vim.diagnostic.config {
   underline = true,
   virtual_text = { prefix = "●" },
@@ -55,6 +54,5 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
--- Atajos para navegar diagnósticos
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Diagnóstico Anterior" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Siguiente Diagnóstico" })
