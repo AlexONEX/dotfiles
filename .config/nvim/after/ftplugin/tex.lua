@@ -8,7 +8,6 @@ vim.bo.softtabstop = 2
 vim.bo.tabstop = 2
 vim.opt_local.spell = true
 vim.opt_local.spelllang = "es,en"
-vim.opt_local.conceallevel = 2
 vim.opt_local.concealcursor = "nc"
 
 local M = {}

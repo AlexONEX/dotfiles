@@ -78,6 +78,9 @@ keymap.set("x", "$", "g_")
 -- Go to start or end of line easier
 keymap.set({ "n", "x" }, "H", "^")
 keymap.set({ "n", "x" }, "L", "g_")
+-- Go to real start or end of line, not the first non-blank character using HH LL 
+keymap.set({ "n", "x" }, "HH", "<Home>")
+keymap.set({ "n", "x" }, "LL", "<End>")
 
 -- Continuous visual shifting (does not exit Visual mode), `gv` means
 -- to reselect previous visual area, see https://superuser.com/q/310417/736190

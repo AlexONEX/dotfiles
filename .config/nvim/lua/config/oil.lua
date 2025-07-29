@@ -15,7 +15,7 @@ require("oil").setup {
     foldcolumn = "0",
     spell = false,
     list = false,
-    conceallevel = 3,
+    conceallevel = 2,
     concealcursor = "nvic",
   },
 
@@ -39,8 +39,6 @@ require("oil").setup {
   keymaps = {
     ["g?"] = "actions.show_help", -- Show help
     ["<CR>"] = "actions.select", -- Open file in the current window
-    ["<C-s>"] = "actions.select_vsplit", -- Open in a vertical split
-    ["<C-h>"] = "actions.select_hsplit", -- Open in a horizontal split
     ["<C-t>"] = "actions.select_tab", -- Open in a new tab
     ["<C-p>"] = "actions.preview", -- Show a file preview
     ["<C-c>"] = "actions.close", -- Close Oil
