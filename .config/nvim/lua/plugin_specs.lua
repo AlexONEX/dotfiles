@@ -126,12 +126,6 @@ local plugin_specs = {
       require("config.fzf-lua")
     end,
   },
-  {
-    "MeanderingProgrammer/markdown.nvim",
-    main = "render-markdown",
-    ft = { "markdown" },
-    opts = {},
-  },
 
   -- A list of colorscheme plugin you may want to try. Find what suits you.
   { "shaunsingh/nord.nvim", lazy = true },
@@ -574,16 +568,6 @@ local plugin_specs = {
       require("config.live-command")
     end,
     event = "VeryLazy",
-  },
-  {
-    "nvim-neorg/neorg",
-    ft = "norg",
-    dependencies = {
-      "nvim-neorg/lua-utils.nvim",
-    },
-    config = function()
-      require("config.neorg")
-    end,
   },
   {
     -- show hint for code actions, the user can also implement code actions themselves,
