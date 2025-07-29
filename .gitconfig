@@ -18,13 +18,13 @@
   tool =  nvimdiff
   context = 10
 [fetch]
-  prune = true
+	prune = true
   fsckobjects = true
   prunetags = true
 [gpg]
 	format = ssh
 [init]
-  defaultBranch = main
+	defaultBranch = main
 [log]
   date = iso
 [merge]

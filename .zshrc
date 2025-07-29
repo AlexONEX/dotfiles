@@ -20,7 +20,6 @@ setopt HIST_IGNORE_ALL_DUPS
 
 typeset -U PATH path
 
-# virtualenvwrapper
 source /usr/bin/virtualenvwrapper.sh
 
 #goto

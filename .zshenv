@@ -1,4 +1,4 @@
-PATH="$HOME/.local/bin:$HOME/.cargo/bin:$(go env GOPATH)/bin:$HOME/.spicetify:$HOME/.npm-global/bin:$PATH"
+PATH="$HOME/.local/bin:$HOME/.cargo/bin:$(go env GOPATH)/bin:$HOME/.spicetify:$HOME/.npm-global/bin:$PATH:/sbin"
 DOTFILES="${HOME}/.dotfiles"
 PATH="$HOME/.local/bin:$HOME/.cargo/bin:$(go env GOPATH)/bin:$HOME/.spicetify:$HOME/.npm-global/bin:$PATH"
 BC_ENV_ARGS="$HOME/.bc"
@@ -16,3 +16,4 @@ export EDITOR
 export HISTFILE
 export LISTEN_ADDR
 export LEDGER_FILE=~/OneDrive/Backups/finance.journal
+export CLI_THEME=light
