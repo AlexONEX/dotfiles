@@ -1,8 +1,5 @@
-# Alacritty Configuration
-
 [general]
-# Import the Nord theme
-import = ["./themes/nord-theme.toml"]
+import = ["~/.config/alacritty/themes/dark.toml"]
 live_config_reload = true
 
 [env]
@@ -10,7 +7,7 @@ TERM = "xterm-256color"
 WINIT_X11_SCALE_FACTOR = "1.5"
 
 [font]
-size = 9.0
+size = 9
 
 [font.bold]
 family = "Hack Nerd Font Mono"
@@ -113,14 +110,14 @@ mode = "~Alt"
 mods = "Shift"
 
 [scrolling]
-history = 5000
+history = 5_000
 
 [terminal.shell]
 program = "/bin/zsh"
 
 [window]
 dynamic_padding = false
-opacity = 1.0
+opacity = 1
 title = "Alacritty"
 
 [window.class]
