@@ -18,5 +18,6 @@ EOF
 
 rclone sync GDrive: /home/mars/GoogleDrive -v --config "$CONFIG_FILE"
 rclone sync ODrive: /home/mars/OneDrive -v --config "$CONFIG_FILE"
+rclone sync ODrive:wiki /home/mars/wiki -v --config "$CONFIG_FILE"
 
 rm "$CONFIG_FILE"
