@@ -1,7 +1,7 @@
 vim.loader.enable()
 
 local utils = require("utils")
-local expected_version = "0.11.2"
+local expected_version = "0.11.3"
 utils.is_compatible_version(expected_version)
 
 local config_dir = vim.fn.stdpath("config")
@@ -24,12 +24,8 @@ vim.cmd("source " .. vim.fs.joinpath(config_dir, "viml_conf/plugins.vim"))
 -- diagnostic related config
 require("diagnostic-conf")
 
--- lsp configuration
-require("config.lsp")
-
 -- colorscheme settings
-require("colorschemes")
 local color_scheme = require("colorschemes")
+color_scheme.load_colorscheme(({ dark = "nord", light = "github_light" })[vim.fn.getenv("CLI_THEME")] or "nord")
 
--- Load colorscheme
-color_scheme.load_colorscheme("nord")
+require("config.custom_highlights")
