@@ -24,45 +24,45 @@ keymap.set("n", "<leader>q", "<cmd>x<cr>", { silent = true, desc = "quit current
 keymap.set("n", "<leader>Q", "<cmd>qa!<cr>", { silent = true, desc = "quit nvim" })
 
 keymap.set("n", [[\x]], "<cmd>windo lclose <bar> cclose <cr>", {
-  silent = true,
-  desc = "close qf and location list",
+	silent = true,
+	desc = "close qf and location list",
 })
 
 -- Delete a buffer, without closing the window, see https://stackoverflow.com/q/4465095/6064933
 keymap.set("n", [[\d]], "<cmd>bprevious <bar> bdelete #<cr>", {
-  silent = true,
-  desc = "delete current buffer",
+	silent = true,
+	desc = "delete current buffer",
 })
 
 keymap.set("n", [[\D]], function()
-  local buf_ids = vim.api.nvim_list_bufs()
-  local cur_buf = vim.api.nvim_win_get_buf(0)
+	local buf_ids = vim.api.nvim_list_bufs()
+	local cur_buf = vim.api.nvim_win_get_buf(0)
 
-  for _, buf_id in pairs(buf_ids) do
-    -- do not Delete unlisted buffers, which may lead to unexpected errors
-    if vim.api.nvim_get_option_value("buflisted", { buf = buf_id }) and buf_id ~= cur_buf then
-      vim.api.nvim_buf_delete(buf_id, { force = true })
-    end
-  end
+	for _, buf_id in pairs(buf_ids) do
+		-- do not Delete unlisted buffers, which may lead to unexpected errors
+		if vim.api.nvim_get_option_value("buflisted", { buf = buf_id }) and buf_id ~= cur_buf then
+			vim.api.nvim_buf_delete(buf_id, { force = true })
+		end
+	end
 end, {
-  desc = "delete other buffers",
+	desc = "delete other buffers",
 })
 
 keymap.set("n", "<space>D", "<cmd>bprevious <bar> bdelete #<cr>", {
-  silent = true,
-  desc = "delete current buffer",
+	silent = true,
+	desc = "delete current buffer",
 })
 
 -- Insert a blank line below or above current line (do not move the cursor),
 -- see https://stackoverflow.com/a/16136133/6064933
 keymap.set("n", "<space>o", "printf('m`%so<ESC>``', v:count1)", {
-  expr = true,
-  desc = "insert line below",
+	expr = true,
+	desc = "insert line below",
 })
 
 keymap.set("n", "<space>O", "printf('m`%sO<ESC>``', v:count1)", {
-  expr = true,
-  desc = "insert line above",
+	expr = true,
+	desc = "insert line above",
 })
 
 -- Move the cursor based on physical lines, not the actual lines.
@@ -78,7 +78,7 @@ keymap.set("x", "$", "g_")
 -- Go to start or end of line easier
 keymap.set({ "n", "x" }, "H", "^")
 keymap.set({ "n", "x" }, "L", "g_")
--- Go to real start or end of line, not the first non-blank character using HH LL 
+-- Go to real start or end of line, not the first non-blank character using HH LL
 keymap.set({ "n", "x" }, "HH", "<Home>")
 keymap.set({ "n", "x" }, "LL", "<End>")
 
@@ -89,25 +89,25 @@ keymap.set("x", ">", ">gv")
 
 -- Edit and reload nvim config file quickly
 keymap.set("n", "<leader>co", "<cmd>tabnew $MYVIMRC <bar> tcd %:h<cr>", {
-  silent = true,
-  desc = "open init.lua",
+	silent = true,
+	desc = "open init.lua",
 })
 
 keymap.set("n", "<leader>cr", function()
-  vim.cmd([[
+	vim.cmd([[
       update $MYVIMRC
       source $MYVIMRC
     ]])
-  vim.notify("Nvim config successfully reloaded!", vim.log.levels.INFO, { title = "nvim-config" })
+	vim.notify("Nvim config successfully reloaded!", vim.log.levels.INFO, { title = "nvim-config" })
 end, {
-  silent = true,
-  desc = "reload init.lua",
+	silent = true,
+	desc = "reload init.lua",
 })
 
 -- Reselect the text that has just been pasted, see also https://stackoverflow.com/a/4317090/6064933.
 keymap.set("n", "<leader>v", "printf('`[%s`]', getregtype()[0])", {
-  expr = true,
-  desc = "reselect last pasted area",
+	expr = true,
+	desc = "reselect last pasted area",
 })
 
 -- Always use very magic mode for searching
@@ -142,32 +142,32 @@ keymap.set("n", "<leader>y", "<cmd>%yank<cr>", { desc = "yank entire buffer" })
 
 -- Copy file path to clipboard
 keymap.set(
-  "n",
-  "<space>yp",
-  '"+yy:let @+=expand("%:p")<CR>:echo "Copied path: " . @+<CR>',
-  { desc = "copy file path", silent = true }
+	"n",
+	"<space>yp",
+	'"+yy:let @+=expand("%:p")<CR>:echo "Copied path: " . @+<CR>',
+	{ desc = "copy file path", silent = true }
 )
 
 -- Copy file name to clipboard
 keymap.set(
-  "n",
-  "<space>yn",
-  '"+yy:let @+=expand("%:t")<CR>:echo "Copied filename: " . @+<CR>',
-  { desc = "copy file name", silent = true }
+	"n",
+	"<space>yn",
+	'"+yy:let @+=expand("%:t")<CR>:echo "Copied filename: " . @+<CR>',
+	{ desc = "copy file name", silent = true }
 )
 
 -- Move between buffers
 vim.api.nvim_set_keymap(
-  "n",
-  "<Tab>",
-  ":if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bnext<CR>",
-  { noremap = true, silent = true }
+	"n",
+	"<Tab>",
+	":if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bnext<CR>",
+	{ noremap = true, silent = true }
 )
 vim.api.nvim_set_keymap(
-  "n",
-  "<S-Tab>",
-  ":if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bprevious<CR>",
-  { noremap = true, silent = true }
+	"n",
+	"<S-Tab>",
+	":if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bprevious<CR>",
+	{ noremap = true, silent = true }
 )
 
 -- Toggle cursor column
@@ -188,10 +188,10 @@ keymap.set("x", "p", '"_c<Esc>p')
 
 -- Go to a certain buffer
 keymap.set("n", "gb", '<cmd>call buf_utils#GoToBuffer(v:count, "forward")<cr>', {
-  desc = "go to buffer (forward)",
+	desc = "go to buffer (forward)",
 })
 keymap.set("n", "gB", '<cmd>call buf_utils#GoToBuffer(v:count, "backward")<cr>', {
-  desc = "go to buffer (backward)",
+	desc = "go to buffer (backward)",
 })
 
 -- Switch windows
@@ -208,28 +208,28 @@ keymap.set({ "x", "o" }, "iB", ":<C-U>call text_obj#Buffer()<cr>", { desc = "buf
 
 -- Do not move my cursor when joining lines.
 keymap.set("n", "J", function()
-  vim.cmd([[
+	vim.cmd([[
       normal! mzJ`z
       delmarks z
     ]])
 end, {
-  desc = "join lines without moving cursor",
+	desc = "join lines without moving cursor",
 })
 
 keymap.set("n", "gJ", function()
-  -- we must use `normal!`, otherwise it will trigger recursive mapping
-  vim.cmd([[
+	-- we must use `normal!`, otherwise it will trigger recursive mapping
+	vim.cmd([[
       normal! mzgJ`z
       delmarks z
     ]])
 end, {
-  desc = "join lines without moving cursor",
+	desc = "join lines without moving cursor",
 })
 
 -- Break inserted text into smaller undo units when we insert some punctuation chars.
 local undo_ch = { ",", ".", "!", "?", ";", ":" }
 for _, ch in ipairs(undo_ch) do
-  keymap.set("i", ch, ch .. "<c-g>u")
+	keymap.set("i", ch, ch .. "<c-g>u")
 end
 
 -- insert semicolon in the end
@@ -245,64 +245,55 @@ keymap.set("c", "<C-A>", "<HOME>")
 -- Delete the character to the right of the cursor
 keymap.set("i", "<C-D>", "<DEL>")
 keymap.set("n", "<leader>cb", function()
-  local cnt = 0
-  local blink_times = 7
-  local timer = uv.new_timer()
-  if timer == nil then
-    return
-  end
+	local cnt = 0
+	local blink_times = 7
+	local timer = uv.new_timer()
+	if timer == nil then
+		return
+	end
 
-  timer:start(
-    0,
-    100,
-    vim.schedule_wrap(function()
-      vim.cmd([[
+	timer:start(
+		0,
+		100,
+		vim.schedule_wrap(function()
+			vim.cmd([[
       set cursorcolumn!
       set cursorline!
     ]])
 
-      if cnt == blink_times then
-        timer:close()
-      end
+			if cnt == blink_times then
+				timer:close()
+			end
 
-      cnt = cnt + 1
-    end)
-  )
+			cnt = cnt + 1
+		end)
+	)
 end, { desc = "show cursor" })
 
 -- Mapping para crear un nuevo todo con <leader>td
 keymap.set("n", "<space>nt", "i- [ ] <Esc>A", { desc = "insert new todo item" })
 
 keymap.set("n", "<space>x", function()
-  local line = vim.api.nvim_get_current_line()
-  local new_line
+	local line = vim.api.nvim_get_current_line()
+	local new_line
 
-  if line:match("- %[ %]") then
-    new_line = line:gsub("- %[ %]", "- [x]", 1)
-  elseif line:match("- %[x%]") then
-    new_line = line:gsub("- %[x%]", "- [ ]", 1)
-  else
-    return
-  end
+	if line:match("- %[ %]") then
+		new_line = line:gsub("- %[ %]", "- [x]", 1)
+	elseif line:match("- %[x%]") then
+		new_line = line:gsub("- %[x%]", "- [ ]", 1)
+	else
+		return
+	end
 
-  vim.api.nvim_set_current_line(new_line)
+	vim.api.nvim_set_current_line(new_line)
 end, { desc = "toggle todo completion status" })
 
 keymap.set("n", "<leader>wo", function()
-  local wiki_dir = vim.fn.expand("~/wiki")
-  if vim.fn.isdirectory(wiki_dir) == 1 then
-    vim.cmd("cd " .. wiki_dir)
-    vim.notify("Moved to: " .. wiki_dir, vim.log.levels.INFO)
-  else
-    vim.notify("~/wiki not found: " .. wiki_dir, vim.log.levels.ERROR)
-  end
+	local wiki_dir = vim.fn.expand("~/wiki")
+	if vim.fn.isdirectory(wiki_dir) == 1 then
+		vim.cmd("cd " .. wiki_dir)
+		vim.notify("Moved to: " .. wiki_dir, vim.log.levels.INFO)
+	else
+		vim.notify("~/wiki not found: " .. wiki_dir, vim.log.levels.ERROR)
+	end
 end, { desc = "Go to wiki directory" })
-
-keymap.set("n", "<space>gx", function()
-  local url = vim.fn.expand("<cfile>")
-  if url:match("^https?://") then
-    vim.fn.system("firefox " .. url)
-  else
-    print("Not a valid URL")
-  end
-end, { desc = "open URL under cursor in Firefox" })

@@ -45,10 +45,6 @@ require("oil").setup {
     ["<C-l>"] = "actions.refresh", -- Refresh the directory
     ["-"] = "actions.parent", -- Go up to the parent directory
     ["_"] = "actions.open_cwd", -- Open a new Oil buffer in the current working directory
-    ["`"] = "actions.cd", -- Change Neovim's working directory to this folder
-    ["~"] = "actions.tcd", -- Change the working directory for the current tab only
-    ["gs"] = "actions.change_sort", -- Change the sort criteria
-    ["gx"] = "actions.open_external", -- Open the file with the system's default program
     ["g."] = "actions.toggle_hidden", -- Toggle visibility of hidden files
   },
 
