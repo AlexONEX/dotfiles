@@ -127,6 +127,13 @@ local plugin_specs = {
     end,
   },
 
+  {
+    "MeanderingProgrammer/markdown.nvim",
+    main = "render-markdown",
+    opts = {},
+    ft = { "markdown" },
+  },
+
   -- A list of colorscheme plugin you may want to try. Find what suits you.
   { "shaunsingh/nord.nvim", lazy = true },
   {

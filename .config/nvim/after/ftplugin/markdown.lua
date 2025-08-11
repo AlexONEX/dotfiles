@@ -1,5 +1,3 @@
-vim.opt_local.concealcursor = "c"
-vim.opt_local.conceallevel = 2
 vim.opt_local.synmaxcol = 3000
 vim.opt_local.wrap = true
 vim.opt_local.formatoptions:remove { "o", "r" }
