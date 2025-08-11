@@ -72,9 +72,9 @@ super + n
 super + shift + n
    firefox -private-window
 
-#Thunderbird
+#Mail
 super + m
-    thunderbird
+    alacritty -e aerc
 
 #archlinux-logout
 super + x

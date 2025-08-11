@@ -2,7 +2,6 @@
 - name: Configure dotfiles
   hosts: localhost
   become: false
-
   vars:
     packages:
       common:
@@ -13,6 +12,7 @@
         - vim
         - tmux
         - ripgrep
+        - aerc # Added aerc email client
       debian:
         - build-essential
         - python3-pip
@@ -22,12 +22,10 @@
       macos:
         - coreutils
         - python3
-
   tasks:
     - name: Gather system information
       ansible.builtin.setup:
       tags: always
-
     # Install common packages
     - name: Install dependencies on Ubuntu/Debian
       become: true
@@ -37,7 +35,6 @@
         update_cache: yes
       when: ansible_distribution in ['Ubuntu', 'Debian']
       tags: install
-
     - name: Install dependencies on Arch Linux
       become: true
       community.general.pacman:
@@ -46,7 +43,6 @@
         update_cache: yes
       when: ansible_distribution == 'Archlinux'
       tags: install
-
     - name: Install dependencies on macOS
       community.general.homebrew:
         name: "{{ packages.common + packages.macos }}"
@@ -54,19 +50,18 @@
         update_homebrew: yes
       when: ansible_distribution == 'MacOSX'
       tags: install
-
     # Create symlinks with stow
     - name: Create target directories if they don't exist
       ansible.builtin.file:
         path: "{{ ansible_env.HOME }}/{{ item }}"
         state: directory
-        mode: '0755'
+        mode: "0755"
       loop:
         - .config
+        - .config/aerc # Ensure aerc config directory exists
         - .local
         - .local/bin
       tags: symlink
-
     - name: Create symlinks with stow
       ansible.builtin.shell:
         cmd: "stow --target={{ ansible_env.HOME }} --restow --verbose=2 ."
@@ -74,13 +69,11 @@
       register: stow_result
       changed_when: 'stow_result.stderr is search("LINK: ")'
       tags: symlink
-
     - name: Display symlink creation result
       ansible.builtin.debug:
         msg: "Symlinks have been created successfully"
       when: stow_result.changed
       tags: symlink
-
     # Delete symlinks if necessary
     - name: Remove symlinks with stow
       ansible.builtin.shell:
@@ -90,9 +83,9 @@
       changed_when: 'stow_delete.stderr is search("unlink ")'
       tags: delete
       when: delete_dotfiles is defined and delete_dotfiles
-
     - name: Display symlink removal result
       ansible.builtin.debug:
         msg: "Symlinks have been removed successfully"
       when: delete_dotfiles is defined and delete_dotfiles and stow_delete.changed
       tags: delete
+
