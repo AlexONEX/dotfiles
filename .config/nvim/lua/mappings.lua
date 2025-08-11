@@ -29,7 +29,7 @@ keymap.set("n", [[\x]], "<cmd>windo lclose <bar> cclose <cr>", {
 })
 
 -- Delete a buffer, without closing the window, see https://stackoverflow.com/q/4465095/6064933
-keymap.set("n", [[\d]], "<cmd>bprevious <bar> bdelete #<cr>", {
+keymap.set("n", "<C-w>", "<cmd>bprevious <bar> bdelete #<cr>", {
 	silent = true,
 	desc = "delete current buffer",
 })
@@ -46,11 +46,6 @@ keymap.set("n", [[\D]], function()
 	end
 end, {
 	desc = "delete other buffers",
-})
-
-keymap.set("n", "<space>D", "<cmd>bprevious <bar> bdelete #<cr>", {
-	silent = true,
-	desc = "delete current buffer",
 })
 
 -- Insert a blank line below or above current line (do not move the cursor),
@@ -297,3 +292,14 @@ keymap.set("n", "<leader>wo", function()
 		vim.notify("~/wiki not found: " .. wiki_dir, vim.log.levels.ERROR)
 	end
 end, { desc = "Go to wiki directory" })
+
+keymap.set("n", "<C-w>", "<cmd>bprevious <bar> bdelete #<cr>", {
+    silent = true,
+    desc = "close current buffer"
+})
+
+keymap.set("n", "gx", [[:silent execute '!$BROWSER ' . shellescape(expand('<cfile>'), 1)<CR>]], {
+  noremap = true,
+  silent = true,
+  desc = "Open URL under cursor in browser",
+})
