@@ -12,7 +12,7 @@
         - vim
         - tmux
         - ripgrep
-        - aerc # Added aerc email client
+        - aerc
       debian:
         - build-essential
         - python3-pip
