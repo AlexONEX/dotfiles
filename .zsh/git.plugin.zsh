@@ -12,7 +12,7 @@ function git_develop_branch() {
       return 0
     fi
   done
-  echo develop
+  echo dev
   return 1
 }
 
@@ -25,7 +25,7 @@ function git_main_branch() {
       return 0
     fi
   done
-  echo master
+  echo main
   return 1
 }
 
@@ -301,7 +301,6 @@ alias gbr='git branch --remote'
 alias gbg='LANG=C git branch -vv | grep ": gone\]"'
 
 # Checkout and switch
-alias gco='git checkout'
 alias gcor='git checkout --recurse-submodules'
 alias gcb='git checkout -b'
 alias gcB='git checkout -B'

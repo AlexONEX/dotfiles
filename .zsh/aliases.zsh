@@ -100,7 +100,6 @@ alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/aliases.zsh && cd ~/.config &
 
 alias a='$EDITOR ~/.zsh/aliases.zsh'
 alias cz='$EDITOR ~/.zshrc'
-alias t='$EDITOR $HOME/.config/tmux/tmux.conf'
 alias ct='$EDITOR ~/.config/tmux/tmux.conf'
 
 #═══════════════════════════════════════════════════════════════════════════════
@@ -508,11 +507,6 @@ alias ytv-best='noglob yt-dlp -f bestvideo+bestaudio'
 
 alias spotdl='spotdl --cookie-file /home/alex/Music/music.youtube.com_cookies.txt'
 
-# Playlist function
-mkplaylist() {
-   ls -1 *.mkv | sort > playlist.txt
-   mpv --playlist="playlist.txt"
-}
 
 #═══════════════════════════════════════════════════════════════════════════════
 # ARIA2 INTEGRATION
