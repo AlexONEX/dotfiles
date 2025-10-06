@@ -1,0 +1,17 @@
+[Unit]
+Description=Lock screen before sleep, hibernate and hybrid-sleep
+Before=sleep.target hibernate.target hybrid-sleep.target
+
+[Service]
+Type=forking
+Environment=DISPLAY=:0
+ExecStartPre=/bin/sleep 1
+ExecStartPre=/home/mars/.config/betterlockscreen/betterlockscreen-init.sh
+ExecStart=/usr/bin/betterlockscreen -l blur
+ExecStartPost=/bin/sleep 1
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=30
+
+[Install]
+WantedBy=sleep.target hibernate.target hybrid-sleep.target

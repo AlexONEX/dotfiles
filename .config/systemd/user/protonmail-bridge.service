@@ -1,0 +1,21 @@
+[Unit]
+Description=Proton Mail Bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment="PATH=/usr/bin:/usr/local/bin"
+ExecStart=/usr/lib/protonmail/bridge/bridge --grpc --noninteractive --log-level debug
+Restart=on-failure
+RestartSec=5
+KillMode=mixed
+TimeoutStopSec=10
+StandardOutput=journal
+StandardError=journal
+# Recursos mínimos
+MemoryMax=512M
+CPUQuota=25%
+
+[Install]
+WantedBy=default.target
