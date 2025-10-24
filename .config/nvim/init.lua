@@ -1,7 +1,7 @@
 vim.loader.enable()
 
 local utils = require("utils")
-local expected_version = "0.11.3"
+local expected_version = "0.11.4"
 utils.is_compatible_version(expected_version)
 
 local config_dir = vim.fn.stdpath("config")
@@ -26,6 +26,11 @@ require("diagnostic-conf")
 
 -- colorscheme settings
 local color_scheme = require("colorschemes")
-color_scheme.load_colorscheme(({ dark = "nord", light = "github_light" })[vim.fn.getenv("CLI_THEME")] or "nord")
+if color_scheme.get_alacritty_mode() == "light" then
+  color_scheme.load_colorscheme("github_light")
+else
+  color_scheme.load_colorscheme("nord")
+end
+
 
 require("config.custom_highlights")
