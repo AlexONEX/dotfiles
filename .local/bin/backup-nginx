@@ -1,0 +1,21 @@
+#!/bin/bash
+# Backup nginx configs to dotfiles
+
+DOTFILES_NGINX="$HOME/.dotfiles/etc/nginx"
+
+# Create temp directory
+TEMP_DIR=$(mktemp -d)
+
+# Copy files as root to temp
+sudo cp /etc/nginx/nginx.conf "$TEMP_DIR/nginx.conf"
+sudo cp -r /etc/nginx/sites-available "$TEMP_DIR/"
+
+# Move to dotfiles with correct ownership
+sudo chown -R $USER:$USER "$TEMP_DIR"
+cp "$TEMP_DIR/nginx.conf" "$DOTFILES_NGINX/"
+cp -r "$TEMP_DIR/sites-available/"* "$DOTFILES_NGINX/sites-available/"
+
+# Cleanup
+rm -rf "$TEMP_DIR"
+
+echo "$(date): nginx configs backed up to $DOTFILES_NGINX"

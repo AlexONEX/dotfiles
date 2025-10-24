@@ -1,0 +1,11 @@
+^/README\.md
+^/LICENSE
+^/\.git
+^/\.gitignore
+^/\.gitmodules
+^/install\.sh
+^/bootstrap\.yml
+^/arch
+^/etc
+^/\.containers
+^/\.claude
