@@ -9,6 +9,7 @@ alias rf='rm -rf'
 alias cp='cp -iv'
 alias mv='mv -iv'
 alias mkdir='mkdir -pv'
+alias sudofail='faillock --reset'
 
 # Directory navigation
 alias cd..='z ..'
@@ -92,7 +93,15 @@ dotfiles-add() {
   echo "Added $rel_path to dotfiles repository"
 }
 
-alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/aliases.zsh && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot polybar tmux/tmux.conf zathura && cd nvim/lua/custom && cd /home/alex/.local/share/chezmoi'
+function tt {
+  pattern="dark"
+  if grep -q $pattern ~/.config/alacritty/alacritty.toml; then
+    sed -i -e 's/dark/light/g' ~/.config/alacritty/alacritty.toml
+  else
+    sed -i -e 's/light/dark/g' ~/.config/alacritty/alacritty.toml
+  fi
+}
+
 
 #═══════════════════════════════════════════════════════════════════════════════
 # EDITORS AND CONFIG FILES

@@ -32,6 +32,8 @@ zstyle ':omz:update' frequency 13
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+source $(which uv-virtualenvwrapper.sh)
+
 # if ~/secure/ exists, source all files in it
 if [ -d ~/.dotfiles/.password-store/ ]; then
     export $(grep -v '^#' ~/.dotfiles/.password-store/credentials.env | xargs)
@@ -102,3 +104,6 @@ fi
 command -v fzf &>/dev/null && eval "$(fzf --zsh)"
 [[ -f ${HOME}/.cargo/env ]] && source "${HOME}/.cargo/env"
 eval "$(zoxide init zsh)"
+
+# opencode
+export PATH=/home/mars/.opencode/bin:$PATH
