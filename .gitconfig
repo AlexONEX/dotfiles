@@ -3,7 +3,7 @@
 	pr=!open https://github.com/$(git repo)/compare/$(git current)?expand=1
 [branch]
   sort = -committerdate
-	autoSetupMerge = always
+	autoSetupMerge = simple
   autoSetupRebase = always
 [commit]
   verbose= true
