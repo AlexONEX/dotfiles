@@ -32,7 +32,7 @@ local plugin_specs = {
     name = "nvim-cmp",
     event = "VeryLazy",
     dependencies = {
-      "echasnovski/mini.icons",
+      "nvim-mini/mini.icons",
     },
     config = function()
       require("config.nvim-cmp")
@@ -115,8 +115,44 @@ local plugin_specs = {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
     dependencies = {
+      "nvim-lua/plenary.nvim",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        cond = function()
+          return vim.fn.executable "make" == 1
+        end,
+      },
+      "nvim-telescope/telescope-ui-select.nvim",
       "nvim-telescope/telescope-symbols.nvim",
     },
+    keys = {
+      { "<leader>ef", function() require("telescope.builtin").find_files() end, desc = "Find Files" },
+      { "<leader>eg", function() require("telescope.builtin").live_grep() end, desc = "Live Grep" },
+      { "<leader>eb", function() require("telescope.builtin").buffers() end, desc = "Buffers" },
+      { "<leader>eh", function() require("telescope.builtin").help_tags() end, desc = "Help Tags" },
+      { "<leader>ec", function() require("telescope.builtin").current_buffer_fuzzy_find() end, desc = "Find in Buffer" },
+      { "<leader>er", function() require("telescope.builtin").oldfiles() end, desc = "Recent Files" },
+      { "<leader>em", function() require("telescope.builtin").marks() end, desc = "Marks" },
+      { "<leader>ek", function() require("telescope.builtin").keymaps() end, desc = "Keymaps" },
+      { "<leader>tg", function()
+          if vim.fn.finddir(".git", ".;") ~= "" then
+            require("telescope.builtin").git_files()
+          else
+            vim.notify("Not a git repository", vim.log.levels.WARN)
+          end
+        end, desc = "Git Files" },
+      { "<leader>ts", function() require("telescope.builtin").grep_string() end, desc = "Grep String" },
+      { "<leader>tc", function() require("telescope.builtin").commands() end, desc = "Commands" },
+      { "<leader>tr", function() require("telescope.builtin").registers() end, desc = "Registers" },
+      { "<leader>tt", function() require("telescope.builtin").treesitter() end, desc = "Treesitter" },
+      { "<leader>tq", function() require("telescope.builtin").quickfix() end, desc = "Quickfix" },
+      { "<leader>tl", function() require("telescope.builtin").loclist() end, desc = "Loclist" },
+      { "<leader>td", function() require("telescope.builtin").diagnostics() end, desc = "Diagnostics" },
+    },
+    config = function()
+      require("config.telescope")
+    end,
   },
 
   {
@@ -193,7 +229,7 @@ local plugin_specs = {
   },
 
   {
-    "echasnovski/mini.indentscope",
+    "nvim-mini/mini.indentscope",
     version = false,
     config = function()
       local mini_indent = require("mini.indentscope")
@@ -352,6 +388,8 @@ local plugin_specs = {
     config = function()
       require("config.gitsigns")
     end,
+    event = "BufRead",
+    version = "*",
   },
 
   {
@@ -595,6 +633,14 @@ local plugin_specs = {
     event = "BufReadPre",
     opts = { -- set to setup table
     },
+  },
+
+  {
+    "stevearc/quicker.nvim",
+    event = "FileType qf",
+    ---@module "quicker"
+    ---@type quicker.SetupOptions
+    opts = {},
   },
 }
 

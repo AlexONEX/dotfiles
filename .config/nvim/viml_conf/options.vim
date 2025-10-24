@@ -177,7 +177,11 @@ set diffopt+=filler  " show filler for deleted lines
 set diffopt+=closeoff  " turn off diff when one file window is closed
 set diffopt+=context:3  " context for diff
 set diffopt+=internal,indent-heuristic,algorithm:histogram
-set diffopt+=linematch:60
+if has('nvim-0.12')
+  set diffopt+=inline:char
+else
+  set diffopt+=linematch:60
+endif
 
 set nowrap  " do no wrap
 set noruler
