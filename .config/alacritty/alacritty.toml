@@ -1,5 +1,5 @@
 [general]
-import = ["~/.config/alacritty/themes/dark.toml"]
+import = ["~/.config/alacritty/themes/light.toml"]
 live_config_reload = true
 
 [env]
