@@ -65,8 +65,6 @@ adb shell pm uninstall -k --user 0 com.google.android.apps.turbo # Device Health
 adb shell pm uninstall -k --user 0 com.google.android.gms.location.history # Google Location History
 adb shell pm uninstall -k --user 0 com.google.android.setupwizard # Android Setup
 adb shell pm uninstall -k --user 0 com.google.android.egg # Android Easter Egg
-adb shell pm uninstall -k --user 0 com.google.android.syncadapters.calendar # Google Calendar Sync (keep if you use it)
-adb shell pm uninstall -k --user 0 com.google.android.syncadapters.contacts # Google Contacts Sync (keep if you use it)
 adb shell pm uninstall -k --user 0 com.google.audio.hearing.visualization.accessibility.scribe # Live Transcribe
 adb shell pm uninstall --user 0 com.google.android.gm # Gmail
 adb shell pm uninstall --user 0 com.google.android.youtube # YouTube
@@ -243,7 +241,6 @@ adb shell pm uninstall -k --user 0 com.samsung.android.bixby.service # Bixby dic
 adb shell pm uninstall -k --user 0 com.samsung.android.app.routines # Bixby Routines (if not using Bixby)
 adb shell pm uninstall -k --user 0 com.samsung.android.visionintelligence # Bixby Vision (if not using Bixby)
 adb shell pm uninstall -k --user 0 com.android.bookmarksprovider # Bookmark Provider
-adb shell pm uninstall -k --user 0 com.android.providers.calendar # Calendar Storage (keep if you use calendar sync)
 adb shell pm uninstall -k --user 0 com.samsung.android.mdeservice # Call & text on other devices
 adb shell pm uninstall -k --user 0 com.samsung.android.service.livedrawing # Live messages
 adb shell pm uninstall -k --user 0 com.samsung.faceservice # FaceService
@@ -280,7 +277,7 @@ adb shell pm disable-user --user 0 com.samsung.android.themecenter # Theme Cente
 adb shell pm uninstall --user 0 com.samsung.android.themestore # Theme Store
 adb shell pm uninstall --user 0 com.samsung.android.app.dressroom # Wallpaper and style
 
-# --- Samsung Advanced Features ---
+# --- Samsung Features ---
 adb shell pm uninstall --user 0 com.samsung.android.widget.pictureframe # Picture Frame Widget
 adb shell pm uninstall --user 0 com.samsung.android.app.tips # Tips
 adb shell pm uninstall --user 0 com.samsung.android.smartsuggestions # Smart Suggestions
@@ -288,8 +285,6 @@ adb shell pm uninstall --user 0 com.samsung.android.visualars # Visual AR
 adb shell pm uninstall --user 0 com.samsung.android.app.updatecenter # Samsung Update Center
 adb shell pm uninstall --user 0 com.samsung.android.app.cocktailbarservice # Cocktail Bar Service
 adb shell pm uninstall --user 0 com.samsung.android.scpm # Samsung Context Processor
-
-# --- Samsung Contacts & Calendar ---
 adb shell pm uninstall --user 0 com.samsung.android.app.contacts # Samsung Contacts
 
 # --- Samsung Knox (Advanced - use with caution) ---
