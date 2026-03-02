@@ -54,7 +54,6 @@ adb shell pm uninstall -k --user 0 com.samsung.android.svoiceime # Samsung voice
 adb shell pm uninstall -k --user 0 com.google.android.tts # Speech Services by Google
 
 # --- Google Services & Bloatware ---
-adb shell pm uninstall --user 0 com.android.chrome # Chrome (keep if you use it)
 adb shell pm uninstall --user 0 com.google.android.gmsintegration # Google Services Integration
 adb shell pm uninstall --user 0 com.google.android.webview # Google WebView
 adb shell pm uninstall --user 0 com.google.android.feedback # Google Feedback
