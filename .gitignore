@@ -2,6 +2,7 @@
 ignore.*
 *.ignore.*
 **/lazy-lock.json
+.DS_Store
 
 # Python cache files
 __pycache__/
@@ -22,6 +23,9 @@ __pycache__/
 .config/yazi/plugins
 .config/tmux/plugins
 .config/lazygit/config.yml
+
+# Android backup data (local only)
+.local/bin/android-backup/backups/
 
 **/thunar.xml
 .config/xfce4/xfconf/xfce-perchannel-xml

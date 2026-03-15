@@ -1,0 +1,88 @@
+╔════════════════════════════════════════════════════════════════╗
+║              ANDROID BACKUP & RESTORE - GUÍA RÁPIDA            ║
+╚════════════════════════════════════════════════════════════════╝
+
+1️⃣  ANTES DEL FACTORY RESET - HACER BACKUP
+   ┌────────────────────────────────────────────────────────────┐
+   │ cd android-backup/scripts                                  │
+   │ ./backup.sh                                                │
+   │                                                            │
+   │ ⏱️  Tiempo: 15-30 min                                      │
+   │ 💾 Espacio: ~20GB                                          │
+   └────────────────────────────────────────────────────────────┘
+
+2️⃣  FACTORY RESET
+   ┌────────────────────────────────────────────────────────────┐
+   │ ⚠️  VERIFICA QUE EL BACKUP SE COMPLETÓ ANTES!              │
+   │                                                            │
+   │ En Android:                                                │
+   │ Ajustes → Administración General → Restablecer →          │
+   │ Restablecer datos de fábrica                              │
+   └────────────────────────────────────────────────────────────┘
+
+3️⃣  DESPUÉS DEL RESET - RESTAURAR
+   ┌────────────────────────────────────────────────────────────┐
+   │ cd android-backup/scripts                                  │
+   │ ./restore.sh ../backups/backup_YYYYMMDD_HHMMSS             │
+   │                                                            │
+   │ ⏱️  Tiempo: 30-60 min                                      │
+   │ ✅ Auto-debloat incluido                                   │
+   └────────────────────────────────────────────────────────────┘
+
+╔════════════════════════════════════════════════════════════════╗
+║                      COMANDOS ÚTILES                           ║
+╚════════════════════════════════════════════════════════════════╝
+
+📱 Verificar conexión:
+   adb devices
+   (debe mostrar: RFCW41TBBNF    device)
+
+🗑️  Solo debloat (sin backup):
+   cd android-backup/scripts
+   ./debloat.sh
+
+📂 Ver backups disponibles:
+   ls -lt android-backup/backups/
+
+📊 Ver detalles de un backup:
+   cat android-backup/backups/backup_*/README.txt
+
+🔍 Ver log de debloat:
+   cat android-backup/backups/debloat_*.log
+
+╔════════════════════════════════════════════════════════════════╗
+║                    SOLUCIÓN RÁPIDA                             ║
+╚════════════════════════════════════════════════════════════════╝
+
+❌ "device unauthorized"
+   → Acepta el popup en tu Android
+   → Si no aparece: adb kill-server && adb start-server
+
+❌ Backup muy lento
+   → Normal, puede tardar 30+ min con muchas apps
+   → Mantén el dispositivo desbloqueado
+
+❌ Algunas apps no se restauran
+   → Normal para apps de bancos
+   → Instálalas manualmente desde Play Store
+
+╔════════════════════════════════════════════════════════════════╗
+║                    QUÉ SE RESPALDA                             ║
+╚════════════════════════════════════════════════════════════════╝
+
+✅ Todas las apps (APKs)           ✅ Fotos y videos
+✅ Datos de apps                   ✅ Documentos
+✅ Configuraciones                 ✅ Música
+✅ SMS y llamadas (si se puede)    ✅ Descargas
+
+⚠️  NO se respalda (necesita config manual):
+   - Contraseñas WiFi (requiere root)
+   - Apps de bancos (necesitan login)
+   - Configuración de huella/face unlock
+
+═══════════════════════════════════════════════════════════════════
+
+📖 Guía completa: cat README.md
+🆘 Problemas: Revisa los logs en backups/
+
+═══════════════════════════════════════════════════════════════════
