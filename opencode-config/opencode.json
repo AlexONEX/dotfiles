@@ -1,0 +1,40 @@
+{
+  "$schema": "https://opencode.ai/config",
+  "theme": "nord",
+  "permission": {
+    "edit": "ask",
+    "bash": {
+      "*": "ask",
+      "find *": "allow",
+      "launchctl *": "allow",
+      "ls *": "allow",
+      "cat *": "allow",
+      "echo *": "allow",
+      "pwd": "allow",
+      "cd *": "allow",
+      "cp *": "allow",
+      "which *": "allow",
+      "curl *": "allow",
+      "head *": "allow",
+      "ss *": "allow",
+      "awk **": "allow",
+      "grep *": "allow",
+      "git diff *": "allow",
+      "write": "allow",
+      "edit": "allow",
+      "mkdir *": "allow"
+    }
+  },
+  "provider": {
+    "anthropic": {
+      "options": {
+        "baseURL": "http://127.0.0.1:3456",
+        "apiKey": "dummy"
+      }
+    }
+  },
+  "plugin": [
+    "opencode-with-claude",
+    "/opt/homebrew/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://opencode.ai/config",
+  "theme": "nord",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "hooks": {
+    "SessionStart": []
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.config/claude-profiles/context-bar.sh"
+  },
+  "enabledPlugins": {
+    "everything-claude-code@everything-claude-code": true,
+    "pyright-lsp@claude-plugins-official": true
+  },
+  "theme": "dark-daltonized",
+  "editorMode": "vim",
+  "verbose": true,
+  "fileCheckpointingEnabled": false,
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(/bin/ls:*)",
+      "Bash(chmod:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(cat:*)",
+      "Bash(python3:*)",
+      "Bash(git clone:*)",
+      "Bash(uv venv:*)",
+      "Bash(uv pip install:*)",
+      "Bash(uv sync:*)",
+      "Bash(npm install:*)",
+      "Bash(curl:*)",
+      "Bash(brew install:*)",
+      "Bash(mysql:*)",
+      "Bash(aws sts get-caller-identity:*)",
+      "Bash(tailscale status:*)",
+      "Bash(ssh:*)",
+      "Bash(ping:*)"
+    ]
+  }
+}
