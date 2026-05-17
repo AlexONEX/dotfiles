@@ -1,0 +1,11 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.config/claude-profiles/context-bar.sh"
+  },
+  "theme": "dark-ansi"
+}

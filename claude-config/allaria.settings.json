@@ -1,0 +1,16 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.config/claude-profiles/context-bar.sh"
+  },
+  "enabledPlugins": {
+    "everything-claude-code@everything-claude-code": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "context-mode@context-mode": true
+  },
+  "theme": "dark-ansi"
+}

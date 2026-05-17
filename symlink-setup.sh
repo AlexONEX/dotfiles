@@ -35,10 +35,41 @@ mkdir -p ~/.config/meridian
 ln -sf "$DOTFILES/meridian-config/profiles.json" ~/.config/meridian/profiles.json
 ln -sf "$DOTFILES/meridian-config/settings.json" ~/.config/meridian/settings.json
 
-# ─── Claude ──────────────────────────────────────────────────────────────────
+# ─── OpenCode Agent Skills (Allaria infra) ────────────────────────────────────
+mkdir -p ~/.agents/skills/allaria
+# Remove real dir so symlink can take its place
+[ -d ~/.agents/skills/allaria/infra-allaria-skill ] && [ ! -L ~/.agents/skills/allaria/infra-allaria-skill ] && rm -rf ~/.agents/skills/allaria/infra-allaria-skill
+ln -sfn "$DOTFILES/opencode-skills/allaria/infra-allaria-skill" ~/.agents/skills/allaria/infra-allaria-skill
+
+# ─── Claude Profiles ──────────────────────────────────────────────────────────
+CLAUDE_PROFILES_DIR="$HOME/.config/claude-profiles"
+mkdir -p "$CLAUDE_PROFILES_DIR"
+
+# Copy profile scripts (so they work without dotfiles path)
+cp "$DOTFILES/claude-config/switch-profile.sh" "$CLAUDE_PROFILES_DIR/switch-profile.sh"
+cp "$DOTFILES/claude-config/context-bar.sh" "$CLAUDE_PROFILES_DIR/context-bar.sh"
+cp "$DOTFILES/claude-config/status.sh" "$CLAUDE_PROFILES_DIR/status.sh"
+cp "$DOTFILES/claude-config/completion.zsh" "$CLAUDE_PROFILES_DIR/completion.zsh"
+
+# Generate profiles.json from template (resolves $HOME to actual path)
+sed "s|\$HOME|$HOME|g" "$DOTFILES/claude-config/profiles.json.tpl" > "$CLAUDE_PROFILES_DIR/profiles.json"
+
+# ─── Claude Profile Dirs & Settings ──────────────────────────────────────────
+# personal
 mkdir -p ~/.claude
 ln -sf "$DOTFILES/claude-config/settings.json" ~/.claude/settings.json
 
+# allaria
+mkdir -p ~/.claude-allaria
+ln -sf "$DOTFILES/claude-config/allaria.settings.json" ~/.claude-allaria/settings.json
+
+# alma
+mkdir -p ~/.claude-alma
+ln -sf "$DOTFILES/claude-config/alma.settings.json" ~/.claude-alma/settings.json
+
 echo ""
-echo "✅ Done. Verify: ls -la ~/.config/opencode/opencode.json"
+echo "✅ Done!"
+echo "   Profiles: personal, allaria, alma"
+echo "   Switch:   bash ~/.config/claude-profiles/switch-profile.sh <name>"
+echo "   Verify:   ls -la ~/.claude ~/.claude-allaria ~/.claude-alma"
 echo ""
