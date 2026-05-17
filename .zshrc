@@ -12,6 +12,7 @@ zstyle ':completion:*' menu select=5
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
 
 autoload -U colors && colors
+unset LC_CTYPE
 
 # Define compinit function first but don't run it yet
 autoload -Uz compinit
@@ -106,12 +107,6 @@ fi
 if [ -f ~/secure/zsh_credentials.env ]; then
     source ~/secure/zsh_credentials.env
 fi
-# goto lazy-load — se carga en el primer uso
-goto() {
-  unset -f goto
-  source /opt/homebrew/etc/bash_completion.d/goto.sh
-  goto "$@"
-}
 # SDKMAN lazy-load — se activa solo al primer `sdk` o `java` etc
 export SDKMAN_DIR="$HOME/.sdkman"
 sdk() {
