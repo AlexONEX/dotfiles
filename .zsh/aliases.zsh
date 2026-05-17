@@ -1,27 +1,117 @@
-#═══════════════════════════════════════════════════════════════════════════════
-# BASIC SHELL OPERATIONS
-#═══════════════════════════════════════════════════════════════════════════════
+# SHORTCUTS
+alias dotfiles='~/dotfiles/scripts/sync_dotfiles.sh'
+alias ls='ls -alFG'
+alias initpy='touch __init__.py'
+alias btc='better-commits'
+alias emacst='emacsclient -t -a'
 
-alias cd='z'
-alias r='exec zsh'
-alias c='clear'
-alias rf='rm -rf'
-alias cp='cp -iv'
-alias mv='mv -iv'
-alias mkdir='mkdir -pv'
-alias sudofail='faillock --reset'
-
-# Directory navigation
-alias cd..='z ..'
-alias ..='z ..'
-
-# Backup function
-# for either files or directories
 bak() {
     cp -r "$1" "$1.bak"
 }
 
-# Mark and goto
+brew() {
+    nice -n 10 $(command -v brew) "$@"
+}
+
+brew-clean() {
+  echo "Updating the system..."
+  brew update && brew upgrade
+
+  echo "Current cache size:"
+  du -sh "$(brew --cache)"
+
+  echo "Cleaning old packages and cache..."
+  brew cleanup --prune=all
+
+  echo "Emptying downloads cache..."
+  rm -rf "$(brew --cache)/downloads" 2>/dev/null
+
+  echo "Checking for large cache directories..."
+  cache_dir=$(brew --cache)
+  large_dirs=$(find "$cache_dir" -type d -exec du -sm {} \; | sort -nr | head -10)
+  echo "Largest cache directories (MB):"
+  echo "$large_dirs"
+
+  echo "Removing orphaned packages..."
+  brew autoremove
+
+  echo "Manually installed packages (not dependencies):"
+  brew leaves
+
+  # Review optional packages
+  unused_pkgs=$(brew leaves)
+  if [ -n "$unused_pkgs" ]; then
+    echo "The following manually installed packages were found:"
+    echo "$unused_pkgs"
+    echo "Do you want to review and remove any? (y/N) "
+    read response
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+      echo "List of packages to review:"
+      select pkg in $unused_pkgs "Exit"; do
+        if [ "$pkg" = "Exit" ]; then
+          break
+        elif [ -n "$pkg" ]; then
+          echo "Do you want to uninstall $pkg? (y/N) "
+          read remove
+          if [[ "$remove" =~ ^[Yy]$ ]]; then
+            echo "Removing $pkg..."
+            brew uninstall "$pkg"
+          fi
+        fi
+      done
+    else
+      echo "No packages were removed."
+    fi
+  else
+    echo "No manually installed packages found."
+  fi
+
+  # Check for and remove unneeded bottle files
+  echo "Looking for large bottle files..."
+  large_bottles=$(find "$(brew --cache)" -name "*.bottle.*" -size +100M | sort)
+  if [ -n "$large_bottles" ]; then
+    echo "Found large bottle files:"
+    echo "$large_bottles"
+    echo "Do you want to remove these large bottle files? (y/N) "
+    read remove_bottles
+    if [[ "$remove_bottles" =~ ^[Yy]$ ]]; then
+      find "$(brew --cache)" -name "*.bottle.*" -size +100M -delete
+      echo "Large bottle files removed."
+    fi
+  else
+    echo "No large bottle files found."
+  fi
+
+  # Option to purge the complete cache in extreme cases
+  echo "Current cache size after cleanup:"
+  du -sh "$(brew --cache)"
+
+  echo "Do you want to completely purge the Homebrew cache? (Only use in extreme cases) (y/N) "
+  read purge_cache
+  if [[ "$purge_cache" =~ ^[Yy]$ ]]; then
+    echo "WARNING: This will delete ALL cached Homebrew files!"
+    echo "Are you absolutely sure? (y/N) "
+    read confirm_purge
+    if [[ "$confirm_purge" =~ ^[Yy]$ ]]; then
+      rm -rf "$(brew --cache)"/*
+      echo "Homebrew cache completely purged!"
+    else
+      echo "Complete cache purge cancelled."
+    fi
+  fi
+
+  echo "Checking for Homebrew issues..."
+  brew doctor
+
+  echo "Cleanup completed. Current cache size:"
+  du -sh "$(brew --cache)"
+}
+
+alias r='exec zsh'
+alias rf='rm -rf'
+alias a='$EDITOR ~/.zsh/aliases.zsh'
+alias t='$EDITOR $HOME/.config/tmux/tmux.conf'
+alias j='goto'
 mark() {
     if [ $# -eq 1 ]; then
         goto -r "$1" "$(pwd)"
@@ -31,145 +121,14 @@ mark() {
 }
 
 alias j='goto'
+alias zplugins='ls $ZPLUGINDIR'
+alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/aliases.zsh && cd ~/.config && chezmoi add alacritty easyeffects i3 flameshot polybar tmux/tmux.conf zathura && cd nvim/lua/custom && cd /home/alex/.local/share/chezmoi'
 
-#═══════════════════════════════════════════════════════════════════════════════
-# DOTFILES MANAGEMENT
-#═══════════════════════════════════════════════════════════════════════════════
-
-dotfiles-add() {
-  local input_path="$1"
-  local home_path="$HOME"
-  local dotfiles_path="$HOME/.dotfiles"
-  local full_path=""
-
-  # Handle "." as current directory
-  if [ "$input_path" = "." ]; then
-    full_path="$(pwd)"
-  else
-    # If path doesn't start with /, assume it's in .config
-    if [[ "$input_path" != /* && "$input_path" != .* && "$input_path" != ~* ]]; then
-      full_path="$home_path/.config/$input_path"
-    # Convert to absolute path if needed
-    elif [[ "$input_path" = /* ]]; then
-      full_path="$input_path"
-    else
-      full_path="$(pwd)/$input_path"
-    fi
-  fi
-
-  # Ensure path is under home directory
-  if [[ "$full_path" != "$home_path"* ]]; then
-    echo "Error: Path must be under home directory"
-    return 1
-  fi
-
-  # Check if path exists
-  if [ ! -e "$full_path" ]; then
-    echo "Error: $full_path does not exist"
-    return 1
-  fi
-
-  # Get relative path from home
-  local rel_path="${full_path#$home_path/}"
-  local package_name=$(echo "$rel_path" | cut -d/ -f1)
-
-  # Get directory structure
-  local target_dir="$(dirname "$dotfiles_path/$rel_path")"
-
-  # Create necessary directories
-  mkdir -p "$target_dir"
-
-  # Copy the file/directory
-  if [ -d "$full_path" ]; then
-    cp -r "$full_path" "$target_dir/"
-  else
-    cp "$full_path" "$target_dir/"
-  fi
-
-  # Only stow the specific package
-  cd "$dotfiles_path"
-  stow --adopt --target="$HOME" "$package_name" 2>/dev/null || true
-
-  echo "Added $rel_path to dotfiles repository"
-}
-
-function tt {
-  pattern="dark"
-  if grep -q $pattern ~/.config/alacritty/alacritty.toml; then
-    sed -i -e 's/dark/light/g' ~/.config/alacritty/alacritty.toml
-  else
-    sed -i -e 's/light/dark/g' ~/.config/alacritty/alacritty.toml
-  fi
-}
-
-
-#═══════════════════════════════════════════════════════════════════════════════
-# EDITORS AND CONFIG FILES
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias a='$EDITOR ~/.zsh/aliases.zsh'
-alias cz='$EDITOR ~/.zshrc'
+alias z='$EDITOR ~/.zshrc'
 alias ct='$EDITOR ~/.config/tmux/tmux.conf'
 
-#═══════════════════════════════════════════════════════════════════════════════
-# FILE LISTING (EZA)
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias ls='eza -al --color=always --group-directories-first'
-alias la='eza -a --color=always --group-directories-first'
-alias ll='eza -l --color=always --group-directories-first'
-alias lt='eza -aT --color=always --group-directories-first'
-alias l='eza -a | grep -e "^\."'
-
-#═══════════════════════════════════════════════════════════════════════════════
-# PACKAGE MANAGEMENT (PARU/PACMAN)
-#═══════════════════════════════════════════════════════════════════════════════
-
-paru() {
-    command nice -n 10 ionice -c 3 /usr/bin/paru "$@"
-}
-
-paru-clean() {
-  echo "Updating the system..."
-  paru -Syu
-
-  echo "Cleaning package cache..."
-  paru -Sc
-
-  echo "Cleaning entire cache..."
-  paru -Scc
-
-  echo "Removing orphaned packages..."
-  paru -c
-
-  echo "Searching for unused optional packages..."
-  unused_pkgs=$(paru -Qdtq)
-  jpegoptim optipng
-  if [ -n "$unused_pkgs" ]; then
-    echo "The following unused optional packages were found:"
-    echo "$unused_pkgs"
-    read -p "Do you want to remove them? (y/N) " response
-    if [[ "$response" =~ ^[Yy]$ ]]; then
-      echo "Removing unused optional packages..."
-      paru -Rns $(paru -Qdtq)
-    else
-      echo "No optional packages were removed."
-    fi
-  else
-    echo "No unused optional packages were found."
-  fi
-
-  echo "Cleanup completed."
-}
-
-alias u='paru -Syu'
-alias i='paru'
-alias purge='paru -Rns'
-alias pkglist='paru -Qe > ~/pkglist.txt'
-
-#═══════════════════════════════════════════════════════════════════════════════
-# CLIPBOARD MANAGEMENT
-#═══════════════════════════════════════════════════════════════════════════════
+alias cf='cat $1 | xclip -sel c'
+alias calibre='fzf-calibre'
 
 if command -v xclip >/dev/null 2>&1; then
   alias tocp='xclip -selection clipboard'
@@ -179,56 +138,25 @@ elif command -v xsel >/dev/null 2>&1; then
   alias fromcp='xsel --clipboard --output'
 else
   echo "Neither xclip nor xsel found. Please install one of them."
+  # Create dummy aliases that show error message
   alias tocp='echo "No clipboard provider installed (xclip/xsel required)"'
   alias fromcp='echo "No clipboard provider installed (xclip/xsel required)"'
 fi
 
-tocp_all() {
-  "$@" 2>&1 | tocp
+logcmd() {
+    "$@" > log_output.txt 2>&1
 }
-alias tocp_all="tocp_all"
-
-totxt() {
-  local output_file="${1:-output.txt}"
-  shift || true # consume el primer argumento si existe
-  "$@" > "$output_file" 2>&1
-  echo "Salida y errores guardados en '$output_file'"
-}
-alias totxt="totxt"
-
-# Alias más genérico para redirigir a un archivo específico
-# Uso: tu_comando tofile mi_log.txt
-tofile() {
-  if [ -z "$1" ]; then
-    echo "Uso: tu_comando tofile <nombre_archivo>"
-    return 1
-  fi
-  local output_file="$1"
-  shift
-  "$@" > "$output_file" 2>&1
-  echo "Salida y errores guardados en '$output_file'"
-}
-alias tofile="tofile"
-
-alias cf='cat $1 | xclip -sel c'
-
-#═══════════════════════════════════════════════════════════════════════════════
-# FZF INTEGRATION
-#═══════════════════════════════════════════════════════════════════════════════
 
 alias vif='vim $(fzf)'
 alias rgf='vim $(rg . | fzf | cut -d ":" -f 1)'
+# Recursive search with rg and fzf
 alias rgfzf='rg . | fzf'
-alias calibre='fzf-calibre'
-alias b='fzf-calibre'
-
-# Search and cd into directory
+# Search and cd into the directory
 fcd() {
   local dir
   dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir"
 }
 
-# Search with ripgrep and fzf
 fstring() {
   local file_and_line=$(
     rg --color=always --line-number --no-heading --smart-case "${1:-}" |
@@ -249,7 +177,6 @@ fstring() {
   fi
 }
 
-# Case-sensitive search
 FSTRING() {
   local file_and_line=$(
     rg --color=always \
@@ -277,144 +204,24 @@ FSTRING() {
   fi
 }
 
-#═══════════════════════════════════════════════════════════════════════════════
-# SYSTEM MONITORING AND UTILITIES
-#═══════════════════════════════════════════════════════════════════════════════
-
 alias k='pkill -9'
 alias bl='xbacklight -get'
+
 alias dsize='du -hsx * | sort -rh'
-alias dirsize='du -sh'
 alias neofetch='fastfetch'
-alias open='handlr open'
+alias c='clear'
+alias vim='nvim'
 alias cat='bat'
-alias disks='gdu'
 
-# Disk usage overview
-alias duf='echo "╓───── m o u n t . p o i n t s"; \
-			 echo "╙────────────────────────────────────── ─ ─ "; \
-			 lsblk -a; echo ""; \
-			 echo "╓───── d i s k . u s a g e";\
-			 echo "╙────────────────────────────────────── ─ ─ "; \
-			 df -h;'
+#Alias cd
+alias cd..='cd ..'
+alias ..='cd..'
 
-# Improved commands
-alias df='df -h'
-alias free='free -m'
-alias mocp='mocp -M "$XDG_CONFIG_HOME"/moc -O MOCDir="$XDG_CONFIG_HOME"/moc'
-
-#═══════════════════════════════════════════════════════════════════════════════
-# PROCESS MANAGEMENT
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias psa="ps auxf"
-alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
-alias psmem='ps auxf | sort -nr -k 4'
-alias pscpu='ps auxf | sort -nr -k 3'
-
-#═══════════════════════════════════════════════════════════════════════════════
-# COMPRESSION AND EXTRACTION
-#═══════════════════════════════════════════════════════════════════════════════
-
+# Compress
 alias zip='zip -r'
 alias xz='xz -z -v -k -T 0'
 
-# Compression function
-compress() {
-    if [[ $# -eq 0 ]]; then
-        echo "Error: Please provide a directory path"
-        return 1
-    fi
-
-    local dir_path="$1"
-
-    if [[ ! -d "$dir_path" ]]; then
-        echo "Error: '$dir_path' is not a directory"
-        return 1
-    fi
-
-    local dir_name=$(basename "$dir_path")
-    local zip_file="${dir_name}.zip"
-
-    if zip -r "$zip_file" "$dir_path"; then
-        echo "Successfully compressed '$dir_path' into '$zip_file'"
-    else
-        echo "Error: Failed to compress '$dir_path'"
-        return 1
-    fi
-}
-
-# Extract function
-extract() {
-  if [ -f $1 ] ; then
-    case $1 in
-      *.tar.bz2)   tar xvjf $1    ;;
-      *.tar.gz)    tar xvzf $1    ;;
-      *.bz2)       bunzip2 $1     ;;
-      *.rar)       unrar x $1     ;;
-      *.gz)        gunzip $1      ;;
-      *.tar)       tar xvf $1     ;;
-      *.tbz2)      tar xvjf $1    ;;
-      *.tgz)       tar xvzf $1    ;;
-      *.zip)       unzip $1       ;;
-      *.Z)         uncompress $1  ;;
-      *.7z)        7z x $1        ;;
-      *)           echo "'$1' cannot be extracted via extract()" ;;
-    esac
-  else
-    echo "'$1' is not a valid file"
-  fi
-}
-
-# Extract to folder
-extractf() {
-  if [ -f "$1" ] ; then
-    local dirname="${1%.*}"
-    mkdir -p "$dirname"
-    cd "$dirname"
-
-    case "$1" in
-      *.tar.bz2) tar xvjf "../$1" ;;
-      *.tar.gz)  tar xvzf "../$1" ;;
-      *.bz2)     bunzip2 "../$1" ;;
-      *.rar)     unrar x "../$1" ;;
-      *.gz)      gunzip "../$1" ;;
-      *.tar)     tar xvf "../$1" ;;
-      *.tbz2)    tar xvjf "../$1" ;;
-      *.tgz)     tar xvzf "../$1" ;;
-      *.zip)     unzip "../$1" ;;
-      *.Z)       uncompress "../$1" ;;
-      *.7z)      7z x "../$1" ;;
-      *)         echo "'$1' cannot be extracted via extractf()" ;;
-    esac
-    cd ..
-  else
-    echo "File '$1' not found"
-  fi
-}
-
-# Extract all compressed files in current directory
-extractfall() {
-  setopt +o nomatch
-  local files=(*.tar.bz2 *.tar.gz *.bz2 *.rar *.gz *.tar *.tbz2 *.tgz *.zip *.Z *.7z)
-  setopt nomatch
-
-  if [ ${#files[@]} -eq 0 ]; then
-    echo "No se encontraron archivos comprimidos en el directorio actual"
-    return
-  fi
-
-  for file in "${files[@]}"; do
-    if [ -f "$file" ]; then
-      extractf "$file"
-    fi
-  done
-}
-
-#═══════════════════════════════════════════════════════════════════════════════
-# DOCKER
-#═══════════════════════════════════════════════════════════════════════════════
-
+# Docker
 (( ${+commands[docker-compose]} )) && dccmd='docker-compose' || dccmd='docker compose'
 
 alias dco="$dccmd"
@@ -439,29 +246,112 @@ alias dck="$dccmd kill"
 
 unset dccmd
 
-# Docker functions
-function docstop(){
-      docker stop $(docker ps -aq)
+# Ip
+alias ip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
+alias ip_info="curl -qs https://ifconfig.co/json | jq -r '.ip,.city,.country,.hostname,.asn_org'"
+
+# Pacman stuff
+alias purge='brew uninstall'
+alias u='brew update && brew upgrade'
+alias i='brew install'
+
+alias uAndroid='adb shell pm uninstall -k --user 0'
+alias pullAndroid='cd $HOME/Pictures/Android && adb pull /storage/emulated/0/Pictures && adb pull /storage/emulated/0/Dcim'
+alias network='nmtui'
+alias version='lsb_release -a'
+alias kernel='uname -r'
+alias localip='ip -brief -color address'
+alias wttr='curl -4 wttr.in'
+alias rpolybar='~/.config/polybar/launch.sh'
+alias webToPdf='curl -u 'api:
+
+#Sudo
+alias stopB='sudo systemctl stop bluetooth.service'
+alias startB='sudo systemctl start bluetooth.service && bluetoothctl'
+alias b='fzf-calibre'
+alias start='sudo systemctl start'
+alias stop='sudo systemctl stop'
+alias restart='sudo systemctl restart'
+
+# MEDIA
+alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
+alias ytp='yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"'
+mkplaylist() {
+   ls -1 *.mkv | sort > playlist.txt
+   mpv --playlist="playlist.txt"
 }
 
-function docstart(){
-      docker start $(docker ps -aq)
+# LS Stuff
+alias ls='eza -al --color=always --group-directories-first' # my preferred listing
+alias la='eza -a --color=always --group-directories-first'  # all files and dirs
+alias ll='eza -l --color=always --group-directories-first'  # long format
+alias lt='eza -aT --color=always --group-directories-first' # tree listing
+alias l='eza -a | grep -e "^\."'
+
+# get fastest mirrors
+alias mirror="sudo reflector -f 30 -l 30 --number 10 --verbose --save /etc/pacman.d/mirrorlist"
+alias mirrord="sudo reflector --latest 50 --number 20 --sort delay --save /etc/pacman.d/mirrorlist"
+alias mirrors="sudo reflector --latest 50 --number 20 --sort score --save /etc/pacman.d/mirrorlist"
+alias mirrora="sudo reflector --latest 50 --number 20 --sort age --save /etc/pacman.d/mirrorlist"
+
+# Colorize grep output (good for log files)
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias g="grep --color=auto -i"
+
+# adding flags
+alias df='df -h'                          # human-readable sizes
+alias free='free -m'                      # show sizes in MB
+alias mocp='mocp -M "$XDG_CONFIG_HOME"/moc -O MOCDir="$XDG_CONFIG_HOME"/moc'
+
+# ps
+alias psa="ps auxf"
+alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
+alias psmem='ps auxf | sort -nr -k 4'
+alias pscpu='ps auxf | sort -nr -k 3'
+
+# get error messages from journalctl
+alias jctl="journalctl -p 3 -xb"
+
+# gpg encryption
+alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
+alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
+
+# switch between shells
+alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
+alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
+
+#yta-best-mp3
+function yta(){
+    yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" "$1"
 }
 
-function dockerservice() {
-  if ! systemctl is-active --quiet docker; then
-    echo "Starting docker service"
-    sudo systemctl start docker.service
-  else
-    echo "Stopping docker service"
-    sudo systemctl stop docker.service
-  fi
+function ytpa(){
+    yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist "$1"
 }
+
+
+# Improved function to replace yta-best alias
+yta-best() {
+    eval yt-dlp --extract-audio --audio-format "wav" --output '"%(title)s.%(ext)s"' -- '"$1"'
+}
+
+alias ytp-abest='yt-dlp --extract-audio --audio-format "wav" --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist '
+alias spotdl='spotdl --cookie-file /home/alex/Music/music.youtube.com_cookies.txt'
+
+# YouTube download max quality (video + audio)
+ytd() {
+    yt-dlp -f "bestvideo+bestaudio" --merge-output-format mp4 -o "%(title)s.%(ext)s" "$1"
+}
+
+alias disks='ncdu'
 
 function docker-clean() {
-  docker stop $(sudo docker ps -aq)
-  docker rm $(sudo docker ps -a -q)
-  docker rmi $(sudo docker images -q)
+  docker ps -aq | xargs -r docker stop
+  docker ps -a -q | xargs -r docker rm
+  #docker volume ls -q | xargs -r docker volume rm
+  docker builder prune
 }
 
 function docker-clean-images() {
@@ -470,165 +360,233 @@ function docker-clean-images() {
 
 alias docstats="docker ps -q | xargs  docker stats --no-stream"
 
-#═══════════════════════════════════════════════════════════════════════════════
-# TMUX
-#═══════════════════════════════════════════════════════════════════════════════
-
 function t() {
 	X=$#
 	[[ $X -eq 0 ]] || X=X
 	tmux new-session -A -s $X
 }
 
-#═══════════════════════════════════════════════════════════════════════════════
-# NETWORK AND IP
-#═══════════════════════════════════════════════════════════════════════════════
+#function that receives dir and zips it
+function compress() {
+    if [[ $# -eq 0 ]]; then
+        echo "Error: Please provide a directory path"
+        return 1
+    fi
 
-alias ip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
-alias ip_info="curl -qs https://ifconfig.co/json | jq -r '.ip,.city,.country,.hostname,.asn_org'"
-alias localip='ip -brief -color address'
-alias wttr='curl -4 wttr.in'
-alias network='nmtui'
+    # Get the directory path
+    local dir_path="$1"
 
-#═══════════════════════════════════════════════════════════════════════════════
-# SYSTEM SERVICES
-#═══════════════════════════════════════════════════════════════════════════════
+    # Check if the provided path is a directory
+    if [[ ! -d "$dir_path" ]]; then
+        echo "Error: '$dir_path' is not a directory"
+        return 1
+    fi
 
-alias stopB='sudo systemctl stop bluetooth.service'
-alias startB='sudo systemctl start bluetooth.service && bluetoothctl'
-alias start='sudo systemctl start'
-alias stop='sudo systemctl stop'
-alias restart='sudo systemctl restart'
+    # Get the base name of the directory
+    local dir_name=$(basename "$dir_path")
 
-#═══════════════════════════════════════════════════════════════════════════════
-# MEDIA AND DOWNLOAD
-#═══════════════════════════════════════════════════════════════════════════════
+    # Create the zip file name
+    local zip_file="${dir_name}.zip"
 
-alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
-alias ytp='yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"'
-
-# YouTube download aliases
-alias ytpa='noglob yt-dlp --extract-audio --audio-format mp3 --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist'
-alias yta='noglob yt-dlp --extract-audio --audio-format mp3 --audio-quality 0 --output "%(title)s.%(ext)s"'
-alias yta-best='noglob yt-dlp --extract-audio --audio-format wav --audio-quality 0 --output "%(title)s.%(ext)s"'
-alias ytp-abest='noglob yt-dlp --extract-audio --audio-format wav --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist'
-alias ytv-best='noglob yt-dlp -f bestvideo+bestaudio'
-
-alias spotdl='spotdl --cookie-file /home/alex/Music/music.youtube.com_cookies.txt'
-
-
-#═══════════════════════════════════════════════════════════════════════════════
-# ARIA2 INTEGRATION
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias magnet2aria='function _magnet2aria() { curl --header "Content-Type: application/json" --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.addUri\",\"id\":\"qwer\",\"params\":[[\"$1\"]]}" http://localhost:6800/jsonrpc; }; _magnet2aria'
-alias link2aria='function _link2aria() { curl --header "Content-Type: application/json" --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.addUri\",\"id\":\"qwer\",\"params\":[[\"$1\"]]}" http://localhost:6800/jsonrpc; }; _link2aria'
-
-alias aria2list='
-echo "=== ACTIVE DOWNLOADS ===";
-curl -s --header "Content-Type: application/json" \
-     --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.tellActive\",\"id\":\"qwer\"}" \
-     http://localhost:6800/jsonrpc | \
-jq -r ".result[] | \"[\(.status)] \(.bittorrent.info.name // .files[0].path): \
-\((.completedLength|tonumber)/(.totalLength|tonumber) * 100 | floor)% - \
-\((.completedLength|tonumber)/1048576)MB/\((.totalLength|tonumber)/1048576)MB - \
-\((.downloadSpeed|tonumber)/1048576)MB/s - \
-Up: \((.uploadLength|tonumber)/1048576)MB\"";
-
-echo -e "\n=== WAITING DOWNLOADS ===";
-curl -s --header "Content-Type: application/json" \
-     --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.tellWaiting\",\"id\":\"qwer\",\"params\":[0,100]}" \
-     http://localhost:6800/jsonrpc | \
-jq -r ".result[] | \"[\(.status)] \(.bittorrent.info.name // .files[0].path): \
-\((.completedLength|tonumber)/(.totalLength|tonumber) * 100 | floor)% - \
-\((.completedLength|tonumber)/1048576)MB/\((.totalLength|tonumber)/1048576)MB - \
-Up: \((.uploadLength|tonumber)/1048576)MB\"";
-
-echo -e "\n=== COMPLETED DOWNLOADS ===";
-curl -s --header "Content-Type: application/json" \
-     --data "{\"jsonrpc\":\"2.0\",\"method\":\"aria2.tellStopped\",\"id\":\"qwer\",\"params\":[0,100]}" \
-     http://localhost:6800/jsonrpc | \
-jq -r ".result[] | \"[\(.status)] \(.bittorrent.info.name // .files[0].path): \
-\((.completedLength|tonumber)/(.totalLength|tonumber) * 100 | floor)% - \
-\((.completedLength|tonumber)/1048576)MB/\((.totalLength|tonumber)/1048576)MB - \
-Up: \((.uploadLength|tonumber)/1048576)MB\"";
-'
-
-#═══════════════════════════════════════════════════════════════════════════════
-# ANDROID
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias uAndroid='adb shell pm uninstall -k --user 0'
-alias pullAndroid='cd $HOME/Pictures/Android && adb pull /storage/emulated/0/Pictures && adb pull /storage/emulated/0/Dcim'
-
-#═══════════════════════════════════════════════════════════════════════════════
-# SYSTEM INFO
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias version='lsb_release -a'
-alias kernel='uname -r'
-alias zplugins='ls $ZPLUGINDIR'
-
-#═══════════════════════════════════════════════════════════════════════════════
-# MIRRORS AND REFLECTOR
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias mirror="sudo reflector -f 30 -l 30 --number 10 --verbose --save /etc/pacman.d/mirrorlist"
-alias mirrord="sudo reflector --latest 50 --number 20 --sort delay --save /etc/pacman.d/mirrorlist"
-alias mirrors="sudo reflector --latest 50 --number 20 --sort score --save /etc/pacman.d/mirrorlist"
-alias mirrora="sudo reflector --latest 50 --number 20 --sort age --save /etc/pacman.d/mirrorlist"
-
-#═══════════════════════════════════════════════════════════════════════════════
-# GREP WITH COLORS
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias grep='grep --color=auto'
-alias egrep='egrep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias g="grep --color=auto -i"
-
-#═══════════════════════════════════════════════════════════════════════════════
-# POLYBAR AND DESKTOP
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias rpolybar='~/.config/polybar/launch.sh'
-
-#═══════════════════════════════════════════════════════════════════════════════
-# JOURNALCTL
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias jctl="journalctl -p 3 -xb"
-
-#═══════════════════════════════════════════════════════════════════════════════
-# GPG
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
-alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
-
-#═══════════════════════════════════════════════════════════════════════════════
-# SHELL SWITCHING
-#═══════════════════════════════════════════════════════════════════════════════
-
-alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
-alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
-
-#═══════════════════════════════════════════════════════════════════════════════
-# FILE OPERATIONS
-#═══════════════════════════════════════════════════════════════════════════════
-
-# File lookup function
-lookup() {
-  if [[ $# -eq 0 ]]; then
-      echo "Error: Please provide a string to search for"
-      return 1
-  fi
-
-  local search_string="$1"
-  find . -type f -iname "*$search_string*" -print
+    # Compress the directory
+    if zip -r "$zip_file" "$dir_path"; then
+        echo "Successfully compressed '$dir_path' into '$zip_file'"
+    else
+        echo "Error: Failed to compress '$dir_path'"
+        return 1
+    fi
 }
 
-#═══════════════════════════════════════════════════════════════════════════════
-# MISC ALIASES
-#═══════════════════════════════════════════════════════════════════════════════
-alias btc='better-commits'
+function extract() {
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xvjf $1    ;;
+      *.tar.gz)    tar xvzf $1    ;;
+      *.bz2)       bunzip2 $1     ;;
+      *.rar)       unrar x $1     ;;
+      *.gz)        gunzip $1      ;;
+      *.tar)       tar xvf $1     ;;
+      *.tbz2)      tar xvjf $1    ;;
+      *.tgz)       tar xvzf $1    ;;
+      *.zip)       unzip $1       ;;
+      *.Z)         uncompress $1  ;;
+      *.7z)        7z x $1        ;;
+      *)           echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+
+extractf() {
+  if [ -f "$1" ] ; then
+    # Create a directory based on the file name without its extension
+    local dirname="${1%.*}"
+    mkdir -p "$dirname"
+    cd "$dirname"
+
+    # Extract the file based on its extension
+    case "$1" in
+      *.tar.bz2) tar xvjf "../$1" ;;
+      *.tar.gz)  tar xvzf "../$1" ;;
+      *.bz2)     bunzip2 "../$1" ;;
+      *.rar)     unrar x "../$1" ;;
+      *.gz)      gunzip "../$1" ;;
+      *.tar)     tar xvf "../$1" ;;
+      *.tbz2)    tar xvjf "../$1" ;;
+      *.tgz)     tar xvzf "../$1" ;;
+      *.zip)     unzip "../$1" ;;
+      *.Z)       uncompress "../$1" ;;
+      *.7z)      7z x "../$1" ;;
+      *)         echo "'$1' cannot be extracted via extractf()" ;;
+    esac
+    cd ..
+  else
+    echo "File '$1' not found"
+  fi
+}
+
+extractfall() {
+  # Desactivar 'nomatch' temporalmente
+  setopt +o nomatch
+
+  # Encontrar todos los archivos comprimidos en el directorio actual
+  local files=(*.tar.bz2 *.tar.gz *.bz2 *.rar *.gz *.tar *.tbz2 *.tgz *.zip *.Z *.7z)
+
+  # Restaurar 'nomatch'
+  setopt nomatch
+
+  # Verificar si hay archivos que procesar
+  if [ ${#files[@]} -eq 0 ]; then
+    echo "No se encontraron archivos comprimidos en el directorio actual"
+    return
+  fi
+
+  # Procesar cada archivo encontrado
+  for file in "${files[@]}"; do
+    if [ -f "$file" ]; then
+      extractf "$file"
+    fi
+  done
+}
+
+
+tomp4() {
+  ffmpeg -i "$1" -c:v libx264 -preset fast -crf 22 -c:a aac -b:a 192k "${1%.*}.mp4"
+}
+
+compile-slides() {
+  npx @marp-team/marp-cli@latest "$1" --pdf
+}
+
+# ===== GEMINI MCP ALIASES =====
+alias gmcp='gemini mcp list'
+alias gmcp-status='gemini mcp list && echo "\n📊 MCP Config:" && cat ~/.gemini/settings.json | grep -A 20 mcpServers'
+
+alias bcra-vars='curl https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias > output.json'
+
+# ===== CLAUDE CODE MULTI-PROFILE MANAGEMENT =====
+# Profiles: personal (🟢 teal), w = work (🔶 orange), ww = alt (🟣 lavender)
+# Shared scripts in ~/.config/claude-profiles/
+
+_claude_run() {
+    local profile=$1
+    shift
+    local config_dir=$(jq -r --arg p "$profile" '.[$p].config_dir' "$HOME/.config/claude-profiles/profiles.json")
+    if [[ "$config_dir" == "null" ]] || [[ -z "$config_dir" ]]; then
+        echo "Unknown profile: $profile" >&2
+        return 1
+    fi
+    # Write profile marker so context-bar picks it up
+    echo "$profile" > "$HOME/.claude-profile"
+    CLAUDE_CONFIG_DIR="$config_dir" claude "$@"
+}
+
+alias claude-personal='echo "personal" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude claude'
+alias claude-w='echo "work" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude-work claude'
+alias claude-ww='echo "alt" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude-alt claude'
+
+alias claude-profiles='bash ~/.config/claude-profiles/status.sh'
+
+claude-use() {
+    bash ~/.config/claude-profiles/switch-profile.sh "$@"
+}
+
+claude-whoami() {
+    local cfg="${CLAUDE_CONFIG_DIR:-$HOME}"
+    local user_id="?"
+    if [[ -f "$cfg/.claude.json" ]]; then
+        user_id=$(jq -r '.userID // "?"' "$cfg/.claude.json" | head -c 16)
+    fi
+    local profile="default"
+    if [[ -f "$HOME/.claude-profile" ]]; then
+        profile=$(cat "$HOME/.claude-profile")
+    fi
+    echo "🔷 Claude Profile: $profile"
+    echo "   Config dir:     ${CLAUDE_CONFIG_DIR:-~/.claude.json}"
+    echo "   User ID:        ${user_id}..."
+}
+# Load claude profile completion
+if [[ -f "$HOME/.config/claude-profiles/completion.zsh" ]]; then
+    source "$HOME/.config/claude-profiles/completion.zsh"
+fi
+
+# ===== MERIDIAN PROFILE SWITCHING FOR OPENCODE =====
+# Switch profiles at runtime — OpenCode picks it up automatically
+
+_oc_switch() {
+    local profile=$1
+    echo "$profile" > "$HOME/.claude-profile"
+    meridian profile switch "$profile" 2>/dev/null && echo "Switched to: $profile" || echo "Meridian not running? Try: meridian-restart"
+}
+
+alias oc-self='_oc_switch gmail'
+alias oc-w='_oc_switch work'
+alias oc-ww='_oc_switch alt'
+
+oc-status() {
+    echo "Currently active: $(cat "$HOME/.claude-profile" 2>/dev/null || echo 'none')"
+    echo ""
+    meridian profile list 2>/dev/null || echo "Meridian not running on :3456"
+}
+
+meridian-restart() {
+    echo "Killing existing Meridian instances..."
+    local pids
+    pids=$(lsof -ti :3456 2>/dev/null)
+    if [[ -n "$pids" ]]; then
+        kill "$pids" 2>/dev/null
+        echo "Waiting for port 3456 to be free..."
+        local waited=0
+        while lsof -ti :3456 >/dev/null 2>&1; do
+            sleep 1
+            waited=$((waited + 1))
+            if [[ $waited -ge 5 ]]; then
+                kill -9 $pids 2>/dev/null
+                sleep 1
+                break
+            fi
+        done
+        echo "Port 3456 is free"
+    else
+        echo "No Meridian found on port 3456"
+    fi
+    echo "Starting fresh..."
+    meridian &
+    sleep 3
+    echo "Meridian running at http://127.0.0.1:3456"
+    echo ""
+    oc-status
+}
+
+lncrawl() {
+  if [ "$(docker ps -aq -f name=lncrawl-server)" ]; then
+          echo "Iniciando contenedor existente..."
+          docker start -ai lncrawl-server
+      else
+          echo "Creando nuevo contenedor..."
+          docker run -v ./lncrawl-data:/data -it -p 8080:8080 --name
+  lncrawl-server ghcr.io/lncrawl/lightnovel-crawler -ll server
+      fi
+}

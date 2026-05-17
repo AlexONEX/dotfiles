@@ -1,4 +1,3 @@
-# Helper functions for main/develop branches
 function current_branch() {
   git_current_branch
 }
@@ -12,7 +11,7 @@ function git_develop_branch() {
       return 0
     fi
   done
-  echo dev
+  echo develop
   return 1
 }
 
@@ -25,7 +24,7 @@ function git_main_branch() {
       return 0
     fi
   done
-  echo main
+  echo master
   return 1
 }
 
@@ -301,6 +300,7 @@ alias gbr='git branch --remote'
 alias gbg='LANG=C git branch -vv | grep ": gone\]"'
 
 # Checkout and switch
+alias gco='git checkout'
 alias gcor='git checkout --recurse-submodules'
 alias gcb='git checkout -b'
 alias gcB='git checkout -B'
@@ -472,7 +472,7 @@ alias gcpa='git cherry-pick --abort'
 alias gcpc='git cherry-pick --continue'
 
 # Work in Progress
-alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message " wip"'
+alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"'
 alias gunwip='git rev-list --max-count=1 --format="%s" HEAD | grep -q "\--wip--" && git reset HEAD~1'
 
 # Miscellaneous

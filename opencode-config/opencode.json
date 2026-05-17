@@ -21,7 +21,8 @@
       "grep *": "allow",
       "git diff *": "allow",
       "write": "allow",
-      "edit": "allow",
+      "edit *": "allow",
+      "sqlite3 *": "allow",
       "mkdir *": "allow"
     }
   },
@@ -36,5 +37,38 @@
   "plugin": [
     "opencode-with-claude",
     "/opt/homebrew/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
-  ]
+  ],
+  "mcp": {
+    "google-calendar": {
+      "type": "local",
+      "command": ["npx", "-y", "@cocal/google-calendar-mcp"],
+      "enabled": true,
+      "environment": {
+        "GOOGLE_OAUTH_CREDENTIALS": "/Users/alex/.config/google-mcp/credentials.json"
+      }
+    },
+    "gmail-allaria": {
+      "type": "local",
+      "command": ["npx", "-y", "@shinzolabs/gmail-mcp"],
+      "enabled": true,
+      "environment": {
+        "GMAIL_CREDENTIALS_PATH": "/Users/alex/.gmail-mcp/credentials-allaria.json",
+        "PORT": "3002"
+      }
+    },
+    "gmail-almafintech": {
+      "type": "local",
+      "command": ["npx", "-y", "@shinzolabs/gmail-mcp"],
+      "enabled": true,
+      "environment": {
+        "GMAIL_CREDENTIALS_PATH": "/Users/alex/.gmail-mcp/credentials-almafintech.json",
+        "PORT": "3003"
+      }
+    },
+    "jira": {
+      "type": "remote",
+      "url": "https://mcp.atlassian.com/v1/mcp/authv2",
+      "enabled": true
+    }
+  }
 }
