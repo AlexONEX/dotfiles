@@ -542,8 +542,8 @@ _oc_switch() {
 }
 
 alias oc-self='_oc_switch gmail'
-alias oc-w='_oc_switch work'
-alias oc-ww='_oc_switch alt'
+alias oc-allaria='_oc_switch allaria'
+alias oc-alma='_oc_switch alma'
 
 oc-status() {
     echo "Currently active: $(cat "$HOME/.claude-profile" 2>/dev/null || echo 'none')"
