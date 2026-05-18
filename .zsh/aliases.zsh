@@ -579,14 +579,3 @@ meridian-restart() {
     echo ""
     oc-status
 }
-
-lncrawl() {
-  if [ "$(docker ps -aq -f name=lncrawl-server)" ]; then
-          echo "Iniciando contenedor existente..."
-          docker start -ai lncrawl-server
-      else
-          echo "Creando nuevo contenedor..."
-          docker run -v ./lncrawl-data:/data -it -p 8080:8080 --name
-  lncrawl-server ghcr.io/lncrawl/lightnovel-crawler -ll server
-      fi
-}

@@ -32,7 +32,10 @@ ln -sf "$DOTFILES/opencode-config/skills/README.md" ~/.config/opencode/skills/RE
 
 # ─── Meridian ────────────────────────────────────────────────────────────────
 mkdir -p ~/.config/meridian
-ln -sf "$DOTFILES/meridian-config/profiles.json" ~/.config/meridian/profiles.json
+# Remove old symlink/file so we can write fresh
+[ -f ~/.config/meridian/profiles.json ] && rm -f ~/.config/meridian/profiles.json
+[ -L ~/.config/meridian/profiles.json ] && rm -f ~/.config/meridian/profiles.json
+sed "s|\$HOME|$HOME|g" "$DOTFILES/meridian-config/profiles.json.tpl" > ~/.config/meridian/profiles.json
 ln -sf "$DOTFILES/meridian-config/settings.json" ~/.config/meridian/settings.json
 
 # ─── OpenCode Agent Skills (Allaria infra) ────────────────────────────────────
