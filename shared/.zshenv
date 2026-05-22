@@ -59,6 +59,8 @@ fi
 export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:-} --bind ctrl-f:preview-half-page-down,ctrl-b:preview-half-page-up,ctrl-d:half-page-down,ctrl-u:half-page-up,ctrl-/:toggle-preview --border --height 50% --min-height 20 --preview-window right,40%,follow"
 
 # ─── MISC ─────────────────────────────────────────────────────────────────────
+# DOTFILES — convention: $HOME/.dotfiles points to the repo root
+# symlink-setup.sh creates this symlink on every machine
 export DOTFILES="${HOME}/.dotfiles"
 export BC_ENV_ARGS="$HOME/.bc"
 export CLI_THEME=dark

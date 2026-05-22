@@ -24,6 +24,10 @@ echo "🔧 Installing for: $MACHINE (from $DOTFILES)"
 
 echo "  ── shared/ ──"
 
+# DOTFILES env var convention ($HOME/.dotfiles)
+[ -L ~/.dotfiles ] && rm -f ~/.dotfiles
+ln -sf "$DOTFILES" ~/.dotfiles
+
 # Zsh
 ln -sf "$DOTFILES/shared/.zshrc"  ~/.zshrc
 ln -sf "$DOTFILES/shared/.zshenv" ~/.zshenv
