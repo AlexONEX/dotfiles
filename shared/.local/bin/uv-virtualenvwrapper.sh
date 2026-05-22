@@ -1,1 +1,0 @@
-/home/mars/.local/share/uv/tools/uv-virtualenvwrapper/bin/uv-virtualenvwrapper.sh
