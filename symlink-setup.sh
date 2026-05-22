@@ -1,78 +1,130 @@
 #!/bin/bash
 # =============================================================================
-# Restore agentic config from dotfiles via symlinks
+# Restore dotfiles via symlinks — multi-machine aware
 # Run: bash symlink-setup.sh
 # =============================================================================
 
 set -e
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 
-echo "🔗 Linking agentic configs from $DOTFILES"
+# ─── Detect machine ────────────────────────────────────────────────────────────
+detect_machine() {
+  case "$(uname)" in
+    Darwin) echo "workstation" ;;
+    Linux)  echo "homelab" ;;
+    *)      echo "unknown" ;;
+  esac
+}
+MACHINE=$(detect_machine)
+echo "🔧 Installing for: $MACHINE (from $DOTFILES)"
 
-# ─── OpenCode ────────────────────────────────────────────────────────────────
-mkdir -p ~/.config/opencode/agent ~/.config/opencode/skills
+# =============================================================================
+# [SHARED] — Installed on ALL machines
+# =============================================================================
 
-ln -sf "$DOTFILES/opencode-config/opencode.json" ~/.config/opencode/opencode.json
+echo "  ── shared/ ──"
 
-for f in "$DOTFILES/opencode-config/agent/"*.md; do
-  [ -f "$f" ] && ln -sf "$f" ~/.config/opencode/agent/$(basename "$f")
-done
+# Zsh
+ln -sf "$DOTFILES/shared/.zshrc"  ~/.zshrc
+ln -sf "$DOTFILES/shared/.zshenv" ~/.zshenv
 
-for skill_dir in "$DOTFILES/opencode-config/skills/"*/; do
-  skill=$(basename "$skill_dir")
-  target="$HOME/.config/opencode/skills/$skill"
-  # Remove real dir so symlink can take its place
+# Config dirs (nvim, tmux, alacritty, zathura)
+for cfg in nvim tmux alacritty zathura; do
+  target="$HOME/.config/$cfg"
   [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
-  ln -sfn "$skill_dir" "$target"
+  ln -sfn "$DOTFILES/shared/.config/$cfg" "$target"
 done
 
-# Also symlink the init script
-ln -sf "$DOTFILES/opencode-config/skills/init-secretary.sh" ~/.config/opencode/skills/init-secretary.sh
-ln -sf "$DOTFILES/opencode-config/skills/README.md" ~/.config/opencode/skills/README.md
+# Git
+ln -sf "$DOTFILES/shared/.gitconfig" ~/.gitconfig
 
-# ─── Meridian ────────────────────────────────────────────────────────────────
-mkdir -p ~/.config/meridian
-# Remove old symlink/file so we can write fresh
-[ -f ~/.config/meridian/profiles.json ] && rm -f ~/.config/meridian/profiles.json
-[ -L ~/.config/meridian/profiles.json ] && rm -f ~/.config/meridian/profiles.json
-sed "s|\$HOME|$HOME|g" "$DOTFILES/meridian-config/profiles.json.tpl" > ~/.config/meridian/profiles.json
-ln -sf "$DOTFILES/meridian-config/settings.json" ~/.config/meridian/settings.json
+# Zsh plugins dir
+target="$HOME/.zsh"
+[ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
+ln -sfn "$DOTFILES/shared/.zsh" "$target"
 
-# ─── OpenCode Agent Skills (Allaria infra) ────────────────────────────────────
-mkdir -p ~/.agents/skills/allaria
-# Remove real dir so symlink can take its place
-[ -d ~/.agents/skills/allaria/infra-allaria-skill ] && [ ! -L ~/.agents/skills/allaria/infra-allaria-skill ] && rm -rf ~/.agents/skills/allaria/infra-allaria-skill
-ln -sfn "$DOTFILES/opencode-skills/allaria/infra-allaria-skill" ~/.agents/skills/allaria/infra-allaria-skill
+# Local bin scripts
+mkdir -p ~/.local
+target="$HOME/.local/bin"
+[ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
+ln -sfn "$DOTFILES/shared/.local/bin" "$target"
 
-# ─── Claude Profiles ──────────────────────────────────────────────────────────
-CLAUDE_PROFILES_DIR="$HOME/.config/claude-profiles"
-mkdir -p "$CLAUDE_PROFILES_DIR"
+# Stow config
+ln -sf "$DOTFILES/shared/.stow-local-ignore" ~/.stow-local-ignore
 
-# Copy profile scripts (so they work without dotfiles path)
-cp "$DOTFILES/claude-config/switch-profile.sh" "$CLAUDE_PROFILES_DIR/switch-profile.sh"
-cp "$DOTFILES/claude-config/context-bar.sh" "$CLAUDE_PROFILES_DIR/context-bar.sh"
-cp "$DOTFILES/claude-config/status.sh" "$CLAUDE_PROFILES_DIR/status.sh"
-cp "$DOTFILES/claude-config/completion.zsh" "$CLAUDE_PROFILES_DIR/completion.zsh"
+# =============================================================================
+# [WORKSTATION ONLY] — Mac with AI agentic stack
+# =============================================================================
 
-# Generate profiles.json from template (resolves $HOME to actual path)
-sed "s|\$HOME|$HOME|g" "$DOTFILES/claude-config/profiles.json.tpl" > "$CLAUDE_PROFILES_DIR/profiles.json"
+if [[ "$MACHINE" == "workstation" ]]; then
 
-# ─── Claude Profile Dirs & Settings ──────────────────────────────────────────
-# personal
-mkdir -p ~/.claude
-ln -sf "$DOTFILES/claude-config/settings.json" ~/.claude/settings.json
+  echo "  ── workstation/ ──"
 
-# allaria
-mkdir -p ~/.claude-allaria
-ln -sf "$DOTFILES/claude-config/allaria.settings.json" ~/.claude-allaria/settings.json
+  # ─── OpenCode ──────────────────────────────────────────────────────────────
+  mkdir -p ~/.config/opencode/agent ~/.config/opencode/skills
 
-# alma
-mkdir -p ~/.claude-alma
-ln -sf "$DOTFILES/claude-config/alma.settings.json" ~/.claude-alma/settings.json
+  ln -sf "$DOTFILES/workstation/opencode-config/opencode.json" ~/.config/opencode/opencode.json
+
+  for f in "$DOTFILES/workstation/opencode-config/agent/"*.md; do
+    [ -f "$f" ] && ln -sf "$f" ~/.config/opencode/agent/$(basename "$f")
+  done
+
+  for skill_dir in "$DOTFILES/workstation/opencode-config/skills/"*/; do
+    skill=$(basename "$skill_dir")
+    target="$HOME/.config/opencode/skills/$skill"
+    [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
+    ln -sfn "$skill_dir" "$target"
+  done
+
+  ln -sf "$DOTFILES/workstation/opencode-config/skills/init-secretary.sh" ~/.config/opencode/skills/init-secretary.sh
+  ln -sf "$DOTFILES/workstation/opencode-config/skills/README.md" ~/.config/opencode/skills/README.md
+
+  # ─── Meridian ──────────────────────────────────────────────────────────────
+  mkdir -p ~/.config/meridian
+  [ -f ~/.config/meridian/profiles.json ] && rm -f ~/.config/meridian/profiles.json
+  [ -L ~/.config/meridian/profiles.json ] && rm -f ~/.config/meridian/profiles.json
+  sed "s|\$HOME|$HOME|g" "$DOTFILES/workstation/meridian-config/profiles.json.tpl" > ~/.config/meridian/profiles.json
+  ln -sf "$DOTFILES/workstation/meridian-config/settings.json" ~/.config/meridian/settings.json
+
+  # ─── Work Skills (Allaria infra) ────────────────────────────────────────────
+  mkdir -p ~/.agents/skills/allaria
+  target="$HOME/.agents/skills/allaria/infra-allaria-skill"
+  [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
+  ln -sfn "$DOTFILES/workstation/opencode-skills/allaria/infra-allaria-skill" "$target"
+
+  # ─── Claude Profiles ────────────────────────────────────────────────────────
+  CLAUDE_PROFILES_DIR="$HOME/.config/claude-profiles"
+  mkdir -p "$CLAUDE_PROFILES_DIR"
+
+  cp "$DOTFILES/workstation/claude-config/switch-profile.sh" "$CLAUDE_PROFILES_DIR/switch-profile.sh"
+  cp "$DOTFILES/workstation/claude-config/context-bar.sh"    "$CLAUDE_PROFILES_DIR/context-bar.sh"
+  cp "$DOTFILES/workstation/claude-config/status.sh"         "$CLAUDE_PROFILES_DIR/status.sh"
+  cp "$DOTFILES/workstation/claude-config/completion.zsh"    "$CLAUDE_PROFILES_DIR/completion.zsh"
+
+  sed "s|\$HOME|$HOME|g" "$DOTFILES/workstation/claude-config/profiles.json.tpl" > "$CLAUDE_PROFILES_DIR/profiles.json"
+
+  # Claude profile dirs & settings
+  mkdir -p ~/.claude
+  ln -sf "$DOTFILES/workstation/claude-config/settings.json" ~/.claude/settings.json
+
+  mkdir -p ~/.claude-allaria
+  ln -sf "$DOTFILES/workstation/claude-config/allaria.settings.json" ~/.claude-allaria/settings.json
+
+  mkdir -p ~/.claude-alma
+  ln -sf "$DOTFILES/workstation/claude-config/alma.settings.json" ~/.claude-alma/settings.json
+
+fi
+
+# =============================================================================
+# [HOMELAB ONLY] — Debian server specific
+# =============================================================================
+
+if [[ "$MACHINE" == "homelab" ]]; then
+  echo "  ── homelab/ ──"
+  # Add homelab-specific symlinks here as needed
+  # (nothing yet — shared/ covers zsh, git, nvim, tmux for SSH use)
+fi
 
 echo ""
-echo "✅ Done!"
-echo "   Profiles: personal, allaria, alma"
-echo "   Switch:   bash ~/.config/claude-profiles/switch-profile.sh <name>"
-echo "   Verify:   ls -la ~/.claude ~/.claude-allaria ~/.claude-alma"
+echo "✅ Done! ($MACHINE)"
 echo ""
