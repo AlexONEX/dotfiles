@@ -1,12 +1,15 @@
 {
   "$schema": "https://opencode.ai/config",
   "theme": "nord",
-  "instructions": ["./memory/feedback_feature_branch_policy.md"],
+  "instructions": [
+    "./memory/feedback_feature_branch_policy.md"
+  ],
   "permission": {
     "edit": "ask",
     "bash": {
       "*": "ask",
       "find *": "allow",
+      "sort *": "allow",
       "launchctl *": "allow",
       "ls *": "allow",
       "cat *": "allow",
@@ -17,7 +20,6 @@
       "which *": "allow",
       "head *": "allow",
       "ss *": "allow",
-      "awk **": "allow",
       "grep *": "allow",
       "git diff *": "allow",
       "git log *": "allow",
@@ -60,9 +62,9 @@
     "gmail-allaria": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "@shinzolabs/gmail-mcp"
+        "zsh",
+        "-c",
+        "lsof -ti :3002 | xargs kill 2>/dev/null; exec npx -y @shinzolabs/gmail-mcp"
       ],
       "enabled": true,
       "environment": {
@@ -73,9 +75,9 @@
     "gmail-almafintech": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "@shinzolabs/gmail-mcp"
+        "zsh",
+        "-c",
+        "lsof -ti :3003 | xargs kill 2>/dev/null; exec npx -y @shinzolabs/gmail-mcp"
       ],
       "enabled": true,
       "environment": {

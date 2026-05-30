@@ -1,7 +1,8 @@
 [
   {
-    "id": "gmail",
+    "id": "personal",
     "type": "claude-max",
+    "claudeConfigDir": "$HOME/.claude",
     "description": "Personal — johndoelibertarian@gmail.com"
   },
   {

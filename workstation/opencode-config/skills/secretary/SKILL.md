@@ -151,10 +151,95 @@ Triage: tareas vencidas, gaps en memoria, limpieza.
 | MCP | Tools | Para qué |
 |-----|-------|----------|
 | `google-calendar` | list-events, get-freebusy, create-event, search-events | Calendario |
+| `jira` | createJiraIssue, editJiraIssue, transitionJiraIssue, searchJiraIssuesUsingJql, … | Jira/Confluence |
 
 Se usa automáticamente cuando preguntás por tu día.
 
 > ⚠️ **Siempre consultar AMBOS calendarios**: pasar `calendarId` como array con los IDs de los dos calendarios principales (`alejandro.schwartzmann@allaria.com.ar` y `alejandro.schwartzmann@almafintech.com.ar`) para no perder eventos.
+
+## Jira: bug del MCP y workarounds
+
+El MCP de Atlassian (vía opencode) tiene un bug persistente: cuando se llama a `editJiraIssue` o `createJiraIssue` pasando `fields`/`additional_fields` con ciertos contenidos (custom fields primitivos como integer/float, ej. SP `customfield_10016` o Sprint `customfield_10020`), el wrapper serializa el objeto a string antes de enviarlo, y la validación del server lo rechaza con:
+
+```
+Expected object, received string at path ["fields"]
+```
+
+**No es del lado del schema ni de Jira** — es la serialización del cliente.
+
+**Workaround:** dos scripts bundleados que llaman la REST API v3 directamente vía curl, usando el access token cacheado del MCP.
+
+### Script 1: `set-jira-fields.sh` (genérico)
+
+Setea cualquier conjunto de campos en un ticket existente vía PUT.
+
+```bash
+~/.config/opencode/skills/secretary/scripts/set-jira-fields.sh <issueKey> '<json-fields-object>'
+```
+
+Ejemplos:
+
+```bash
+# Setear labels + epic + SP + sprint en una sola llamada
+set-jira-fields.sh DP-18128 '{"labels":["platform"],"customfield_10016":1.5,"customfield_10020":1349,"parent":{"key":"DP-16496"}}'
+
+# Solo labels
+set-jira-fields.sh DP-18128 '{"labels":["platform"]}'
+```
+
+### Script 2: `move-to-sprint.sh` (atajo para sprint)
+
+Mueve uno o varios tickets a un sprint en una llamada.
+
+```bash
+~/.config/opencode/skills/secretary/scripts/move-to-sprint.sh <sprintId> <issueKey> [<issueKey> ...]
+```
+
+Ejemplos:
+
+```bash
+# Un ticket
+move-to-sprint.sh 1349 DP-18121
+
+# Varios
+move-to-sprint.sh 1349 DP-18121 DP-18122 DP-18123
+```
+
+Ambos leen el token de `~/.local/share/opencode/mcp-auth.json`. No requieren setup.
+
+### Patrón recomendado al crear tickets
+
+1. `createJiraIssue` (MCP) con **solo** `summary`, `issueTypeName`, `projectKey`, `assignee_account_id`, `description`. **No** usar `additional_fields`.
+2. Capturar el `key` devuelto (ej. `DP-18128`).
+3. Llamar `set-jira-fields.sh DP-18128 '{"labels":["platform"],"customfield_10016":1.5,"customfield_10020":<sprintId>,"parent":{"key":"<EPIC>"}}'`.
+4. Si hay que transitionarlo (ej. crear con status Done), usar `transitionJiraIssue` del MCP — eso sí funciona.
+
+### Custom field IDs en Allaria (proyecto DP)
+
+| Campo | ID |
+|---|---|
+| Story Points | `customfield_10016` |
+| Sprint | `customfield_10020` |
+
+### Cómo encontrar el sprint ID
+
+JQL para inspeccionar:
+
+```jql
+sprint in openSprints() AND project = DP
+sprint in futureSprints() AND project = DP
+```
+
+El campo `customfield_10020[0].id` de la respuesta es el `sprintId` numérico (ej. `1349` para "Sprint 77" en board 2 de Allaria).
+
+### Defaults Allaria
+
+- **Cloud ID:** `91fb92aa-9455-4234-becd-7c1d232cdb46`
+- **Project key:** `DP`
+- **Board 2 (Allaria Project):** sprint activo se rota con frecuencia, chequear con JQL antes
+- **Mi accountId:** `712020:a803ac7d-3236-4e54-afb9-0e280a3e0a19` (Alejandro Schwartzmann)
+- **Convenciones:** todo ticket que cree va con `labels: ["platform"]` y assignee a mí (después yo lo reasigno al equipo)
+- **Épicas frecuentes:** DP-11577 (Market Data), DP-16044 (Plataforma research – Market Data), DP-16496 (Sav3), DP-1312 (Infrastructure improvements), DP-2922 (Deuda técnica BACK)
 
 ## Mantenimiento
 

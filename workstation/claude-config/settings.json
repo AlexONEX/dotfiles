@@ -4,20 +4,6 @@
     "commit": "",
     "pr": ""
   },
-  "hooks": {
-    "SessionStart": []
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.config/claude-profiles/context-bar.sh"
-  },
-  "enabledPlugins": {
-    "everything-claude-code@everything-claude-code": true
-  },
-  "theme": "dark-daltonized",
-  "editorMode": "vim",
-  "verbose": true,
-  "fileCheckpointingEnabled": false,
   "permissions": {
     "allow": [
       "WebSearch",
@@ -40,5 +26,19 @@
       "Bash(ssh:*)",
       "Bash(ping:*)"
     ]
-  }
+  },
+  "hooks": {
+    "SessionStart": []
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.config/claude-profiles/context-bar.sh"
+  },
+  "enabledPlugins": {
+    "everything-claude-code@everything-claude-code": true
+  },
+  "theme": "dark-ansi",
+  "editorMode": "vim",
+  "verbose": true,
+  "fileCheckpointingEnabled": false
 }

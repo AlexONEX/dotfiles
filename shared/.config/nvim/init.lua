@@ -1,7 +1,7 @@
 vim.loader.enable()
 
 local utils = require("utils")
-local expected_version = "0.11.5"
+local expected_version = "0.12.2"
 utils.is_compatible_version(expected_version)
 
 local config_dir = vim.fn.stdpath("config")
@@ -26,7 +26,9 @@ require("diagnostic-conf")
 
 -- colorscheme settings
 local color_scheme = require("colorschemes")
-if color_scheme.get_alacritty_mode() == "light" then
+-- Detecta el tema del sistema desde Alacritty (si estamos fuera de tmux)
+local in_tmux = vim.env.TMUX ~= nil
+if not in_tmux and color_scheme.get_alacritty_mode() == "light" then
   color_scheme.load_colorscheme("github_light")
 else
   color_scheme.load_colorscheme("nord")

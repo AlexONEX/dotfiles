@@ -541,41 +541,28 @@ _oc_switch() {
     meridian profile switch "$profile" 2>/dev/null && echo "Switched to: $profile" || echo "Meridian not running? Try: meridian-restart"
 }
 
-alias oc-self='_oc_switch gmail'
+alias oc-self='_oc_switch personal'
 alias oc-allaria='_oc_switch allaria'
 alias oc-alma='_oc_switch alma'
 
 oc-status() {
-    echo "Currently active: $(cat "$HOME/.claude-profile" 2>/dev/null || echo 'none')"
+    local active
+    active=$(jq -r '.activeProfile // "none"' "$HOME/.config/meridian/settings.json" 2>/dev/null || echo "none")
+    echo "Currently active: $active"
     echo ""
     meridian profile list 2>/dev/null || echo "Meridian not running on :3456"
 }
 
 meridian-restart() {
-    echo "Killing existing Meridian instances..."
-    local pids
-    pids=$(lsof -ti :3456 2>/dev/null)
-    if [[ -n "$pids" ]]; then
-        kill "$pids" 2>/dev/null
-        echo "Waiting for port 3456 to be free..."
-        local waited=0
-        while lsof -ti :3456 >/dev/null 2>&1; do
-            sleep 1
-            waited=$((waited + 1))
-            if [[ $waited -ge 5 ]]; then
-                kill -9 $pids 2>/dev/null
-                sleep 1
-                break
-            fi
-        done
-        echo "Port 3456 is free"
+    if launchctl list com.rynfar.meridian &>/dev/null; then
+        echo "Restarting Meridian via launchd..."
+        launchctl kickstart -kp com.rynfar.meridian 2>/dev/null
+        sleep 3
     else
-        echo "No Meridian found on port 3456"
+        echo "Launchd service not found, starting manually..."
+        NODE_NO_WARNINGS=1 meridian &>/dev/null &
+        sleep 3
     fi
-    echo "Starting fresh..."
-    meridian &
-    sleep 3
-    echo "Meridian running at http://127.0.0.1:3456"
     echo ""
     oc-status
 }

@@ -7,7 +7,7 @@
     "editor_mode": "vim",
     "verbose": true,
     "emoji": "🟢",
-    "description": "Personal Claude"
+    "description": "Personal — johndoelibertarian@gmail.com"
   },
   "allaria": {
     "label": "ALLARIA",
