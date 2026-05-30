@@ -23,7 +23,7 @@ alias a='vim ~/.bash_aliases'
 
 _oc_switch() {
     local profile=$1
-    meridian profile switch "$profile" 2>/dev/null \
+    meridian profile switch "$profile" \
         && echo "Switched to: $profile" \
         || echo "Meridian not running? Try: meridian-restart"
 }
