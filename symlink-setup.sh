@@ -32,6 +32,9 @@ ln -sf "$DOTFILES" ~/.dotfiles
 ln -sf "$DOTFILES/shared/.zshrc"  ~/.zshrc
 ln -sf "$DOTFILES/shared/.zshenv" ~/.zshenv
 
+# Bash (used on Linux homelab server)
+ln -sf "$DOTFILES/shared/.bash_aliases" ~/.bash_aliases
+
 # Config dirs (nvim, tmux, alacritty, zathura)
 for cfg in nvim tmux alacritty zathura; do
   target="$HOME/.config/$cfg"
