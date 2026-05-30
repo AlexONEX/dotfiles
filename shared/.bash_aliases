@@ -75,3 +75,130 @@ meridian-restart() {
     echo ""
     oc-status
 }
+
+# ─── Navigation & general ────────────────────────────────────────────────────
+alias c='clear'
+alias rf='rm -rf'
+alias dsize='du -hsx * | sort -rh'
+
+# ─── System info ─────────────────────────────────────────────────────────────
+alias df='df -h'
+alias free='free -m'
+alias kernel='uname -r'
+alias version='lsb_release -a'
+alias localip='ip -brief -color address'
+alias wttr='curl -4 wttr.in'
+alias ip_info='curl -qs https://ifconfig.co/json | jq -r ".ip,.city,.country,.hostname,.asn_org"'
+
+# ─── Process management ──────────────────────────────────────────────────────
+alias psa="ps auxf"
+alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
+alias psmem='ps auxf | sort -nr -k 4'
+alias pscpu='ps auxf | sort -nr -k 3'
+alias k='pkill -9'
+
+# ─── Systemd ─────────────────────────────────────────────────────────────────
+alias jctl="journalctl -p 3 -xb"
+alias sstart='sudo systemctl start'
+alias sstop='sudo systemctl stop'
+alias srestart='sudo systemctl restart'
+
+# ─── Grep ────────────────────────────────────────────────────────────────────
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias g='grep --color=auto -i'
+
+# ─── GPG ─────────────────────────────────────────────────────────────────────
+alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
+alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
+
+# ─── Shell switching ─────────────────────────────────────────────────────────
+alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
+alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
+
+# ─── Docker compose ──────────────────────────────────────────────────────────
+if command -v docker-compose &>/dev/null; then _dccmd='docker-compose'; else _dccmd='docker compose'; fi
+
+alias dco="$_dccmd"
+alias dcb="$_dccmd build"
+alias dce="$_dccmd exec"
+alias dcps="$_dccmd ps"
+alias dcrestart="$_dccmd restart"
+alias dcrm="$_dccmd rm"
+alias dcr="$_dccmd run"
+alias dcstop="$_dccmd stop"
+alias dcup="$_dccmd up"
+alias dcupb="$_dccmd up --build"
+alias dcupd="$_dccmd up -d"
+alias dcupdb="$_dccmd up -d --build"
+alias dcdn="$_dccmd down"
+alias dcl="$_dccmd logs"
+alias dclf="$_dccmd logs -f"
+alias dclF="$_dccmd logs -f --tail 0"
+alias dcpull="$_dccmd pull"
+alias dcstart="$_dccmd start"
+alias dck="$_dccmd kill"
+alias docstats="docker ps -q | xargs docker stats --no-stream"
+
+unset _dccmd
+
+# ─── Docker utils ────────────────────────────────────────────────────────────
+docker-clean() {
+    docker ps -aq | xargs -r docker stop
+    docker ps -a -q | xargs -r docker rm
+    docker builder prune
+}
+
+docker-clean-images() {
+    docker rmi $(docker images -q)
+}
+
+# ─── Clipboard ───────────────────────────────────────────────────────────────
+if command -v xclip >/dev/null 2>&1; then
+    alias tocp='xclip -selection clipboard'
+    alias fromcp='xclip -selection clipboard -o'
+elif command -v xsel >/dev/null 2>&1; then
+    alias tocp='xsel --clipboard --input'
+    alias fromcp='xsel --clipboard --output'
+fi
+
+# ─── File utilities ──────────────────────────────────────────────────────────
+bak() { cp -r "$1" "$1.bak"; }
+
+logcmd() { "$@" > log_output.txt 2>&1; }
+
+extract() {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2) tar xvjf "$1"   ;;
+            *.tar.gz)  tar xvzf "$1"   ;;
+            *.bz2)     bunzip2 "$1"    ;;
+            *.rar)     unrar x "$1"    ;;
+            *.gz)      gunzip "$1"     ;;
+            *.tar)     tar xvf "$1"    ;;
+            *.tbz2)    tar xvjf "$1"   ;;
+            *.tgz)     tar xvzf "$1"   ;;
+            *.zip)     unzip "$1"      ;;
+            *.Z)       uncompress "$1" ;;
+            *.7z)      7z x "$1"       ;;
+            *)         echo "'$1' cannot be extracted" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+compress() {
+    [ $# -eq 0 ] && { echo "Usage: compress <dir>"; return 1; }
+    [ ! -d "$1" ] && { echo "'$1' is not a directory"; return 1; }
+    local name
+    name=$(basename "$1")
+    zip -r "${name}.zip" "$1" && echo "Compressed to ${name}.zip"
+}
+
+# ─── Tmux ────────────────────────────────────────────────────────────────────
+t() {
+    local s=${1:-main}
+    tmux new-session -A -s "$s"
+}
