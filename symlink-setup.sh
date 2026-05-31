@@ -60,6 +60,57 @@ ln -sfn "$DOTFILES/shared/.local/bin" "$target"
 ln -sf "$DOTFILES/shared/.stow-local-ignore" ~/.stow-local-ignore
 
 # =============================================================================
+# [OPENSKILLS SHARED] — Skills instalados en TODAS las máquinas
+# =============================================================================
+
+link_openskill() {
+  local skill_name="$1"
+  local skill_path="$2"
+  local target="$HOME/.config/opencode/skills/$skill_name"
+  [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
+  mkdir -p "$(dirname "$target")"
+  ln -sfn "$skill_path" "$target"
+}
+
+echo "  ── openskills (shared) ──"
+mkdir -p ~/.config/opencode/skills
+
+for skill_dir in "$DOTFILES/shared/opencode-skills/"*/; do
+  skill=$(basename "$skill_dir")
+  link_openskill "$skill" "$skill_dir"
+done
+
+# Archivos sueltos (init-secretary.sh, README.md)
+for f in "$DOTFILES/shared/opencode-skills/"*.sh "$DOTFILES/shared/opencode-skills/"*.md; do
+  [ -f "$f" ] && ln -sf "$f" ~/.config/opencode/skills/$(basename "$f")
+done
+
+# =============================================================================
+# [MACHINE-SPECIFIC OPENSKILLS] — Dependen de la máquina
+# =============================================================================
+
+if [[ "$MACHINE" == "workstation" ]]; then
+  echo "  ── openskills (workstation) ──"
+  for skill_dir in "$DOTFILES/workstation/opencode-skills/"*/; do
+    skill=$(basename "$skill_dir")
+    link_openskill "$skill" "$skill_dir"
+  done
+  # java-quarkus está en un subdirectorio
+  for skill_dir in "$DOTFILES/workstation/opencode-skills/java-quarkus/"*/; do
+    skill=$(basename "$skill_dir")
+    link_openskill "$skill" "$skill_dir"
+  done
+fi
+
+if [[ "$MACHINE" == "homelab" ]]; then
+  echo "  ── openskills (homelab) ──"
+  for skill_dir in "$DOTFILES/homelab/opencode-skills/"*/; do
+    skill=$(basename "$skill_dir")
+    link_openskill "$skill" "$skill_dir"
+  done
+fi
+
+# =============================================================================
 # [WORKSTATION ONLY] — Mac with AI agentic stack
 # =============================================================================
 
@@ -67,24 +118,13 @@ if [[ "$MACHINE" == "workstation" ]]; then
 
   echo "  ── workstation/ ──"
 
-  # ─── OpenCode ──────────────────────────────────────────────────────────────
-  mkdir -p ~/.config/opencode/agent ~/.config/opencode/skills
-
+  # ─── OpenCode config ──────────────────────────────────────────────────────
+  mkdir -p ~/.config/opencode/agent
   ln -sf "$DOTFILES/workstation/opencode-config/opencode.json" ~/.config/opencode/opencode.json
 
   for f in "$DOTFILES/workstation/opencode-config/agent/"*.md; do
     [ -f "$f" ] && ln -sf "$f" ~/.config/opencode/agent/$(basename "$f")
   done
-
-  for skill_dir in "$DOTFILES/workstation/opencode-config/skills/"*/; do
-    skill=$(basename "$skill_dir")
-    target="$HOME/.config/opencode/skills/$skill"
-    [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
-    ln -sfn "$skill_dir" "$target"
-  done
-
-  ln -sf "$DOTFILES/workstation/opencode-config/skills/init-secretary.sh" ~/.config/opencode/skills/init-secretary.sh
-  ln -sf "$DOTFILES/workstation/opencode-config/skills/README.md" ~/.config/opencode/skills/README.md
 
   # ─── Meridian ──────────────────────────────────────────────────────────────
   mkdir -p ~/.config/meridian
@@ -92,20 +132,6 @@ if [[ "$MACHINE" == "workstation" ]]; then
   [ -L ~/.config/meridian/profiles.json ] && rm -f ~/.config/meridian/profiles.json
   sed "s|\$HOME|$HOME|g" "$DOTFILES/workstation/meridian-config/profiles.json.tpl" > ~/.config/meridian/profiles.json
   ln -sf "$DOTFILES/workstation/meridian-config/settings.json" ~/.config/meridian/settings.json
-
-  # ─── Work Skills (Allaria infra) ────────────────────────────────────────────
-  mkdir -p ~/.agents/skills/allaria
-  target="$HOME/.agents/skills/allaria/infra-allaria-skill"
-  [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
-  ln -sfn "$DOTFILES/workstation/opencode-skills/allaria/infra-allaria-skill" "$target"
-
-  # ─── Engineering Skills (shared across machines) ──────────────────────────
-  for skill_dir in "$DOTFILES/workstation/opencode-skills/engineering/"*/; do
-    skill=$(basename "$skill_dir")
-    target="$HOME/.agents/skills/engineering/$skill"
-    [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
-    ln -sfn "$skill_dir" "$target"
-  done
 
   # ─── Claude Profiles ────────────────────────────────────────────────────────
   CLAUDE_PROFILES_DIR="$HOME/.config/claude-profiles"
@@ -136,35 +162,7 @@ fi
 
 if [[ "$MACHINE" == "homelab" ]]; then
   echo "  ── homelab/ ──"
-
-  # ─── OpenCode Skills ──────────────────────────────────────────────────────
-  # Standard skills (assistant, executive, secretary)
-  mkdir -p ~/.config/opencode/skills
-  for skill_dir in "$DOTFILES/workstation/opencode-config/skills/"*/; do
-    skill=$(basename "$skill_dir")
-    target="$HOME/.config/opencode/skills/$skill"
-    [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
-    ln -sfn "$skill_dir" "$target"
-  done
-  ln -sf "$DOTFILES/workstation/opencode-config/skills/init-secretary.sh" ~/.config/opencode/skills/init-secretary.sh
-  ln -sf "$DOTFILES/workstation/opencode-config/skills/README.md" ~/.config/opencode/skills/README.md
-
-  # Engineering skills (diagnose, tdd, triage, to-issues, to-prd, zoom-out,
-  # grill-with-docs, prototype, improve-codebase-architecture, setup-matt-pocock-skills)
-  for skill_dir in "$DOTFILES/workstation/opencode-skills/engineering/"*/; do
-    skill=$(basename "$skill_dir")
-    target="$HOME/.agents/skills/engineering/$skill"
-    mkdir -p "$HOME/.agents/skills/engineering"
-    [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
-    ln -sfn "$skill_dir" "$target"
-  done
-
-  # Manage-server skill (Debian server management — only on homelab)
-  target="$HOME/.agents/skills/manage-server"
-  [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
-  ln -sfn "$DOTFILES/workstation/opencode-skills/manage-server" "$target"
-
-
+  # (sin configs extras por ahora)
 fi
 
 echo ""
