@@ -153,9 +153,9 @@ class GmailClient:
         if "INBOX" in remove:
             self._gog("gmail", "archive", "-y", msg_id, capture_json=False)
         if "STARRED" in add:
-            self._gog("gmail", "labels", "add", "--label=STARRED", msg_id, capture_json=False)
+            self._gog("gmail", "labels", "modify", msg_id, "--add=STARRED", capture_json=False)
         if "STARRED" in remove:
-            self._gog("gmail", "labels", "remove", "--label=STARRED", msg_id, capture_json=False)
+            self._gog("gmail", "labels", "modify", msg_id, "--remove=STARRED", capture_json=False)
 
 
 # ─── Formatting helpers ──────────────────────────────────────────────────────
