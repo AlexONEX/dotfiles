@@ -199,14 +199,17 @@ export PATH="/opt/homebrew/opt/mysql@8.4/bin:$PATH"
 # Emacs Mac keyboard fix
 export EMACS_MAC_OPTION_MODIFIER=meta
 
-# ─── Gmail Terminal (usa credenciales de opencode, zero extra config) ─────────
-alias mails='~/gmail-term.py'                      # lista rapida
-alias gmail='~/gmail-tui.py'                       # TUI interactiva con vim keys
-alias gmail-alm='~/gmail-tui.py --account almafintech'
-alias mails-unread='~/gmail-term.py --unread'
-alias mails-aws='~/gmail-term.py --label AWS'
-alias mails-github='~/gmail-term.py --label GitHub'
-alias mails-jira='~/gmail-term.py --label Jira'
-alias mails-alm='~/gmail-term.py --account almafintech'
-alias mails-short='~/gmail-term.py --short'
-alias mails-inbox='~/gmail-term.py --unread --label INBOX'
+# ─── Gmail CLI/TUI (usa credenciales de opencode, zero extra config) ─────────
+alias mails='gmail.py'                              # CLI — ultimos 15 (default: allaria)
+alias gmail='gmail-tui.py'                          # TUI interactiva con vim keys
+alias mails-ari='gmail.py --account allaria'        # CLI — Allaria
+alias mails-alm='gmail.py --account almafintech'    # CLI — Almafintech
+alias mails-unread='gmail.py --unread'              # CLI — solo no leidos
+alias mails-aws='gmail.py --label AWS'              # CLI — filtro AWS
+alias mails-github='gmail.py --label GitHub'        # CLI — filtro GitHub
+alias mails-jira='gmail.py --label Jira'            # CLI — filtro Jira
+alias mails-short='gmail.py --short'                # CLI — modo compacto
+alias mails-inbox='gmail.py --unread --label INBOX' # CLI — inbox pendiente
+alias gmail-ari='gmail-tui.py --account allaria'    # TUI — Allaria
+alias gmail-alm='gmail-tui.py --account almafintech' # TUI — Almafintech
+alias gmail-reauth='gmail-reauth.py'                  # Re-autenticacion OAuth
