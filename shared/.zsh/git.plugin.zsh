@@ -120,15 +120,25 @@ function ggp() {
 }
 
 # Clone and cd into directory
-function gccd() {
-  setopt localoptions extendedglob
-  local repo="${${@[(r)(ssh://*|git://*|ftp(s)#://*|http(s)#://*|*@*)(.git/#)#]}:-$_}"
-  command git clone --recurse-submodules "$@" || return
-  [[ -d "$_" ]] && cd "$_" || cd "${${repo:t}%.git/#}"
-}
+if [[ -n "$ZSH_VERSION" ]]; then
+  function gccd() {
+    setopt localoptions extendedglob
+    local repo="${${@[(r)(ssh://*|git://*|ftp(s)#://*|http(s)#://*|*@*)(.git/#)#]}:-$_}"
+    command git clone --recurse-submodules "$@" || return
+    [[ -d "$_" ]] && cd "$_" || cd "${${repo:t}%.git/#}"
+  }
+else
+  # Bash-compatible fallback
+  function gccd() {
+    local repo
+    repo="${1:-${PWD##*/}}"
+    command git clone --recurse-submodules "$@" || return
+    cd "${repo%.git}" 2>/dev/null || cd "${repo}"
+  }
+fi
 
 # Git diff with viewer
-function gdv() { git diff -w "$@" | view - }
+function gdv() { git diff -w "$@" | view -; }
 
 # Git diff excluding lock files
 function gdnolock() {
@@ -508,23 +518,30 @@ alias git-clean='git branch | grep -v "dev" | grep -v "main" | xargs git branch 
 # Git GUI
 alias gg='git gui citool'
 alias gga='git gui citool --amend'
-alias gk='\gitk --all --branches &!'
-alias gke='\gitk --all $(git log --walk-reflogs --pretty=%h) &!'
+if [[ -n "$ZSH_VERSION" ]]; then
+  alias gk='\gitk --all --branches &!'
+  alias gke='\gitk --all $(git log --walk-reflogs --pretty=%h) &!'
+else
+  alias gk='\gitk --all --branches'
+  alias gke='\gitk --all $(git log --walk-reflogs --pretty=%h)'
+fi
 
 # Help
 alias ghh='git help'
 
-# Set completion for functions
-compdef _git ggpnp=git-checkout
-compdef _git ggu=git-checkout
-compdef _git ggl=git-checkout
-compdef _git ggf=git-checkout
-compdef _git ggfl=git-checkout
-compdef _git ggp=git-checkout
-compdef _git gccd=git-clone
-compdef _git gdv=git-diff
-compdef _git gdnolock=git-diff
-compdef _git _git_log_prettily=git-log
+# Set completion for functions (zsh only)
+if [[ -n "$ZSH_VERSION" ]]; then
+  compdef _git ggpnp=git-checkout
+  compdef _git ggu=git-checkout
+  compdef _git ggl=git-checkout
+  compdef _git ggf=git-checkout
+  compdef _git ggfl=git-checkout
+  compdef _git ggp=git-checkout
+  compdef _git gccd=git-clone
+  compdef _git gdv=git-diff
+  compdef _git gdnolock=git-diff
+  compdef _git _git_log_prettily=git-log
+fi
 
 # Deprecated aliases with warnings
 alias ggpur='ggu'
