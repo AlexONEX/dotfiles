@@ -199,8 +199,10 @@ export PATH="/opt/homebrew/opt/mysql@8.4/bin:$PATH"
 # Emacs Mac keyboard fix
 export EMACS_MAC_OPTION_MODIFIER=meta
 
-# ─── Gmail Terminal List (usa credenciales de opencode, zero extra config) ────
-alias mails='~/gmail-term.py'
+# ─── Gmail Terminal (usa credenciales de opencode, zero extra config) ─────────
+alias mails='~/gmail-term.py'                      # lista rapida
+alias gmail='~/gmail-tui.py'                       # TUI interactiva con vim keys
+alias gmail-alm='~/gmail-tui.py --account almafintech'
 alias mails-unread='~/gmail-term.py --unread'
 alias mails-aws='~/gmail-term.py --label AWS'
 alias mails-github='~/gmail-term.py --label GitHub'
