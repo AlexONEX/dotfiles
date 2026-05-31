@@ -46,6 +46,7 @@ LABEL_COLORS: dict[str, tuple[str, str]] = {
     "Label_1270420403290694070": ("Galicia", "cyan"),
     "Label_2": ("Metabase", "blue"),
     "Label_3": ("Allaria", "green"),
+    "Label_6": ("Research", "cyan"),
     "Label_6367231469415353355": ("Google", "red"),
     "STARRED": ("*", "yellow"),
     "IMPORTANT": ("!", "yellow"),
