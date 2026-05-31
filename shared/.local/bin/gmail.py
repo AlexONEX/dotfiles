@@ -40,14 +40,22 @@ ACCOUNT_MAP: dict[str, str] = {
 }
 
 LABEL_COLORS: dict[str, tuple[str, str]] = {
+    # allaria
     "Label_7229473445274762100": ("AWS", "yellow"),
+    "Label_7": ("Infra", "blue"),
     "Label_4": ("GitHub", "magenta"),
     "Label_5": ("Jira", "green"),
-    "Label_1270420403290694070": ("Galicia", "cyan"),
-    "Label_2": ("Metabase", "blue"),
-    "Label_3": ("Allaria", "green"),
     "Label_6": ("Research", "cyan"),
+    "Label_3": ("Allaria", "green"),
+    "Label_2": ("Metabase", "blue"),
+    "Label_1": ("RRHH", "red"),
+    "Label_1270420403290694070": ("Galicia", "cyan"),
     "Label_6367231469415353355": ("Google", "red"),
+    # almafintech
+    "Label_5808865934516559904": ("Jira", "green"),
+    "Label_6970270118935408282": ("RRHH", "red"),
+    "Label_532931502952629026": ("Allaria-Sh", "green"),
+    # system
     "STARRED": ("*", "yellow"),
     "IMPORTANT": ("!", "yellow"),
 }
