@@ -16,7 +16,7 @@ detect_machine() {
   esac
 }
 MACHINE=$(detect_machine)
-echo "🔧 Installing for: $MACHINE (from $DOTFILES)"
+echo "Installing for: $MACHINE (from $DOTFILES)"
 
 # =============================================================================
 # [SHARED] — Installed on ALL machines
@@ -99,6 +99,14 @@ if [[ "$MACHINE" == "workstation" ]]; then
   [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
   ln -sfn "$DOTFILES/workstation/opencode-skills/allaria/infra-allaria-skill" "$target"
 
+  # ─── Engineering Skills (shared across machines) ──────────────────────────
+  for skill_dir in "$DOTFILES/workstation/opencode-skills/engineering/"*/; do
+    skill=$(basename "$skill_dir")
+    target="$HOME/.agents/skills/engineering/$skill"
+    [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
+    ln -sfn "$skill_dir" "$target"
+  done
+
   # ─── Claude Profiles ────────────────────────────────────────────────────────
   CLAUDE_PROFILES_DIR="$HOME/.config/claude-profiles"
   mkdir -p "$CLAUDE_PROFILES_DIR"
@@ -128,10 +136,37 @@ fi
 
 if [[ "$MACHINE" == "homelab" ]]; then
   echo "  ── homelab/ ──"
-  # Add homelab-specific symlinks here as needed
-  # (nothing yet — shared/ covers zsh, git, nvim, tmux for SSH use)
+
+  # ─── OpenCode Skills ──────────────────────────────────────────────────────
+  # Standard skills (assistant, executive, secretary)
+  mkdir -p ~/.config/opencode/skills
+  for skill_dir in "$DOTFILES/workstation/opencode-config/skills/"*/; do
+    skill=$(basename "$skill_dir")
+    target="$HOME/.config/opencode/skills/$skill"
+    [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
+    ln -sfn "$skill_dir" "$target"
+  done
+  ln -sf "$DOTFILES/workstation/opencode-config/skills/init-secretary.sh" ~/.config/opencode/skills/init-secretary.sh
+  ln -sf "$DOTFILES/workstation/opencode-config/skills/README.md" ~/.config/opencode/skills/README.md
+
+  # Engineering skills (diagnose, tdd, triage, to-issues, to-prd, zoom-out,
+  # grill-with-docs, prototype, improve-codebase-architecture, setup-matt-pocock-skills)
+  for skill_dir in "$DOTFILES/workstation/opencode-skills/engineering/"*/; do
+    skill=$(basename "$skill_dir")
+    target="$HOME/.agents/skills/engineering/$skill"
+    mkdir -p "$HOME/.agents/skills/engineering"
+    [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
+    ln -sfn "$skill_dir" "$target"
+  done
+
+  # Manage-server skill (Debian server management — only on homelab)
+  target="$HOME/.agents/skills/manage-server"
+  [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
+  ln -sfn "$DOTFILES/workstation/opencode-skills/manage-server" "$target"
+
+
 fi
 
 echo ""
-echo "✅ Done! ($MACHINE)"
+echo "Done! ($MACHINE)"
 echo ""
