@@ -1,0 +1,130 @@
+#!/bin/bash
+# =============================================================================
+# sync-engineering-skills — Check upstream changes and create PR
+#
+# Compares ./workstation/opencode-skills/engineering/ against
+# github.com/mattpocock/skills engineering subtree.
+#
+# Usage:
+#   sync-engineering-skills          # check + show diff
+#   sync-engineering-skills --pr     # check + create PR if changed
+# =============================================================================
+
+set -euo pipefail
+
+UPSTREAM_REPO="https://github.com/mattpocock/skills.git"
+UPSTREAM_PATH="skills/engineering"
+DOTFILES_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+SKILLS_DIR="$DOTFILES_DIR/workstation/opencode-skills/engineering"
+COMMIT_FILE="$SKILLS_DIR/.upstream-commit"
+TMP_CLONE=$(mktemp -d)
+
+trap 'rm -rf "$TMP_CLONE"' EXIT
+
+echo "=== Sync Engineering Skills ==="
+echo "  Dotfiles: $DOTFILES_DIR"
+echo "  Skills:   $SKILLS_DIR"
+
+# --- Clone upstream ---
+echo ""
+echo "Cloning upstream..."
+git clone --depth=1 "$UPSTREAM_REPO" "$TMP_CLONE" 2>&1 | tail -1
+
+UPSTREAM_HASH=$(git -C "$TMP_CLONE" rev-parse HEAD)
+echo "  Upstream commit: $UPSTREAM_HASH"
+
+# --- Check if already synced ---
+if [ -f "$COMMIT_FILE" ]; then
+    LAST_SYNC=$(cat "$COMMIT_FILE")
+    if [ "$LAST_SYNC" = "$UPSTREAM_HASH" ]; then
+        echo ""
+        echo "Already up to date. No changes."
+        exit 0
+    fi
+    echo "  Last sync:      $LAST_SYNC"
+else
+    echo "  Last sync:      (never)"
+fi
+
+# --- Copy upstream skills to temp ---
+TMP_SKILLS=$(mktemp -d)
+cp -r "$TMP_CLONE/$UPSTREAM_PATH"/* "$TMP_SKILLS/"
+rm -f "$TMP_SKILLS/README.md"
+
+# --- Diff ---
+echo ""
+echo "=== Diff ==="
+CHANGES=$(diff -rq "$SKILLS_DIR" "$TMP_SKILLS" 2>/dev/null || true)
+
+if [ -z "$CHANGES" ]; then
+    echo "(files differ only by upstream-commit hash, updating)"
+fi
+
+echo "$CHANGES"
+
+# Show actual content diff for changed files
+echo ""
+echo "--- Detail ---"
+for f in $(diff -rq "$SKILLS_DIR" "$TMP_SKILLS" 2>/dev/null | grep -v ".upstream-commit" | grep "differ" | awk '{print $2}' | sed "s|$TMP_SKILLS/||"); do
+    if [ -f "$TMP_SKILLS/$f" ] && [ -f "$SKILLS_DIR/$f" ]; then
+        echo ""
+        echo ">> $f"
+        diff -u "$SKILLS_DIR/$f" "$TMP_SKILLS/$f" || true
+    fi
+done
+
+# --- Create PR if --pr flag ---
+if [ "${1:-}" = "--pr" ]; then
+    echo ""
+    echo "=== Creating PR ==="
+    cd "$DOTFILES_DIR"
+
+    # Create branch
+    BRANCH="sync-engineering-skills-$(date +%Y%m%d)"
+    if git rev-parse --verify "$BRANCH" 2>/dev/null; then
+        git branch -D "$BRANCH"
+    fi
+    git checkout -b "$BRANCH"
+
+    # Copy updated files
+    for f in "$TMP_SKILLS"/*; do
+        skill=$(basename "$f")
+        [ "$skill" = "README.md" ] && continue
+        rm -rf "$SKILLS_DIR/$skill"
+        cp -r "$f" "$SKILLS_DIR/$skill"
+    done
+
+    # Update commit hash
+    echo "$UPSTREAM_HASH" > "$COMMIT_FILE"
+
+    # Commit
+    git add "$SKILLS_DIR" "$COMMIT_FILE"
+    if git diff --cached --quiet; then
+        echo "No changes to commit."
+    else
+        CHANGED=$(git diff --cached --name-only "$SKILLS_DIR" | head -5)
+        git commit -m "chore: sync engineering skills from mattpocock ($UPSTREAM_HASH)
+
+Upstream changes synced from github.com/mattpocock/skills
+
+$(echo "$CHANGES" | head -10)"
+
+        # Push and create PR
+        git push origin "$BRANCH" 2>/dev/null || git push -u origin "$BRANCH"
+        gh pr create \
+            --repo AlexONEX/dotfiles \
+            --base main \
+            --head "$BRANCH" \
+            --title "chore: sync engineering skills from mattpocock" \
+            --body "Sync from [mattpocock/skills](https://github.com/mattpocock/skills/commit/$UPSTREAM_HASH)
+
+Changes:"
+        echo "PR created!"
+    fi
+else
+    echo ""
+    echo "Run with --pr to create a PR with these changes."
+fi
+
+# Cleanup
+rm -rf "$TMP_SKILLS"
