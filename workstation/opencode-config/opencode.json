@@ -47,47 +47,23 @@
     "/opt/homebrew/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
   ],
   "mcp": {
-    "google-calendar": {
+    "gogcli": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@cocal/google-calendar-mcp"
-      ],
+      "command": ["gogcli-mcp"],
       "enabled": true,
       "environment": {
-        "GOOGLE_OAUTH_CREDENTIALS": "/Users/alex/.config/google-mcp/credentials.json"
-      }
-    },
-    "gmail-allaria": {
-      "type": "local",
-      "command": [
-        "zsh",
-        "-c",
-        "lsof -ti :3002 | xargs kill 2>/dev/null; exec npx -y @shinzolabs/gmail-mcp"
-      ],
-      "enabled": true,
-      "environment": {
-        "GMAIL_CREDENTIALS_PATH": "/Users/alex/.gmail-mcp/credentials-allaria.json",
-        "PORT": "3002"
-      }
-    },
-    "gmail-almafintech": {
-      "type": "local",
-      "command": [
-        "zsh",
-        "-c",
-        "lsof -ti :3003 | xargs kill 2>/dev/null; exec npx -y @shinzolabs/gmail-mcp"
-      ],
-      "enabled": true,
-      "environment": {
-        "GMAIL_CREDENTIALS_PATH": "/Users/alex/.gmail-mcp/credentials-almafintech.json",
-        "PORT": "3003"
+        "GOG_ACCOUNT": "alejandro.schwartzmann@allaria.com.ar"
       }
     },
     "jira": {
       "type": "remote",
       "url": "https://mcp.atlassian.com/v1/mcp/authv2",
+      "enabled": true
+    },
+    "sentry": {
+      "type": "remote",
+      "url": "https://mcp.sentry.dev/mcp",
+      "oauth": {},
       "enabled": true
     }
   }

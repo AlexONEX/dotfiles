@@ -14,8 +14,13 @@ zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p
 autoload -U colors && colors
 unset LC_CTYPE
 
-# Define compinit function first but don't run it yet
+# Initialize completions BEFORE loading plugins (plugins call compdef)
 autoload -Uz compinit
+if [[ -d /opt/homebrew/share/zsh/site-functions ]]; then
+  compinit
+else
+  compinit -i
+fi
 
 # Basic history settings
 HISTFILE=~/.zsh_history
@@ -73,12 +78,10 @@ elif [[ -f /usr/local/bin/brew ]]; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-# Now run compinit after everything else is set up
-if [[ -d /opt/homebrew/share/zsh/site-functions ]]; then
-  compinit
-else
-  compinit -i  # Use -i flag to ignore insecure directories/files
-fi
+# NVM — Node Version Manager (instalado via brew)
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # loads nvm bash_completion
 
 if command -v nvim &>/dev/null; then
   export VISUAL=nvim
@@ -213,3 +216,4 @@ alias mails-inbox='gmail.py --unread --label INBOX' # CLI — inbox pendiente
 alias gmail-ari='gmail-tui.py --account allaria'    # TUI — Allaria
 alias gmail-alm='gmail-tui.py --account almafintech' # TUI — Almafintech
 alias gmail-reauth='gmail-reauth.py'                  # Re-autenticacion OAuth
+eval "$(/opt/homebrew/bin/brew shellenv)"

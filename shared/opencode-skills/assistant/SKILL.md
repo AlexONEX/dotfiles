@@ -1,269 +1,143 @@
 ---
 name: assistant
-description: Context-aware briefings, memory recall, knowledge graph queries, and intelligent recommendations across sessions. Use when you need to recall past decisions, check what's pending, or get project context.
+description: Context-aware briefings, memory recall, strategic analysis, and work prioritization across sessions. Use when starting a session, recalling past decisions, checking pending work, prioritizing, or reviewing productivity trends.
 license: MIT
 compatibility: opencode
 ---
 
 # Assistant Skill
 
-Provide context-aware assistance, intelligent briefings, memory recall, and knowledge graph queries across your OpenCode sessions.
+Briefings, memory recall, knowledge graph, and strategic analysis — todo sobre el mismo DB de secretary.
 
-## When to Use
+Queries de recall/briefing: `reference/queries.md`  
+Queries estratégicas: `reference/queries-strategic.md`
 
-- User asks "What should I work on?" or "What do I have pending?"
-- User asks "What did I decide about X?" or "Remind me about..."
-- User wants context about current or past work
-- Session just started and a briefing is needed
-- User wants to search across all captured knowledge
-- User needs cross-project awareness or related item discovery
-- User asks about the status of tracked items
-- User wants to explore the knowledge graph
+## Cuándo usar
 
-## Database Locations
+**Modo briefing / recall:**
+- "¿Qué tengo pendiente?" / "¿Qué debería hacer?"
+- "¿Qué decidí sobre X?" / "Recordame..."
+- Inicio de sesión — generar briefing de contexto
+- Buscar en todo el conocimiento capturado
+- Explorar el knowledge graph
 
-```bash
-# Main database
-SECRETARY_DB_PATH="$HOME/.config/opencode/secretary/secretary.db"
+**Modo análisis estratégico:**
+- "¿Qué es más importante?" / "¿En qué me enfoco?"
+- "¿Cómo estoy yendo?" / "¿Qué tan productivo fui?"
+- Review semanal o mensual
+- Detectar cuellos de botella o items estancados
+- Evaluar progreso de goals y riesgo
 
-# Encrypted memory (sensitive data)
-SECRETARY_MEMORY_DB_PATH="$HOME/.config/opencode/secretary/memory.db"
+## Briefing & Recall
+
+Secuencia para un briefing: Pending Commitments → Recent Decisions → Goal Progress → Ideas Inbox → Queue Status.
+
+Para recall: FTS5 search en decisions/commitments/ideas/knowledge_nodes. Fallback a LIKE. Revisar también Session History.
+
+Para contexto de proyecto: sessions recientes + decisions activas + commitments pendientes filtrado por `:current_project`.
+
+Para knowledge graph: Entity Relationships o All Connections.
+
+## Análisis Estratégico
+
+### Framework de priorización
+
+Score = urgency (0–100) + priority_weight (0–40) + stakeholder_factor (0–20) + deferral_penalty (–10/deferral).
+
+### Eisenhower Matrix
+
+```
+URGENT + IMPORTANT      → Hacer ahora
+NOT URGENT + IMPORTANT  → Agendar
+URGENT + NOT IMPORTANT  → Delegar
+NOT URGENT + NOT IMPORTANT → Eliminar
 ```
 
-## Generate Briefing
+### Qué analizar según la pregunta
 
-Query and format a comprehensive briefing based on current context.
+| Pregunta | Queries a correr |
+|----------|-----------------|
+| ¿Qué hago ahora? | Priority Scoring |
+| ¿Cómo estoy yendo? | Session Metrics + Completion Rates + Time Distribution |
+| ¿Los goals van bien? | Goal Velocity |
+| ¿Qué está trabado? | Long-Pending + Frequently Deferred + Stale In-Progress |
 
-### 1. Pending Commitments
+## Formatos de output
 
-```sql
-SELECT id, title, due_date, priority, project, status, stakeholder
-FROM commitments
-WHERE status IN ('pending', 'in_progress')
-ORDER BY
-    CASE WHEN due_date IS NOT NULL AND due_date < date('now') THEN 0
-         WHEN due_date = date('now') THEN 1
-         WHEN due_date IS NOT NULL THEN 2
-         ELSE 3 END,
-    CASE priority WHEN 'critical' THEN 1 WHEN 'high' THEN 2 WHEN 'medium' THEN 3 ELSE 4 END;
-```
-
-### 2. Recent Decisions (Project-Specific)
-
-```sql
-SELECT id, title, category, created_at
-FROM decisions
-WHERE status = 'active'
-  AND (project = :current_project OR project IS NULL)
-  AND created_at >= datetime('now', '-7 days')
-ORDER BY created_at DESC LIMIT 5;
-```
-
-### 3. Goal Progress
-
-```sql
-SELECT id, title, progress_percentage, target_date, goal_type
-FROM goals WHERE status = 'active'
-ORDER BY
-    CASE WHEN target_date IS NOT NULL THEN 0 ELSE 1 END,
-    progress_percentage DESC
-LIMIT 5;
-```
-
-### 4. Ideas Inbox
-
-```sql
-SELECT id, title, idea_type, priority
-FROM ideas WHERE status = 'captured'
-ORDER BY created_at DESC LIMIT 5;
-```
-
-### 5. Queue Status
-
-```sql
-SELECT COUNT(*) as pending FROM queue WHERE status = 'pending';
-```
-
-## Memory Recall
-
-When the user asks about past work, search across all knowledge stores.
-
-### FTS5 Search (if available)
-
-```sql
--- Search decisions
-SELECT d.id, d.title, d.description, d.rationale, d.category,
-       d.project, d.created_at
-FROM decisions d
-JOIN decisions_fts ON decisions_fts.rowid = d.rowid
-WHERE decisions_fts MATCH :query AND d.status = 'active'
-ORDER BY rank LIMIT 10;
-
--- Search commitments
-SELECT c.id, c.title, c.description, c.priority, c.status,
-       c.project, c.created_at
-FROM commitments c
-JOIN commitments_fts ON commitments_fts.rowid = c.rowid
-WHERE commitments_fts MATCH :query
-ORDER BY rank LIMIT 10;
-
--- Search ideas
-SELECT i.id, i.title, i.description, i.idea_type, i.status,
-       i.project, i.created_at
-FROM ideas i
-JOIN ideas_fts ON ideas_fts.rowid = i.rowid
-WHERE ideas_fts MATCH :query
-ORDER BY rank LIMIT 10;
-
--- Search knowledge nodes
-SELECT kn.id, kn.name, kn.node_type, kn.description, kn.importance
-FROM knowledge_nodes kn
-JOIN knowledge_nodes_fts ON knowledge_nodes_fts.rowid = kn.rowid
-WHERE knowledge_nodes_fts MATCH :query
-ORDER BY rank LIMIT 10;
-```
-
-### LIKE Fallback (always works)
-
-```sql
-SELECT id, title, description, rationale, category, project, created_at
-FROM decisions
-WHERE status = 'active'
-  AND (title LIKE '%' || :query || '%'
-       OR description LIKE '%' || :query || '%'
-       OR rationale LIKE '%' || :query || '%')
-ORDER BY created_at DESC LIMIT 10;
-```
-
-### Session History Search
-
-```sql
-SELECT id, project, started_at, summary, duration_seconds / 60 as minutes
-FROM sessions
-WHERE summary LIKE '%' || :query || '%'
-ORDER BY started_at DESC LIMIT 5;
-```
-
-## Knowledge Graph Queries
-
-### Find Entity Relationships
-
-```sql
-SELECT
-    kn_target.name as related_entity,
-    kn_target.node_type as entity_type,
-    ke.relationship,
-    ke.strength
-FROM knowledge_edges ke
-JOIN knowledge_nodes kn_target ON kn_target.id = ke.target_node_id
-WHERE ke.source_node_id = :entity_id
-ORDER BY ke.strength DESC;
-```
-
-### Find All Connections for an Entity
-
-```sql
-SELECT
-    CASE WHEN ke.source_node_id = :entity_id THEN kn_t.name ELSE kn_s.name END as connected_to,
-    CASE WHEN ke.source_node_id = :entity_id THEN kn_t.node_type ELSE kn_s.node_type END as type,
-    ke.relationship,
-    ke.strength
-FROM knowledge_edges ke
-JOIN knowledge_nodes kn_s ON kn_s.id = ke.source_node_id
-JOIN knowledge_nodes kn_t ON kn_t.id = ke.target_node_id
-WHERE ke.source_node_id = :entity_id OR ke.target_node_id = :entity_id
-ORDER BY ke.strength DESC;
-```
-
-## Context Awareness
-
-### Get Current Project Context
-
-```sql
--- Recent sessions in this project
-SELECT id, started_at, summary, branch, duration_seconds / 60 as minutes
-FROM sessions
-WHERE project = :current_project AND status = 'completed'
-ORDER BY started_at DESC LIMIT 3;
-```
-
-### Project-Specific Items
-
-```sql
--- Active decisions for this project
-SELECT id, title, category FROM decisions
-WHERE project = :project AND status = 'active'
-ORDER BY created_at DESC LIMIT 10;
-
--- Pending commitments for this project
-SELECT id, title, due_date, priority FROM commitments
-WHERE project = :project AND status IN ('pending', 'in_progress')
-ORDER BY priority DESC, due_date ASC;
-```
-
-## Status Dashboard
-
-```sql
-SELECT
-    (SELECT COUNT(*) FROM commitments WHERE status IN ('pending', 'in_progress')) as pending_commitments,
-    (SELECT COUNT(*) FROM commitments WHERE status = 'pending' AND due_date < date('now')) as overdue,
-    (SELECT COUNT(*) FROM decisions WHERE status = 'active') as active_decisions,
-    (SELECT COUNT(*) FROM ideas WHERE status = 'captured') as idea_inbox,
-    (SELECT COUNT(*) FROM goals WHERE status = 'active') as active_goals,
-    (SELECT COUNT(*) FROM sessions WHERE date(started_at) = date('now')) as sessions_today;
-```
-
-## Output Guidelines
-
-### Briefing Format
+### Briefing
 
 ```markdown
-# Briefing
+# Briefing — {fecha}
 
-**Project:** {project} | **Date:** {date}
-
-## Attention Needed
-
-### Overdue
-- [C-0001] Fix bug - 2 days overdue
-
-### Due Today
+## Atención requerida
+### Vencidos
+- [C-0001] Fix bug — 2 días vencido
+### Hoy
 - [C-0003] Review PR
 
-## Context
-
-### Recent Decisions (this project)
-- [D-0015] Use Redis for caching
-
-### Active Goals
+## Contexto
+### Decisiones recientes
+- [D-0015] Usar Redis para cache
+### Goals activos
 - [G-0001] MVP Launch [=========-] 90%
-
-### Ideas Inbox
-- [I-0010] GraphQL migration (exploration)
+### Ideas inbox
+- [I-0010] Migración GraphQL (exploración)
 ```
 
-### Memory Recall Format
+### Recall
 
 ```markdown
 # Recall: "{query}"
 
-## Decisions (3 found)
-- [D-0015] Use Redis for caching
-  Rationale: Better performance, built-in TTL
+## Decisiones (3)
+- [D-0015] Usar Redis — Rationale: mejor performance, TTL nativo
 
-## Commitments (1 found)
-- [C-0030] Implement caching layer - In Progress
+## Compromisos (1)
+- [C-0030] Implementar caching layer — In Progress
 
-## Ideas (1 found)
-- [I-0008] Cache warming on deploy - Captured
+## Ideas (1)
+- [I-0008] Cache warming on deploy — Captured
+```
 
-## Related Sessions
-- Jan 25: Caching discussion (45 min) - my-project
+### Priority Report
+
+```markdown
+# Prioridades
+
+## Hacer hoy
+1. **[C-0001] Fix auth bug** — Vencido, crítico. Stakeholder: Product
+2. **[C-0003] Review PR** — Vence hoy
+
+## Agendar esta semana
+3. **[G-0002] API integration** — Goal en riesgo (60%), necesita +8%/día
+
+## Considerar eliminar
+- [C-0010] Research task — 3x diferido, bajo impacto
+```
+
+### Review estratégico
+
+```markdown
+# Review semanal
+
+## Métricas
+| Métrica | Esta semana | Tendencia |
+|---------|-------------|-----------|
+| Sesiones | 18 | +20% |
+| Horas | 24h | +15% |
+| Completados | 11 | +37% |
+
+## Preocupaciones
+1. Carryover creciendo — 8 items >2 semanas
+2. Goal G-0003 en riesgo
+
+## Recomendaciones
+1. Limpiar backlog mañana (2h)
+2. Sprint de documentación miércoles
 ```
 
 ## Error Handling
 
-- If database does not exist: "Secretary database not initialized. Run the setup SQL first."
-- If no results: "No matching records found for: {query}"
-- Handle empty datasets gracefully
-- Provide default recommendations when data is sparse
+- DB no existe: "Secretary database not initialized."
+- Sin resultados: "No matching records found for: {query}"
+- Datos escasos: dar recomendaciones default y aclarar que hay pocos datos
