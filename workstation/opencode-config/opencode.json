@@ -1,60 +1,6 @@
 {
   "$schema": "https://opencode.ai/config",
-  "theme": "nord",
-  "instructions": [
-    "./memory/feedback_feature_branch_policy.md"
-  ],
-  "permission": {
-    "edit": "ask",
-    "bash": {
-      "*": "ask",
-      "find *": "allow",
-      "sort *": "allow",
-      "launchctl *": "allow",
-      "ls *": "allow",
-      "cat *": "allow",
-      "echo *": "allow",
-      "pwd": "allow",
-      "cd *": "allow",
-      "cp *": "allow",
-      "which *": "allow",
-      "head *": "allow",
-      "ss *": "allow",
-      "grep *": "allow",
-      "git diff *": "allow",
-      "git log *": "allow",
-      "git show *": "allow",
-      "git fetch *": "allow",
-      "git tag *": "allow",
-      "git branch *": "allow",
-      "tail *": "allow",
-      "write": "allow",
-      "edit *": "allow",
-      "sqlite3 *": "allow",
-      "mkdir *": "allow"
-    }
-  },
-  "provider": {
-    "anthropic": {
-      "options": {
-        "baseURL": "http://127.0.0.1:3456",
-        "apiKey": "dummy"
-      }
-    }
-  },
-  "plugin": [
-    "opencode-with-claude",
-    "/opt/homebrew/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
-  ],
   "mcp": {
-    "gogcli": {
-      "type": "local",
-      "command": ["gogcli-mcp"],
-      "enabled": true,
-      "environment": {
-        "GOG_ACCOUNT": "alejandro.schwartzmann@allaria.com.ar"
-      }
-    },
     "jira": {
       "type": "remote",
       "url": "https://mcp.atlassian.com/v1/mcp/authv2",
@@ -66,5 +12,8 @@
       "oauth": {},
       "enabled": true
     }
-  }
+  },
+  "plugin": [
+    "/opt/homebrew/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
+  ]
 }
