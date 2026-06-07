@@ -138,51 +138,51 @@ alias tasks-all='sqlite3 -column -header "$_SECRETARY_DB" \
    CASE priority WHEN '\''high'\'' THEN 1 WHEN '\''medium'\'' THEN 2 WHEN '\''low'\'' THEN 3 ELSE 4 END, created_at;"'
 
 task-done() {
-  if [ $# -eq 0 ]; then
-    echo "Uso: task-done <id>"
-    echo "Ej:  task-done C-0006"
-    return 1
-  fi
-  local id="$1"
-  local now=$(date '+%Y-%m-%d %H:%M:%S')
-  sqlite3 "$_SECRETARY_DB" "UPDATE commitments SET status = 'completed', completed_at = '$now', updated_at = '$now' WHERE id = '$id' AND status != 'completed';"
-  if [ $? -eq 0 ] && [ "$(sqlite3 "$_SECRETARY_DB" "SELECT changes();")" -gt 0 ]; then
-    echo "✅ $id completado"
-  else
-    echo "⚠️  $id no encontrado o ya estaba completado"
-  fi
+   if [ $# -eq 0 ]; then
+     echo "Usage: task-done <id>"
+     echo "Ex:    task-done C-0006"
+     return 1
+   fi
+   local id="$1"
+   local now=$(date '+%Y-%m-%d %H:%M:%S')
+   sqlite3 "$_SECRETARY_DB" "UPDATE commitments SET status = 'completed', completed_at = '$now', updated_at = '$now' WHERE id = '$id' AND status != 'completed';"
+   if [ $? -eq 0 ] && [ "$(sqlite3 "$_SECRETARY_DB" "SELECT changes();")" -gt 0 ]; then
+     echo "DONE: $id completed"
+   else
+     echo "WARN: $id not found or already completed"
+   fi
 }
 
 task-cancel() {
-  if [ $# -eq 0 ]; then
-    echo "Uso: task-cancel <id>"
-    echo "Ej:  task-cancel C-0006"
-    return 1
-  fi
-  local id="$1"
-  local now=$(date '+%Y-%m-%d %H:%M:%S')
-  sqlite3 "$_SECRETARY_DB" "UPDATE commitments SET status = 'cancelled', updated_at = '$now' WHERE id = '$id' AND status NOT IN ('completed', 'cancelled');"
-  if [ $? -eq 0 ] && [ "$(sqlite3 "$_SECRETARY_DB" "SELECT changes();")" -gt 0 ]; then
-    echo "❌ $id cancelado"
-  else
-    echo "⚠️  $id no encontrado o ya estaba finalizado"
-  fi
+   if [ $# -eq 0 ]; then
+     echo "Usage: task-cancel <id>"
+     echo "Ex:    task-cancel C-0006"
+     return 1
+   fi
+   local id="$1"
+   local now=$(date '+%Y-%m-%d %H:%M:%S')
+   sqlite3 "$_SECRETARY_DB" "UPDATE commitments SET status = 'cancelled', updated_at = '$now' WHERE id = '$id' AND status NOT IN ('completed', 'cancelled');"
+   if [ $? -eq 0 ] && [ "$(sqlite3 "$_SECRETARY_DB" "SELECT changes();")" -gt 0 ]; then
+     echo "CANCEL: $id cancelled"
+   else
+     echo "WARN: $id not found or already finished"
+   fi
 }
 
 task-add() {
-  if [ $# -eq 0 ]; then
-    echo "Uso: task-add <descripción>"
-    echo "Ej:  task-add Revisar PR de infraestructura"
-    return 1
-  fi
-  local title="$*"
-  local next_id=$(sqlite3 "$_SECRETARY_DB" "
-    SELECT printf('C-%04d', COALESCE(
-      (SELECT MAX(CAST(SUBSTR(id,3) AS INTEGER)) FROM commitments), 0
-    ) + 1);
-  ")
-  sqlite3 "$_SECRETARY_DB" "INSERT INTO commitments (id, title, status, priority) VALUES ('$next_id', '$title', 'pending', 'medium');"
-  echo "📌 $next_id — $title (medium)"
+   if [ $# -eq 0 ]; then
+     echo "Usage: task-add <description>"
+     echo "Ex:    task-add Review infrastructure PR"
+     return 1
+   fi
+   local title="$*"
+   local next_id=$(sqlite3 "$_SECRETARY_DB" "
+     SELECT printf('C-%04d', COALESCE(
+       (SELECT MAX(CAST(SUBSTR(id,3) AS INTEGER)) FROM commitments), 0
+     ) + 1);
+   ")
+   sqlite3 "$_SECRETARY_DB" "INSERT INTO commitments (id, title, status, priority) VALUES ('$next_id', '$title', 'pending', 'medium');"
+   echo "TASK: $next_id — $title (medium)"
 }
 
 CREDENTIALS_FILE="$DOTFILES/.password-store/credentials.env"

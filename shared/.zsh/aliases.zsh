@@ -482,7 +482,7 @@ compile-slides() {
 
 # ===== GEMINI MCP ALIASES =====
 alias gmcp='gemini mcp list'
-alias gmcp-status='gemini mcp list && echo "\n📊 MCP Config:" && cat ~/.gemini/settings.json | grep -A 20 mcpServers'
+alias gmcp-status='gemini mcp list && echo "\nMCP Config:" && cat ~/.gemini/settings.json | grep -A 20 mcpServers'
 
 alias bcra-vars='curl https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias > output.json'
 
@@ -493,16 +493,16 @@ byma-token() {
   local profile="${1:-development}"
   local byma_url="${BYMA_URL:-https://apigw.byma.com.ar}"
 
-  echo "📡 Leyendo credenciales de AWS Secrets Manager (profile: $profile)..." >&2
-  local secret
-  secret=$(aws secretsmanager get-secret-value \
-    --secret-id application/market-data \
-    --profile "$profile" \
-    --query 'SecretString' \
-    --output text 2>/dev/null) || {
-    echo "❌ No se pudo leer el secret application/market-data con profile '$profile'" >&2
-    return 1
-  }
+  echo "Reading credentials from AWS Secrets Manager (profile: $profile)..." >&2
+   local secret
+   secret=$(aws secretsmanager get-secret-value \
+     --secret-id application/market-data \
+     --profile "$profile" \
+     --query 'SecretString' \
+     --output text 2>/dev/null) || {
+     echo "Error: Could not read secret application/market-data with profile '$profile'" >&2
+     return 1
+   }
 
   local client_id
   local client_secret
@@ -510,50 +510,50 @@ byma-token() {
   client_secret=$(echo "$secret" | jq -r '.byma_client_secret')
 
   if [[ -z "$client_id" || "$client_id" == "null" ]]; then
-    echo "❌ byma_client_id no encontrado en el secret" >&2
-    return 1
-  fi
+     echo "Error: byma_client_id not found in secret" >&2
+     return 1
+   fi
 
-  echo "🔑 Solicitando token con scopes: snapshot.read marketDataInstruments.read ..." >&2
-  local response
-  response=$(curl -s -X POST "$byma_url/oauth/token/" \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "client_id=$client_id" \
-    -d "client_secret=$client_secret" \
-    -d "grant_type=client_credentials" \
-    -d "scope=snapshot.read marketDataInstruments.read") || {
-    echo "❌ Error al obtener token de BYMA" >&2
-    return 1
-  }
+   echo "Requesting token with scopes: snapshot.read marketDataInstruments.read ..." >&2
+   local response
+   response=$(curl -s -X POST "$byma_url/oauth/token/" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "client_id=$client_id" \
+     -d "client_secret=$client_secret" \
+     -d "grant_type=client_credentials" \
+     -d "scope=snapshot.read marketDataInstruments.read") || {
+     echo "Error getting token from BYMA" >&2
+     return 1
+   }
 
-  local error
-  error=$(echo "$response" | jq -r '.error // empty')
-  if [[ -n "$error" ]]; then
-    echo "❌ BYMA error: $error — $(echo "$response" | jq -r '.error_description // ""')" >&2
-    return 1
-  fi
+   local error
+   error=$(echo "$response" | jq -r '.error // empty')
+   if [[ -n "$error" ]]; then
+     echo "BYMA error: $error — $(echo "$response" | jq -r '.error_description // ""')" >&2
+     return 1
+   fi
 
-  local access_token
-  access_token=$(echo "$response" | jq -r '.access_token')
+   local access_token
+   access_token=$(echo "$response" | jq -r '.access_token')
 
-  echo "✅ Token obtenido (expira en $(echo "$response" | jq -r '.expires_in') segundos)" >&2
-  echo "$access_token"
+   echo "Token obtained (expires in $(echo "$response" | jq -r '.expires_in') seconds)" >&2
+   echo "$access_token"
 }
 
 # Alias con shorthand — usa profile development por defecto
 alias byma-token-dev='byma-token development'
 alias byma-token-prod='byma-token production'
 
-# Helper: obtiene el token y lo copia al clipboard
+# Helper: copy token to clipboard
 byma-token-copy() {
-  local token
-  token=$(byma-token "$@") && echo "$token" | pbcopy && echo "📋 Token copiado al clipboard"
+   local token
+   token=$(byma-token "$@") && echo "$token" | pbcopy && echo "Token copied to clipboard"
 }
 
-# Helper: setea el token como BYMA_TOKEN en el entorno
+# Helper: export token as BYMA_TOKEN env var
 byma-token-export() {
-  export BYMA_TOKEN=$(byma-token "$@")
-  echo "🔐 BYMA_TOKEN seteado en el entorno"
+   export BYMA_TOKEN=$(byma-token "$@")
+   echo "BYMA_TOKEN set in environment"
 }
 
 # ===== BYMA MARKET DATA INSTRUMENTS =====
@@ -570,16 +570,16 @@ byma-market-data-instruments() {
   local profile="${4:-development}"
   local byma_url="${BYMA_URL:-https://apigw.byma.com.ar}"
 
-  local token="${BYMA_TOKEN}"
-  if [[ -z "$token" ]]; then
-    echo "📡 BYMA_TOKEN no está en el entorno, obteniendo..." >&2
-    token=$(byma-token "$profile") || return 1
-  fi
+   local token="${BYMA_TOKEN}"
+   if [[ -z "$token" ]]; then
+     echo "BYMA_TOKEN not in environment, fetching..." >&2
+     token=$(byma-token "$profile") || return 1
+   fi
 
-  local url="$byma_url/market-data-instruments/v1/$type?group=$group"
-  [[ -n "$market" ]] && url="$url&market=$market"
+   local url="$byma_url/market-data-instruments/v1/$type?group=$group"
+   [[ -n "$market" ]] && url="$url&market=$market"
 
-  echo "📡 GET $url" >&2
+   echo "GET $url" >&2
   curl -s --request GET "$url" \
     --header "Authorization: Bearer $token" | jq .
 }
@@ -605,21 +605,21 @@ byma-snapshot-equity() {
   local profile="${4:-development}"
   local byma_url="${BYMA_URL:-https://apigw.byma.com.ar}"
 
-  local token="${BYMA_TOKEN}"
-  if [[ -z "$token" ]]; then
-    echo "📡 BYMA_TOKEN no está en el entorno, obteniendo..." >&2
-    token=$(byma-token "$profile") || return 1
-  fi
+   local token="${BYMA_TOKEN}"
+   if [[ -z "$token" ]]; then
+     echo "BYMA_TOKEN not in environment, fetching..." >&2
+     token=$(byma-token "$profile") || return 1
+   fi
 
-  local url
-  if [[ -z "$subgroup" ]]; then
-    # Endpoint raw (respuesta plana, sin subgroup)
-    url="$byma_url/snapshot/v1/equity.raw/?group=$group&operativeForm=$operative_form"
-  else
-    # Endpoint con subgroup (respuesta envuelta en objeto)
-    url="$byma_url/snapshot/v1/equity?group=$group&subgroup=$subgroup&operativeForm=$operative_form"
-  fi
-  echo "📡 GET $url" >&2
+   local url
+   if [[ -z "$subgroup" ]]; then
+     # Raw endpoint (flat response, no subgroup)
+     url="$byma_url/snapshot/v1/equity.raw/?group=$group&operativeForm=$operative_form"
+   else
+     # Endpoint with subgroup (wrapped response)
+     url="$byma_url/snapshot/v1/equity?group=$group&subgroup=$subgroup&operativeForm=$operative_form"
+   fi
+   echo "GET $url" >&2
   curl -s --request GET "$url" \
     --header "Authorization: Bearer $token" | jq .
 }
@@ -631,7 +631,7 @@ alias byma-snapshot-equity-leaders='byma-snapshot-equity ACCIONES LIDER CONTADO'
 alias byma-snapshot-cedears='byma-snapshot-equity CEDEARS GENERAL CONTADO'
 
 # ===== CLAUDE CODE MULTI-PROFILE MANAGEMENT =====
-# Profiles: personal (🟢 teal), w = work (🔶 orange), ww = alt (🟣 lavender)
+# Profiles: personal (teal), w = work (orange), ww = alt (lavender)
 # Shared scripts in ~/.config/claude-profiles/
 
 _claude_run() {
@@ -658,18 +658,18 @@ claude-use() {
 }
 
 claude-whoami() {
-    local cfg="${CLAUDE_CONFIG_DIR:-$HOME}"
-    local user_id="?"
-    if [[ -f "$cfg/.claude.json" ]]; then
-        user_id=$(jq -r '.userID // "?"' "$cfg/.claude.json" | head -c 16)
-    fi
-    local profile="default"
-    if [[ -f "$HOME/.claude-profile" ]]; then
-        profile=$(cat "$HOME/.claude-profile")
-    fi
-    echo "🔷 Claude Profile: $profile"
-    echo "   Config dir:     ${CLAUDE_CONFIG_DIR:-~/.claude.json}"
-    echo "   User ID:        ${user_id}..."
+     local cfg="${CLAUDE_CONFIG_DIR:-$HOME}"
+     local user_id="?"
+     if [[ -f "$cfg/.claude.json" ]]; then
+         user_id=$(jq -r '.userID // "?"' "$cfg/.claude.json" | head -c 16)
+     fi
+     local profile="default"
+     if [[ -f "$HOME/.claude-profile" ]]; then
+         profile=$(cat "$HOME/.claude-profile")
+     fi
+     echo "Claude Profile: $profile"
+     echo "   Config dir:     ${CLAUDE_CONFIG_DIR:-~/.claude.json}"
+     echo "   User ID:        ${user_id}..."
 }
 # Load claude profile completion
 if [[ -f "$HOME/.config/claude-profiles/completion.zsh" ]]; then
