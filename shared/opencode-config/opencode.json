@@ -43,7 +43,8 @@
     }
   },
   "plugin": [
-    "opencode-with-claude"
+    "opencode-with-claude",
+    "/opt/homebrew/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
   ],
   "mcp": {
     "gogcli": {

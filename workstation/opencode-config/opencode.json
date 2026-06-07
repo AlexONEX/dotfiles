@@ -12,8 +12,5 @@
       "oauth": {},
       "enabled": true
     }
-  },
-  "plugin": [
-    "/opt/homebrew/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
-  ]
+  }
 }
