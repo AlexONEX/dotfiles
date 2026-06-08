@@ -3,6 +3,8 @@ name: secretary
 description: Capture commitments, decisions, and ideas in Spanish. Track tasks, integrate Calendar, manage workplace memory (people, terms, projects). Auto-capture during conversation.
 license: MIT
 compatibility: opencode
+argument-hint: <details>
+allowed-tools: ["Read", "Write", "Bash", "Grep", "Glob", "Edit"]
 ---
 
 # Secretary Skill

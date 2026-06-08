@@ -3,6 +3,8 @@ name: assistant
 description: Context-aware briefings, memory recall, strategic analysis, and work prioritization across sessions. Use when starting a session, recalling past decisions, checking pending work, prioritizing, or reviewing productivity trends.
 license: MIT
 compatibility: opencode
+argument-hint: <details>
+allowed-tools: ["Read", "Write", "Bash", "Grep", "Glob", "Edit", "WebSearch", "WebFetch", "Task", "TodoWrite"]
 ---
 
 # Assistant Skill

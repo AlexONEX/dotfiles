@@ -1,6 +1,8 @@
 ---
 name: java-quarkus-testing
 description: Expert guidance for testing Quarkus applications with comprehensive coverage of unit tests (Mockito), integration tests (@QuarkusTest), E2E tests (RestAssured), and test organization. Covers Given/When/Then naming conventions, test framework selection, mocking strategies, database testing patterns, test data management, and best practices for writing maintainable, type-safe tests. Use when writing new tests, refactoring existing tests, or reviewing test code for Quarkus applications.
+argument-hint: <details>
+allowed-tools: ["Read", "Write", "Bash", "Grep", "Glob", "Edit", "WebSearch", "WebFetch", "Task", "TodoWrite"]
 ---
 
 # Java Quarkus Testing Expert

@@ -1,6 +1,8 @@
 ---
 name: infra-allaria
 description: Create and manage Allaria infrastructure with Terraform modules — ECS, Lambda, RDS, Aurora, S3, CloudFront, SQS, Kinesis, Redis, Keycloak, DMS, and more
+argument-hint: <details>
+allowed-tools: ["Read", "Write", "Bash", "Grep", "Glob", "Edit", "WebSearch", "WebFetch", "Task", "TodoWrite"]
 ---
 
 ## What I do

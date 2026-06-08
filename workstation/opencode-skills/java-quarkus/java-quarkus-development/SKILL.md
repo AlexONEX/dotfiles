@@ -1,6 +1,8 @@
 ---
 name: java-quarkus-development
 description: "Comprehensive development guide for ALL Java/Quarkus development work, from simple changes to complex integrations. Covers: external API integration (@RegisterRestClient, Keycloak, OAuth), dependency injection, transaction management, REST APIs with records/DTOs, Panache persistence, JPA entities with Lombok, Flyway migrations, file organization (gateway structure), configuration, scheduled jobs, and error handling. Use for both creating new code and modifying existing code to ensure consistency with project conventions and avoid common Quarkus pitfalls."
+argument-hint: <details>
+allowed-tools: ["Read", "Write", "Bash", "Grep", "Glob", "Edit", "WebSearch", "WebFetch", "Task", "TodoWrite"]
 ---
 
 # Java Quarkus Development Expert
