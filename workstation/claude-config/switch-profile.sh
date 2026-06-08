@@ -28,7 +28,7 @@ if [[ $# -eq 0 ]]; then
     ' "$PROFILES_JSON" | column -t -s ' '
     echo ""
     echo "Usage: claude-use <profile-name>"
-    echo "   or:  claude-<profile-name>"
+    echo "   or:  c-<profile-name>"
     exit 0
 fi
 

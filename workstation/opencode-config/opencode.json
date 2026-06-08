@@ -11,6 +11,26 @@
       "url": "https://mcp.sentry.dev/mcp",
       "oauth": {},
       "enabled": true
+    },
+    "gogcli": {
+      "type": "local",
+      "command": ["gogcli-mcp"],
+      "enabled": true,
+      "environment": {
+        "GOG_ACCOUNT": "alejandro.schwartzmann@allaria.com.ar"
+      }
     }
-  }
+  },
+  "provider": {
+    "anthropic": {
+      "options": {
+        "baseURL": "http://127.0.0.1:3456",
+        "apiKey": "dummy"
+      }
+    }
+  },
+  "plugin": [
+    "opencode-with-claude",
+    "/opt/homebrew/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
+  ]
 }

@@ -647,9 +647,14 @@ _claude_run() {
     CLAUDE_CONFIG_DIR="$config_dir" claude "$@"
 }
 
-alias claude-personal='echo "personal" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude claude'
-alias claude-w='echo "work" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude-work claude'
-alias claude-ww='echo "alt" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude-alt claude'
+# Claude Code profile aliases
+alias c-self='echo "personal" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude claude'
+alias c-allaria='echo "allaria" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude-allaria claude'
+alias c-alma='echo "alma" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude-alma claude'
+# Legacy aliases
+alias claude-personal='c-self'
+alias claude-allaria='c-allaria'
+alias claude-alma='c-alma'
 
 alias claude-profiles='bash ~/.config/claude-profiles/status.sh'
 
