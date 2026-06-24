@@ -1,0 +1,98 @@
+#!/usr/bin/env node
+// meridian-refresh-all — refresh every meridian profile's OAuth token
+// Runs via launchd every 4h so no token ever expires.
+
+const { execSync } = require('child_process');
+const os = require('os');
+const crypto = require('crypto');
+const path = require('path');
+const fs = require('fs');
+
+const OAUTH_URL = 'https://platform.claude.com/v1/oauth/token';
+const CLIENT_ID = '9d1c250a-e61b-44d9-88ed-5944d1962f5e';
+
+async function main() {
+  const profiles = JSON.parse(fs.readFileSync(os.homedir() + '/.config/meridian/profiles.json', 'utf8'));
+  const defaultDir = path.resolve(os.homedir() + '/.claude');
+
+  let ok = 0, fail = 0;
+
+  for (const profile of profiles) {
+    const configDir = profile.claudeConfigDir;
+    if (!configDir) continue;
+
+    const absDir = path.resolve(configDir);
+    const service = absDir === defaultDir
+      ? 'Claude Code-credentials'
+      : `Claude Code-credentials-${crypto.createHash('sha256').update(absDir).digest('hex').slice(0, 8)}`;
+
+    let raw;
+    try {
+      raw = execSync(`security find-generic-password -l "${service}" -w 2>/dev/null`, { encoding: 'utf-8' });
+    } catch {
+      console.error(`[${profile.id}] ⏭ no credentials in keychain`);
+      continue;
+    }
+
+    const creds = JSON.parse(raw.trim());
+    const oauth = creds.claudeAiOauth || creds;
+
+    if (!oauth.refreshToken) {
+      console.error(`[${profile.id}] ⏭ no refresh token`);
+      continue;
+    }
+
+    // Refresh if < 6h until expiry (covers 4h launchd interval with buffer)
+    const expiresAt = oauth.expiresAt;
+    if (expiresAt) {
+      const h = (expiresAt - Date.now()) / 3600000;
+      if (h > 6) {
+        console.error(`[${profile.id}] ⏭ still fresh (${h.toFixed(1)}h)`);
+        continue;
+      }
+    }
+
+    try {
+      const resp = await fetch(OAUTH_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          grant_type: 'refresh_token',
+          client_id: CLIENT_ID,
+          refresh_token: oauth.refreshToken
+        })
+      });
+
+      const body = resp.ok ? await resp.json() : await resp.text();
+      if (!resp.ok || !body.access_token) {
+        const errMsg = typeof body === 'string' ? body : (body.error || 'unknown');
+        console.error(`[${profile.id}] ❌ ${errMsg}`);
+        fail++;
+        continue;
+      }
+
+      const now = Date.now();
+      const newExpiresAt = body.expires_at || (now + (body.expires_in || 28800) * 1000);
+
+      oauth.accessToken = body.access_token;
+      if (body.refresh_token) oauth.refreshToken = body.refresh_token;
+      oauth.expiresAt = newExpiresAt;
+
+      const updated = JSON.stringify(creds, null, 0).replace(/\n\s*/g, '');
+      execSync(`security add-generic-password -U -s "${service}" -a "${os.userInfo().username}" -w '${updated}'`);
+
+      const exp = new Date(newExpiresAt).toISOString().replace('T', ' ').replace(/\.\d+Z/, '');
+      console.error(`[${profile.id}] ✅ refreshed, expires ${exp}`);
+      ok++;
+
+    } catch (err) {
+      console.error(`[${profile.id}] ❌ ${err.message}`);
+      fail++;
+    }
+  }
+
+  console.error(`\nDone: ${ok} ok, ${fail} failed`);
+  process.exit(fail > 0 ? 1 : 0);
+}
+
+main();

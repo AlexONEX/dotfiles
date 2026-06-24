@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.rynfar.meridian-refresh-all</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/alex/bin/meridian-refresh-all</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>14400</integer>
+    <key>StandardErrorPath</key>
+    <string>/Users/alex/.config/meridian/refresh-all-stderr.log</string>
+    <key>StandardOutPath</key>
+    <string>/Users/alex/.config/meridian/refresh-all-stdout.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+</dict>
+</plist>
