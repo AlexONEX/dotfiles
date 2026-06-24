@@ -649,11 +649,9 @@ _claude_run() {
 
 # Claude Code profile aliases
 alias c-self='echo "personal" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude claude'
-alias c-allaria='echo "allaria" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude-allaria claude'
 alias c-alma='echo "alma" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude-alma claude'
 # Legacy aliases
 alias claude-personal='c-self'
-alias claude-allaria='c-allaria'
 alias claude-alma='c-alma'
 
 alias claude-profiles='bash ~/.config/claude-profiles/status.sh'
@@ -691,7 +689,6 @@ _oc_switch() {
 }
 
 alias oc-self='_oc_switch personal'
-alias oc-allaria='_oc_switch allaria'
 alias oc-alma='_oc_switch alma'
 
 oc-status() {

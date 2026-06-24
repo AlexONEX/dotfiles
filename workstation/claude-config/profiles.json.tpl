@@ -9,14 +9,6 @@
     "emoji": "🟢",
     "description": "Personal — johndoelibertarian@gmail.com"
   },
-  "allaria": {
-    "label": "ALLARIA",
-    "config_dir": "$HOME/.claude-allaria",
-    "color": "orange",
-    "theme": "dark-ansi",
-    "emoji": "🔶",
-    "description": "Allaria account"
-  },
   "alma": {
     "label": "ALMA",
     "config_dir": "$HOME/.claude-alma",

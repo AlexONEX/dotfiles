@@ -4,7 +4,6 @@
 #
 # Usage:
 #   switch-profile.sh personal   → switches to personal account
-#   switch-profile.sh allaria    → switches to Allaria account
 #   switch-profile.sh alma       → switches to Alma fintech account
 #   switch-profile.sh            → lists available profiles
 # =============================================================================

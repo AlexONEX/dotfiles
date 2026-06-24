@@ -11,8 +11,9 @@ alias external='cd /mnt/external'
 alias ls='eza -al'
 alias cp='cp -iv'
 alias mv='mv -iv'
-alias disks='df -h / /srv /var && echo "---" && du -hx --max-depth=1 /srv 2>/dev/null | sort -rh'
+alias disks='df -h / /srv /var /mnt/external && echo "---" && du -hx --max-depth=1 /srv /mnt/external 2>/dev/null | sort -rh'
 alias clean='sudo systemctl start weekly-maintenance'
+
 # ─── Package management ──────────────────────────────────────────────────────
 alias u='sudo apt update -y && sudo apt upgrade -y'
 alias p='sudo apt autoremove --purge'
@@ -32,7 +33,6 @@ _oc_switch() {
 }
 
 alias oc-self='_oc_switch personal'
-alias oc-allaria='_oc_switch allaria'
 alias oc-alma='_oc_switch alma'
 
 oc-status() {
