@@ -1,0 +1,44 @@
+#!/bin/bash
+curl -sf http://localhost:3456/v1/usage/quota/all | python3 -c "
+import json, sys, datetime
+d = json.load(sys.stdin)
+as_of = d.get('asOf', 0)
+
+for p in d.get('profiles', []):
+    label = p['id']
+    is_active = p.get('isActive', False)
+    print('═' * 40)
+    print('  ' + label.upper() + ('  \u25c0 ACTIVE' if is_active else ''))
+    print('═' * 40)
+    if p.get('error'):
+        print('  \u26a0 ' + p['error'])
+        print()
+        continue
+    for w in p.get('windows', []):
+        wtype = w.get('type', '')
+        util = w.get('utilization', 0) * 100
+        resets_at = w.get('resetsAt')
+        label_w = '5h' if 'five' in wtype else '7d' if 'seven' in wtype else wtype
+        bar_len = 20
+        filled = int(util / 100 * bar_len)
+        bar = '\u2588' * filled + '\u2591' * (bar_len - filled)
+        reset_str = ''
+        if resets_at:
+            remaining = resets_at - as_of
+            if remaining > 0:
+                mins = int(remaining / 60000)
+                if mins < 60:
+                    reset_str = f'en {mins}m'
+                elif mins < 1440:
+                    reset_str = f'en {mins // 60}h {mins % 60:02d}m'
+                else:
+                    reset_str = f'en {mins // 1440}d {(mins % 1440) // 60}h'
+        print(f'  {label_w:>4}: {bar} {util:5.1f}%   {reset_str}')
+    extra = p.get('extraUsage')
+    if extra and extra.get('isEnabled'):
+        used = extra.get('usedCredits', 0)
+        limit = extra.get('monthlyLimit', 0)
+        util_extra = (extra.get('utilization') or 0) * 100
+        print(f'  USD: \${used:,.0f} / \${limit:,.0f}  ({util_extra:.0f}%)')
+    print()
+"
