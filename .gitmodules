@@ -1,3 +1,6 @@
 [submodule ".password-store"]
 	path = .password-store
 	url = git@github.com:AlexONEX/.password-store.git
+[submodule "workstation/opencode-config/ponytail"]
+	path = workstation/opencode-config/ponytail
+	url = https://github.com/DietrichGebert/ponytail.git

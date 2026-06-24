@@ -133,6 +133,13 @@ if [[ "$MACHINE" == "workstation" ]]; then
   sed "s|\$HOME|$HOME|g" "$DOTFILES/workstation/meridian-config/profiles.json.tpl" > ~/.config/meridian/profiles.json
   ln -sf "$DOTFILES/workstation/meridian-config/settings.json" ~/.config/meridian/settings.json
 
+  # ─── Meridian token refresh launch agent ────────────────────────────────
+  mkdir -p ~/Library/LaunchAgents
+  ln -sf "$DOTFILES/workstation/meridian-config/com.rynfar.meridian-refresh-all.plist" \
+         ~/Library/LaunchAgents/com.rynfar.meridian-refresh-all.plist
+  launchctl unload ~/Library/LaunchAgents/com.rynfar.meridian-refresh-all.plist 2>/dev/null
+  launchctl load   ~/Library/LaunchAgents/com.rynfar.meridian-refresh-all.plist
+
   # ─── Claude Profiles ────────────────────────────────────────────────────────
   CLAUDE_PROFILES_DIR="$HOME/.config/claude-profiles"
   mkdir -p "$CLAUDE_PROFILES_DIR"
@@ -149,7 +156,7 @@ if [[ "$MACHINE" == "workstation" ]]; then
   ln -sf "$DOTFILES/workstation/claude-config/settings.json" ~/.claude/settings.json
 
   mkdir -p ~/.claude-allaria
-  ln -sf "$DOTFILES/workstation/claude-config/allaria.settings.json" ~/.claude-allaria/settings.json
+  rm -f ~/.claude-allaria/settings.json
 
   mkdir -p ~/.claude-alma
   ln -sf "$DOTFILES/workstation/claude-config/alma.settings.json" ~/.claude-alma/settings.json
