@@ -40,6 +40,7 @@
   },
   "plugin": [
     "opencode-with-claude",
-    "/usr/local/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
+    "/usr/local/lib/node_modules/@rynfar/meridian/plugin/meridian.ts",
+    "./ponytail/.opencode/plugins/ponytail.mjs"
   ]
 }

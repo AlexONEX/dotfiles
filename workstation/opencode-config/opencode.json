@@ -31,6 +31,7 @@
   },
   "plugin": [
     "opencode-with-claude",
-    "/opt/homebrew/lib/node_modules/@rynfar/meridian/plugin/meridian.ts"
+    "/opt/homebrew/lib/node_modules/@rynfar/meridian/plugin/meridian.ts",
+    "./ponytail/.opencode/plugins/ponytail.mjs"
   ]
 }
