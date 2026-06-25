@@ -263,7 +263,7 @@ alias kernel='uname -r'
 alias localip='ip -brief -color address'
 alias wttr='curl -4 wttr.in'
 alias rpolybar='~/.config/polybar/launch.sh'
-alias webToPdf='curl -u 'api:
+
 
 #Sudo
 alias stopB='sudo systemctl stop bluetooth.service'
@@ -588,6 +588,27 @@ byma-market-data-instruments() {
 alias byma-mdi-equities-acciones='byma-market-data-instruments equities.json ACCIONES'
 alias byma-mdi-equities-cedears='byma-market-data-instruments equities.json CEDEARS'
 alias byma-mdi-options='byma-market-data-instruments options.json OPCIONES'
+
+# ===== BYMA FIXED INCOME ISSUANCE CONDITIONS =====
+# GET /market-data-instruments/v1/fixed-income-issuance-conditions.json?symbol={symbol}
+# USO: byma-mdi-issuance-conditions <symbol> [profile]
+byma-mdi-issuance-conditions() {
+  local symbol="${1:?Uso: byma-mdi-issuance-conditions <symbol> [profile]}"
+  local profile="${2:-development}"
+  local byma_url="${BYMA_URL:-https://apigw.byma.com.ar}"
+
+  local token="${BYMA_TOKEN}"
+  if [[ -z "$token" ]]; then
+    echo "BYMA_TOKEN not in environment, fetching..." >&2
+    token=$(byma-token "$profile") || return 1
+  fi
+
+  local url="$byma_url/market-data-instruments/v1/fixed-income-issuance-conditions.json/?symbol=$symbol"
+  echo "GET $url" >&2
+  curl -s --request GET "$url" \
+    --header "Authorization: Bearer $token" | jq .
+}
+alias byma-mdi-condiciones='byma-mdi-issuance-conditions'
 
 # ===== BYMA SNAPSHOT EQUITY =====
 # Obtiene equity snapshot de BYMA

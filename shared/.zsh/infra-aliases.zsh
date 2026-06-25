@@ -32,15 +32,6 @@ tf-init-dev() {
 		-backend-config="region=${region}"
 }
 
-tf-init-dev-bra() {
-	local project_name=$(basename "$PWD")
-	local region="sa-east-1"
-	terraform init \
-		-backend-config="bucket=allaria-development-tf-remote-state" \
-		-backend-config="key=allaria-tech/${project_name}/${region}/terraform.tfstate" \
-		-backend-config="region=us-east-1"
-}
-
 tf-plan-dev() {
 	local project_name=$(basename "$PWD")
 	terraform plan -no-color \

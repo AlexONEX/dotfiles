@@ -30,8 +30,11 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     source /opt/homebrew/bin/virtualenvwrapper.sh
   fi
 
-  # pyenv
-  export PATH="$PYENV_ROOT/bin:$PATH"
+  # pyenv (si está instalado)
+  if command -v pyenv &>/dev/null; then
+    export PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+  fi
 fi
 
 # Linux-specific (Debian server)

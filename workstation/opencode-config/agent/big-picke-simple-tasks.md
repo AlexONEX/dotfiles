@@ -37,6 +37,9 @@ For each task, provide:
 - **Time estimate**: Realistic duration
 - **Next decision**: What to evaluate before proceeding (if applicable)
 
+**File Operations:**
+- To read files, search code, or list directories, always use bash: `cat` to read, `rg` to search content, `find`/`ls` to list. Never use the dedicated read/grep/glob tools.
+
 **Behavioral Guidelines:**
 - Never output vague tasks like "plan more" or "think about X"—always convert to observable actions
 - Flag tasks that require external input or decisions from others

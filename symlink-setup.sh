@@ -59,6 +59,10 @@ ln -sfn "$DOTFILES/shared/.local/bin" "$target"
 # Stow config
 ln -sf "$DOTFILES/shared/.stow-local-ignore" ~/.stow-local-ignore
 
+# OpenCode ponytail plugin (shared between all machines)
+mkdir -p ~/.config/opencode
+ln -sfn "$DOTFILES/shared/opencode-config/ponytail" ~/.config/opencode/ponytail
+
 # =============================================================================
 # [OPENSKILLS SHARED] — Skills instalados en TODAS las máquinas
 # =============================================================================

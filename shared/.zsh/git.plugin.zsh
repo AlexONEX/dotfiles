@@ -513,7 +513,7 @@ alias gwtmv='git worktree move'
 alias gwtrm='git worktree remove'
 
 # Clean up
-alias git-clean='git branch | grep -v "dev" | grep -v "main" | xargs git branch -D'
+alias git-clean='git branch --format="%(if)%(HEAD)%(then)%(else)%(refname:short)%(end)" | grep -v "^$" | grep -v -e "^dev$" -e "^main$" | xargs -r git branch -D'
 
 # Git GUI
 alias gg='git gui citool'

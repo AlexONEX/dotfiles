@@ -16,8 +16,9 @@ unset LC_CTYPE
 
 # Initialize completions BEFORE loading plugins (plugins call compdef)
 autoload -Uz compinit
-if [[ -d /opt/homebrew/share/zsh/site-functions ]]; then
-  compinit
+# Usar dump cacheado si fue generado hace <20h, regenerar si es más viejo
+if [[ -n "${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh-20)" ]]; then
+  compinit -C
 else
   compinit -i
 fi
@@ -78,10 +79,17 @@ elif [[ -f /usr/local/bin/brew ]]; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-# NVM — Node Version Manager (instalado via brew)
+# NVM — lazy-load (solo cuando usás node/npm/npx/nvm)
 export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # loads nvm bash_completion
+_nvm_lazy_load() {
+  unset -f nvm node npm npx 2>/dev/null
+  [[ -s "/opt/homebrew/opt/nvm/nvm.sh" ]] && . "/opt/homebrew/opt/nvm/nvm.sh"
+  [[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+}
+nvm() { _nvm_lazy_load; nvm "$@"; }
+node() { _nvm_lazy_load; command node "$@"; }
+npm() { _nvm_lazy_load; command npm "$@"; }
+npx() { _nvm_lazy_load; command npx "$@"; }
 
 if command -v nvim &>/dev/null; then
   export VISUAL=nvim
@@ -216,4 +224,9 @@ alias mails-inbox='gmail.py --unread --label INBOX' # CLI — inbox pendiente
 alias gmail-ari='gmail-tui.py --account allaria'    # TUI — Allaria
 alias gmail-alm='gmail-tui.py --account almafintech' # TUI — Almafintech
 alias gmail-reauth='gmail-reauth.py'                  # Re-autenticacion OAuth
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# ─── Meridian usage ────────────────────────────────────────────────────────────
+export PATH="$HOME/bin:$PATH"
+alias mu='meridian-usage'
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /opt/homebrew/bin/terraform terraform
