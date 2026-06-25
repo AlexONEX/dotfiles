@@ -89,6 +89,12 @@ for f in "$DOTFILES/shared/opencode-skills/"*.sh "$DOTFILES/shared/opencode-skil
   [ -f "$f" ] && ln -sf "$f" ~/.config/opencode/skills/$(basename "$f")
 done
 
+# Ponytail skills (submodule)
+for skill_dir in "$DOTFILES/shared/opencode-config/ponytail/skills/"*/; do
+  skill=$(basename "$skill_dir")
+  link_openskill "$skill" "$skill_dir"
+done
+
 # =============================================================================
 # [MACHINE-SPECIFIC OPENSKILLS] — Dependen de la máquina
 # =============================================================================
