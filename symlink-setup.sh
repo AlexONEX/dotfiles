@@ -155,9 +155,6 @@ if [[ "$MACHINE" == "workstation" ]]; then
   mkdir -p ~/.claude
   ln -sf "$DOTFILES/workstation/claude-config/settings.json" ~/.claude/settings.json
 
-  mkdir -p ~/.claude-allaria
-  rm -f ~/.claude-allaria/settings.json
-
   mkdir -p ~/.claude-alma
   ln -sf "$DOTFILES/workstation/claude-config/alma.settings.json" ~/.claude-alma/settings.json
 
@@ -169,7 +166,18 @@ fi
 
 if [[ "$MACHINE" == "homelab" ]]; then
   echo "  ── homelab/ ──"
-  # (sin configs extras por ahora)
+
+  # ─── OpenCode config (sin MCPs) ──────────────────────────────────────────
+  mkdir -p ~/.config/opencode/agent
+  ln -sf "$DOTFILES/homelab/opencode-config/opencode.json" ~/.config/opencode/opencode.json
+
+  # ─── Meridian ──────────────────────────────────────────────────────────────
+  mkdir -p ~/.config/meridian
+  [ -f ~/.config/meridian/profiles.json ] && rm -f ~/.config/meridian/profiles.json
+  [ -L ~/.config/meridian/profiles.json ] && rm -f ~/.config/meridian/profiles.json
+  sed "s|\$HOME|$HOME|g" "$DOTFILES/workstation/meridian-config/profiles.json.tpl" > ~/.config/meridian/profiles.json
+  ln -sf "$DOTFILES/workstation/meridian-config/settings.json" ~/.config/meridian/settings.json
+
 fi
 
 echo ""
