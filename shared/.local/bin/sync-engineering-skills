@@ -2,7 +2,7 @@
 # =============================================================================
 # sync-engineering-skills — Check upstream changes and create PR
 #
-# Compares ./workstation/opencode-skills/engineering/ against
+# Compares ./shared/opencode-skills/ against
 # github.com/mattpocock/skills engineering subtree.
 #
 # Usage:
@@ -15,7 +15,7 @@ set -euo pipefail
 UPSTREAM_REPO="https://github.com/mattpocock/skills.git"
 UPSTREAM_PATH="skills/engineering"
 DOTFILES_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
-SKILLS_DIR="$DOTFILES_DIR/workstation/opencode-skills/engineering"
+SKILLS_DIR="$DOTFILES_DIR/shared/opencode-skills"
 COMMIT_FILE="$SKILLS_DIR/.upstream-commit"
 TMP_CLONE=$(mktemp -d)
 
