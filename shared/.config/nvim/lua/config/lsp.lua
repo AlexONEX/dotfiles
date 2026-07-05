@@ -147,6 +147,7 @@ local enabled_lsp_servers = {
 	jsonls = "vscode-json-language-server",
 	taplo = "taplo",
 	pylsp = "pylsp",
+	jdtls = "jdtls",
 }
 
 for server_name, lsp_executable in pairs(enabled_lsp_servers) do
