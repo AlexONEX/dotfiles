@@ -7,3 +7,15 @@
 [submodule "external/mattpocock-skills"]
 	path = external/mattpocock-skills
 	url = https://github.com/mattpocock/skills.git
+[submodule "external/vadimcomanescu-agent-skills"]
+	path = external/vadimcomanescu-agent-skills
+	url = https://github.com/vadimcomanescu/agents-skills.git
+[submodule "external/anthropics-skills"]
+	path = external/anthropics-skills
+	url = https://github.com/anthropics/skills.git
+[submodule "external/addyosmani-agent-skills"]
+	path = external/addyosmani-agent-skills
+	url = https://github.com/addyosmani/agent-skills.git
+[submodule "external/b-mendoza-agent-skills"]
+	path = external/b-mendoza-agent-skills
+	url = https://github.com/b-mendoza/agent-skills.git
