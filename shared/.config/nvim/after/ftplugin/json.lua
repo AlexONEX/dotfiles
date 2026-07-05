@@ -17,13 +17,18 @@ function M.format_json()
   local cursor_pos = vim.api.nvim_win_get_cursor(0)
   vim.cmd([[ silent %!jq . ]])
   vim.api.nvim_win_set_cursor(0, cursor_pos)
-  vim.notify("JSON formateado con jq.", vim.log.levels.INFO, { title = "JSON Format" })
+  vim.notify("JSON formatted with jq", vim.log.levels.INFO, { title = "JSON Format" })
 end
 
-vim.keymap.set("n", "<leader>f", M.format_json, {
-  buffer = true,
-  desc = "Format JSON with jq",
-})
+function M.format_and_save()
+  M.format_json()
+  vim.cmd("write")
+end
+
+local opts = { buffer = true, silent = true }
+vim.keymap.set("n", "<C-s>", M.format_and_save, vim.tbl_extend("force", opts, { desc = "Format and save JSON" }))
+vim.keymap.set("n", "<space>f", M.format_and_save, vim.tbl_extend("force", opts, { desc = "Format JSON" }))
+vim.keymap.set("n", "<leader>f", M.format_json, vim.tbl_extend("force", opts, { desc = "Format JSON with jq" }))
 
 vim.keymap.set("n", "o", function()
   local line = vim.api.nvim_get_current_line()

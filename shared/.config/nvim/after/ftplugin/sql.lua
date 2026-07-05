@@ -2,10 +2,17 @@ vim.bo.commentstring = "--\\ %s"
 vim.opt_local.formatoptions:remove({ "o", "r" })
 
 local M = {}
+local utils = require("utils")
 
 function M.format_and_save()
-	vim.lsp.buf.format()
-	vim.cmd("write")
+	if utils.executable("sqlfluff") then
+		vim.cmd("silent !sqlfluff fix --force %")
+		vim.cmd("edit")
+		vim.cmd("write")
+		vim.notify("Formatted with sqlfluff", vim.log.levels.INFO)
+	else
+		vim.notify("sqlfluff not found. Install with: pip install sqlfluff", vim.log.levels.WARN)
+	end
 end
 
 _G.Ftplugin_Sql = M

@@ -26,10 +26,12 @@ function M.add_line_break(start_line, end_line)
   end
 end
 
---- Formats the current buffer using LSP and then saves the file.
+--- Formats the current buffer using prettier and then saves the file.
 function M.format_and_save()
-  vim.lsp.buf.format()
+  vim.cmd("silent !prettier --write %")
+  vim.cmd("edit")
   vim.cmd("write")
+  vim.notify("Formatted with prettier", vim.log.levels.INFO)
 end
 
 --- Inserts a Markdown fenced code block (```) and places the cursor inside.

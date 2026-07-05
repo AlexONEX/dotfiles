@@ -41,6 +41,9 @@ end
 _G.Ftplugin_Rust = M
 
 local opts = { buffer = true, silent = true }
+vim.keymap.set("n", "<C-s>", function()
+	Ftplugin_Rust.format_and_save()
+end, opts)
 vim.keymap.set("n", "<space>f", function()
 	Ftplugin_Rust.format_and_save()
 end, opts)
