@@ -1,0 +1,39 @@
+name: Sync Skills Submodules
+
+on:
+  schedule:
+    - cron: '0 9 1 * *'  # Monthly, 1st of each month at 9am UTC
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update external submodules to latest
+        run: git submodule update --remote external/
+
+      - name: Create PR if changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: sync-skills-submodules
+          delete-branch: true
+          title: 'chore: sync skills submodules'
+          commit-message: 'chore: sync skills submodules to latest upstream'
+          labels: chore
+          body: |
+            Auto-sync of external skill submodules to latest upstream commits.
+
+            After merging, run locally to copy updated skill files:
+            ```bash
+            sync-engineering-skills --pr
+            ```
