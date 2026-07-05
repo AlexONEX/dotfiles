@@ -1,6 +1,13 @@
 local fn = vim.fn
 local api = vim.api
 
+-- Replacement for whitespace.nvim
+vim.api.nvim_create_user_command("StripTrailingWhitespace", function()
+  local view = vim.fn.winsaveview()
+  vim.cmd([[%s/\s\+$//e]])
+  vim.fn.winrestview(view)
+end, { desc = "Remove trailing whitespace" })
+
 local utils = require("utils")
 
 -- Display a message when the current file is not in utf-8 format.

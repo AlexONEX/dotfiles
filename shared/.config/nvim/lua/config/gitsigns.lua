@@ -17,9 +17,9 @@ gs.setup({
 		end
 
 		-- Navigation
-		map("n", "]c", function()
+		map("n", "]g", function()
 			if vim.wo.diff then
-				return "]c"
+				return "]g"
 			end
 			vim.schedule(function()
 				gs.next_hunk()
@@ -27,9 +27,9 @@ gs.setup({
 			return "<Ignore>"
 		end, { expr = true, desc = "next hunk" })
 
-		map("n", "[c", function()
+		map("n", "[g", function()
 			if vim.wo.diff then
-				return "[c"
+				return "[g"
 			end
 			vim.schedule(function()
 				gs.prev_hunk()
@@ -38,10 +38,17 @@ gs.setup({
 		end, { expr = true, desc = "previous hunk" })
 
 		-- Actions
-		map("n", "<leader>hp", gs.preview_hunk, { desc = "preview hunk" })
-		map("n", "<leader>hb", function()
+		map("n", "<leader>gs", gs.stage_hunk, { desc = "stage hunk" })
+		map("n", "<leader>gr", gs.reset_hunk, { desc = "reset hunk" })
+		map("v", "<leader>gs", function() gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, { desc = "stage hunk" })
+		map("v", "<leader>gr", function() gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, { desc = "reset hunk" })
+		map("n", "<leader>gS", gs.stage_buffer, { desc = "stage buffer" })
+		map("n", "<leader>gu", gs.undo_stage_hunk, { desc = "undo stage hunk" })
+		map("n", "<leader>gd", gs.diffthis, { desc = "diff this" })
+		map("n", "<leader>gp", gs.preview_hunk, { desc = "preview hunk" })
+		map("n", "<leader>gb", function()
 			gs.blame_line({ full = true })
-		end, { desc = "blame hunk" })
+		end, { desc = "blame line" })
 	end,
 })
 

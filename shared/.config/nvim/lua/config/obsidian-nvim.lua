@@ -13,7 +13,8 @@ local opts = {
     date_format = "%Y-%m-%d",
   },
   completion = {
-    nvim_cmp = true,
+    nvim_cmp = false,
+    blink = true,
     min_chars = 2,
   },
   ui = {
