@@ -17,17 +17,19 @@ require("blink.cmp").setup {
     nerd_font_variant = "mono",
   },
 
-  -- (Default) Only show the documentation popup when manually triggered
   completion = {
     documentation = {
       auto_show = true,
+    },
+    ghost_text = {
+      enabled = false, -- disabled: copilot.lua handles inline suggestions
     },
   },
 
   -- Default list of enabled providers defined so that you can extend it
   -- elsewhere in your config, without redefining it, due to `opts_extend`
   sources = {
-    default = { "lsp", "path", "buffer" },
+    default = { "lsp", "path", "snippets", "buffer" },
   },
 
   -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance

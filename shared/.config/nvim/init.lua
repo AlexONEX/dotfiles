@@ -34,5 +34,3 @@ else
   color_scheme.load_colorscheme("nord")
 end
 
-
-require("config.custom_highlights")
