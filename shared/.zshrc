@@ -72,12 +72,30 @@ fi
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Homebrew (macOS)
-if [[ -f /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [[ -f /usr/local/bin/brew ]]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-fi
+# Virtualenvwrapper — lazy-load (solo cuando usás workon/mkvirtualenv/etc)
+export WORKON_HOME=$HOME/.virtualenvs
+export VIRTUALENVWRAPPER_PYTHON=/opt/homebrew/bin/python3
+_venv_lazy_init() {
+  unset -f workon mkvirtualenv rmvirtualenv deactivate lsvirtualenv cpvirtualenv allvirtualenv
+  local _vw
+  _vw="$(command -v virtualenvwrapper.sh 2>/dev/null)" || _vw=/opt/homebrew/bin/virtualenvwrapper.sh
+  [[ -f "$_vw" ]] && source "$_vw"
+}
+workon()       { _venv_lazy_init; workon "$@"; }
+mkvirtualenv() { _venv_lazy_init; mkvirtualenv "$@"; }
+rmvirtualenv() { _venv_lazy_init; rmvirtualenv "$@"; }
+lsvirtualenv() { _venv_lazy_init; lsvirtualenv "$@"; }
+cpvirtualenv() { _venv_lazy_init; cpvirtualenv "$@"; }
+allvirtualenv() { _venv_lazy_init; allvirtualenv "$@"; }
+deactivate()   { _venv_lazy_init; deactivate "$@"; }
+
+# Auto-excluir node_modules de Spotlight después de npm install
+npm() {
+  command npm "$@"
+  if [[ "$1" == "install" || "$1" == "i" || "$1" == "ci" ]]; then
+    [[ -d node_modules ]] && touch node_modules/.metadata_never_index
+  fi
+}
 
 # NVM — lazy-load (solo cuando usás node/npm/npx/nvm)
 export NVM_DIR="$HOME/.nvm"
@@ -129,7 +147,6 @@ sdk() {
   sdk "$@"
 }
 
-GITSTATUS_LOG_LEVEL=DEBUG
 alias gwip="git add . && git commit -m 'WIP'"
 alias secretary="opencode --agent secretary"
 alias sec="opencode --agent secretary"
@@ -230,3 +247,5 @@ alias mu='meridian-usage'
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/terraform terraform
+
+export GITLAB_TOKEN=$(security find-generic-password -s "gitlab-allaria" -a "alex" -w 2>/dev/null)

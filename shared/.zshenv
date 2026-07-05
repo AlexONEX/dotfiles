@@ -21,15 +21,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
   export PATH="$PATH:/usr/local/texlive/2025basic/bin/universal-darwin"
 
-  # Python virtualenvwrapper
-  export WORKON_HOME=$HOME/.virtualenvs
-  export VIRTUALENVWRAPPER_PYTHON=$(which python3 2>/dev/null)
-  if command -v virtualenvwrapper.sh &>/dev/null; then
-    source virtualenvwrapper.sh
-  elif [[ -f /opt/homebrew/bin/virtualenvwrapper.sh ]]; then
-    source /opt/homebrew/bin/virtualenvwrapper.sh
-  fi
-
   # pyenv (si está instalado)
   if command -v pyenv &>/dev/null; then
     export PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"

@@ -61,7 +61,7 @@ ln -sf "$DOTFILES/shared/.stow-local-ignore" ~/.stow-local-ignore
 
 # OpenCode ponytail plugin (shared between all machines)
 mkdir -p ~/.config/opencode
-ln -sfn "$DOTFILES/shared/opencode-config/ponytail" ~/.config/opencode/ponytail
+ln -sfn "$HOME/ponytail" ~/.config/opencode/ponytail
 
 # =============================================================================
 # [OPENSKILLS SHARED] — Skills instalados en TODAS las máquinas
@@ -131,7 +131,7 @@ if [[ "$MACHINE" == "workstation" ]]; then
   # ─── OpenCode config ──────────────────────────────────────────────────────
   mkdir -p ~/.config/opencode/agent
   ln -sf "$DOTFILES/workstation/opencode-config/opencode.json" ~/.config/opencode/opencode.json
-  ln -sf "$DOTFILES/shared/opencode-config/ponytail"           ~/.config/opencode/ponytail
+  ln -sf "$HOME/ponytail"                                      ~/.config/opencode/ponytail
 
   for f in "$DOTFILES/workstation/opencode-config/agent/"*.md; do
     [ -f "$f" ] && ln -sf "$f" ~/.config/opencode/agent/$(basename "$f")
@@ -181,7 +181,7 @@ if [[ "$MACHINE" == "homelab" ]]; then
   # ─── OpenCode config (sin MCPs) ──────────────────────────────────────────
   mkdir -p ~/.config/opencode/agent
   ln -sf "$DOTFILES/homelab/opencode-config/opencode.json" ~/.config/opencode/opencode.json
-  ln -sf "$DOTFILES/shared/opencode-config/ponytail"       ~/.config/opencode/ponytail
+  ln -sf "$HOME/ponytail"                                  ~/.config/opencode/ponytail
 
   # ─── Meridian ──────────────────────────────────────────────────────────────
   mkdir -p ~/.config/meridian

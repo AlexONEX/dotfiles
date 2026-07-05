@@ -651,6 +651,44 @@ alias byma-snapshot-equity-general='byma-snapshot-equity ACCIONES GENERAL CONTAD
 alias byma-snapshot-equity-leaders='byma-snapshot-equity ACCIONES LIDER CONTADO'
 alias byma-snapshot-cedears='byma-snapshot-equity CEDEARS GENERAL CONTADO'
 
+# ===== BYMA SNAPSHOT FIXED INCOME =====
+# USO: byma-snapshot-fixed-income <group> [market] [operativeForm] [profile]
+#   group*: TITULOSPUBLICOS, BONOSCONSOLIDACION, LETRAS, LETRASTESORO,
+#           TITULOSDEUDA, CERTPARTICIPACION, OBLIGACIONESNEGOC, ONPYMES
+#   market: PPT (default)
+#   operativeForm: CONTADO (default)
+#   profile: development (default), production
+#
+# Si BYMA_TOKEN está exportado lo usa; si no, obtiene token automáticamente.
+byma-snapshot-fixed-income() {
+  local group="${1:?Uso: byma-snapshot-fixed-income <group> [market] [operativeForm] [profile]\nGroups: TITULOSPUBLICOS, BONOSCONSOLIDACION, LETRAS, LETRASTESORO, TITULOSDEUDA, CERTPARTICIPACION, OBLIGACIONESNEGOC, ONPYMES}"
+  local market="${2:-PPT}"
+  local operative_form="${3:-CONTADO}"
+  local profile="${4:-development}"
+  local byma_url="${BYMA_URL:-https://apigw.byma.com.ar}"
+
+  local token="${BYMA_TOKEN}"
+  if [[ -z "$token" ]]; then
+    echo "BYMA_TOKEN not in environment, fetching..." >&2
+    token=$(byma-token "$profile") || return 1
+  fi
+
+  local url="$byma_url/snapshot/v1/fixed_income.raw/?group=$group&market=$market&operativeForm=$operative_form"
+  echo "GET $url" >&2
+  curl -s --request GET "$url" \
+    --header "Authorization: Bearer $token" | jq .
+}
+
+# Shorthands
+alias byma-snapshot-titulospublicos='byma-snapshot-fixed-income TITULOSPUBLICOS'
+alias byma-snapshot-letras='byma-snapshot-fixed-income LETRAS'
+alias byma-snapshot-titulosdeuda='byma-snapshot-fixed-income TITULOSDEUDA'
+alias byma-snapshot-obligacionesnegoc='byma-snapshot-fixed-income OBLIGACIONESNEGOC'
+alias byma-snapshot-onpymes='byma-snapshot-fixed-income ONPYMES'
+alias byma-snapshot-bonosconsolidacion='byma-snapshot-fixed-income BONOSCONSOLIDACION'
+alias byma-snapshot-letrastesoro='byma-snapshot-fixed-income LETRASTESORO'
+alias byma-snapshot-certparticipacion='byma-snapshot-fixed-income CERTPARTICIPACION'
+
 # ===== CLAUDE CODE MULTI-PROFILE MANAGEMENT =====
 # Profiles: personal (teal), w = work (orange), ww = alt (lavender)
 # Shared scripts in ~/.config/claude-profiles/
