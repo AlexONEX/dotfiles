@@ -59,7 +59,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
 				end,
 			})
 		end, { desc = "go to definition" })
-		map("n", "<C-]>", vim.lsp.buf.definition)
+		map("n", "gr", function() require("fzf-lua").lsp_references() end, { desc = "LSP references" })
+		map("n", "gi", vim.lsp.buf.implementation, { desc = "LSP implementation" })
+		map("n", "<space>D", vim.lsp.buf.type_definition, { desc = "LSP type definition" })
+		map("n", "[d", function() vim.diagnostic.goto_prev({ float = true }) end, { desc = "prev diagnostic" })
+		map("n", "]d", function() vim.diagnostic.goto_next({ float = true }) end, { desc = "next diagnostic" })
+		map("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR, float = true }) end, { desc = "prev error" })
+		map("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR, float = true }) end, { desc = "next error" })
+		map("n", "<space>ih", function()
+			vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 })
+		end, { desc = "toggle inlay hints" })
 		map("n", "K", function()
 			vim.lsp.buf.hover {
         border = "single",
@@ -70,22 +79,20 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end)
 		map("n", "<C-k>", vim.lsp.buf.signature_help)
 		map("n", "<space>rn", vim.lsp.buf.rename, { desc = "variable rename" })
-		map("n", "<space>ca", vim.lsp.buf.code_action, { desc = "LSP code action" })
-		map("n", "<space>wa", vim.lsp.buf.add_workspace_folder, { desc = "add workspace folder" })
-		map("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, { desc = "remove workspace folder" })
-		map("n", "<space>wl", function()
-			vim.print(vim.lsp.buf.list_workspace_folders())
-		end, { desc = "list workspace folder" })
-
+		map({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, { desc = "LSP code action" })
+		map("n", "<space>oi", function()
+			vim.lsp.buf.code_action({
+				context = { only = { "source.organizeImports" } },
+				apply = true,
+			})
+		end, { desc = "organize imports" })
 		-- Set some key bindings conditional on server capabilities
 		-- Disable ruff hover feature in favor of Pyright
 		if client.name == "ruff" then
 			client.server_capabilities.hoverProvider = false
 		end
 
-		-- Uncomment code below to enable inlay hint from language server, some LSP server supports inlay hint,
-		-- but disable this feature by default, so you may need to enable inlay hint in the LSP server config.
-		-- vim.lsp.inlay_hint.enable(true, {buffer=bufnr})
+		vim.lsp.inlay_hint.enable(true, { buf = bufnr })
 
 		-- The blow command will highlight the current variable and its usages in the buffer.
 		if client.server_capabilities.documentHighlightProvider then
@@ -131,7 +138,15 @@ local enabled_lsp_servers = {
 	clangd = "clangd",
 	vimls = "vim-language-server",
 	bashls = "bash-language-server",
-	yamlls = "yaml-language-server"
+	yamlls = "yaml-language-server",
+	hls = "haskell-language-server-wrapper",
+	rust_analyzer = "rust-analyzer",
+	texlab = "texlab",
+	terraformls = "terraform-ls",
+	ts_ls = "typescript-language-server",
+	jsonls = "vscode-json-language-server",
+	taplo = "taplo",
+	pylsp = "pylsp",
 }
 
 for server_name, lsp_executable in pairs(enabled_lsp_servers) do

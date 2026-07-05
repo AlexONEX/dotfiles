@@ -2,20 +2,23 @@ local lint = require("lint")
 local utils = require("utils")
 
 lint.linters_by_ft = {
-  cpp = { "clangtidy", "cpplint" },
+  cpp = {},
   haskell = { "hlint" },
   lua = { "luacheck" },
-  markdown = { "markdownlint", "vale" },
-  python = { "ruff", "mypy" },
+  markdown = { "markdownlint" },
+  python = { "ruff" },
   rust = { "clippy" },
   sh = { "shellcheck" },
   sql = { "sqlfluff" },
+  terraform = { "tflint" },
+  typescript = { "eslint_d" },
+  typescriptreact = { "eslint_d" },
   tex = { "chktex", "lacheck" },
-  text = { "proselint", "write_good" },
+  text = {},
   toml = {}, -- No built-in TOML linters in nvim-lint
   vim = { "vint" },
   yaml = { "yamllint" },
-  gitcommit = { "gitlint" },
+  gitcommit = {},
   gitignore = {},
   log = {},
   rsync = {},
@@ -59,29 +62,6 @@ lint.linters.ruff = {
   ),
 }
 
--- mypy configuration
-lint.linters.mypy = {
-  cmd = function()
-    local venv = os.getenv("VIRTUAL_ENV")
-    if venv then
-      if vim.fn.has("win32") == 1 then
-        return venv .. "\\Scripts\\mypy.exe"
-      else
-        return venv .. "/bin/mypy"
-      end
-    end
-    return "mypy"
-  end,
-  stdin = false,
-  args = {
-    "--show-column-numbers",
-    "--no-error-summary",
-    "--no-pretty",
-    "--disallow-untyped-defs",
-  },
-  parser = lint.linters.mypy.parser,
-}
-
 -- Lua linter configuration
 lint.linters.luacheck.args = {
   "--no-color",
@@ -93,24 +73,6 @@ lint.linters.luacheck.args = {
   "--std",
   "luajit+nvim",
 }
-
--- C/C++ linter configuration
-if utils.executable("clang-tidy") then
-  lint.linters.clangtidy.args = {
-    "--checks=*",
-    "--warnings-as-errors=*",
-  }
-end
-
--- Rust linter configuration
-if utils.executable("clippy") then
-  lint.linters.clippy.args = {
-    "--message-format=json",
-    "--",
-    "--warn",
-    "clippy::all",
-  }
-end
 
 -- Shell linter configuration
 if utils.executable("shellcheck") then
@@ -131,7 +93,7 @@ if utils.executable("chktex") then
 end
 
 -- Set up an autocmd to trigger linting
-vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   callback = function()
     -- Get filetype
     local ft = vim.bo.filetype
