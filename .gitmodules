@@ -4,3 +4,6 @@
 [submodule "shared/opencode-config/ponytail"]
 	path = shared/opencode-config/ponytail
 	url = https://github.com/DietrichGebert/ponytail.git
+[submodule "external/mattpocock-skills"]
+	path = external/mattpocock-skills
+	url = https://github.com/mattpocock/skills.git

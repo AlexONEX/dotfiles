@@ -81,7 +81,18 @@ mkdir -p ~/.config/opencode/skills
 
 for skill_dir in "$DOTFILES/shared/opencode-skills/"*/; do
   skill=$(basename "$skill_dir")
+  # Skip category subdirs — handled separately below
+  [[ "$skill" == "engineering" || "$skill" == "productivity" || "$skill" == "misc" ]] && continue
   link_openskill "$skill" "$skill_dir"
+done
+
+# mattpocock skills (by category)
+for category in engineering productivity misc; do
+  for skill_dir in "$DOTFILES/shared/opencode-skills/$category/"*/; do
+    [ -d "$skill_dir" ] || continue
+    skill=$(basename "$skill_dir")
+    link_openskill "$skill" "$skill_dir"
+  done
 done
 
 # Archivos sueltos (init-secretary.sh, README.md)
