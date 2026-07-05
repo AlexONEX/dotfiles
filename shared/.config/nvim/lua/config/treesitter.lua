@@ -1,6 +1,6 @@
 local parsers = {
   "python", "cpp", "c", "lua", "vim", "vimdoc",
-  "json", "jsonc", "toml", "yaml", "latex", "sql", "bibtex",
+  "json", "toml", "yaml", "latex", "sql", "bibtex",
   "markdown", "markdown_inline", "haskell", "rust", "bash",
   "typescript", "javascript", "tsx", "terraform", "hcl",
 }
