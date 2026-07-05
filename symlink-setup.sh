@@ -95,6 +95,26 @@ for category in engineering productivity misc; do
   done
 done
 
+# External submodule skills — symlinked directly (auto-update with submodule)
+echo "  ── openskills (external submodules) ──"
+
+# vadimcomanescu: correctness + debugging
+for skill in verification-before-completion systematic-debugging tdd-mutation; do
+  link_openskill "$skill" "$DOTFILES/external/vadimcomanescu-agent-skills/skills/$skill"
+done
+
+# b-mendoza: code review + refactoring (vendored in .agents/skills/)
+for skill in code-review-excellence review-pull-request refactoring-code diagnosing-root-causes improving-test-suites; do
+  link_openskill "$skill" "$DOTFILES/external/b-mendoza-agent-skills/.agents/skills/$skill"
+done
+
+# addyosmani: review, design, performance, maintenance
+for skill in code-review-and-quality code-simplification performance-optimization \
+             documentation-and-adrs planning-and-task-breakdown \
+             deprecation-and-migration security-and-hardening; do
+  link_openskill "$skill" "$DOTFILES/external/addyosmani-agent-skills/skills/$skill"
+done
+
 # Archivos sueltos (init-secretary.sh, README.md)
 for f in "$DOTFILES/shared/opencode-skills/"*.sh "$DOTFILES/shared/opencode-skills/"*.md; do
   [ -f "$f" ] && ln -sf "$f" ~/.config/opencode/skills/$(basename "$f")
