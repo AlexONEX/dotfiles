@@ -156,9 +156,6 @@ api.nvim_create_autocmd("ColorScheme", {
     vim.api.nvim_set_hl(0, "Cursor", { fg = "black", bg = "#00c918", bold = true })
     vim.api.nvim_set_hl(0, "Cursor2", { fg = "red", bg = "red" })
 
-    -- For floating windows border highlight
-    vim.api.nvim_set_hl(0, "YankColor", { fg = "#34495E", bg = "#2ECC71", ctermfg = 59, ctermbg = 41 })
-
     -- highlight for matching parentheses
     vim.api.nvim_set_hl(0, "MatchParen", { bold = true, underline = true })
   end,
@@ -169,7 +166,7 @@ api.nvim_create_autocmd("BufEnter", {
   group = api.nvim_create_augroup("auto_close_win", { clear = true }),
   desc = "Quit Nvim if we have only one window, and its filetype match our pattern",
   callback = function(ev)
-    local quit_filetypes = { "qf", "vista", "NvimTree" }
+    local quit_filetypes = { "qf", "vista" }
 
     local should_quit = true
     local tabwins = api.nvim_tabpage_list_wins(0)

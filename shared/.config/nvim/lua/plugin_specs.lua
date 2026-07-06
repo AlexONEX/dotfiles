@@ -208,12 +208,6 @@ local plugin_specs = {
     end,
   },
 
-  -- Comment plugin
-  { "tpope/vim-commentary", keys = {
-    { "gc", mode = "n" },
-    { "gc", mode = "v" },
-  } },
-
   -- Multiple cursor plugin like Sublime Text?
   { "mg979/vim-visual-multi", event = "VeryLazy" },
 
@@ -327,7 +321,7 @@ local plugin_specs = {
 
   {
     "epwalsh/obsidian.nvim",
-    lazy = "VeryLazy",
+    event = "VeryLazy",
     ft = "markdown",
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -350,7 +344,6 @@ local plugin_specs = {
 
   -- Asynchronous command execution
   { "skywind3000/asyncrun.vim", lazy = true, cmd = { "AsyncRun" } },
-  { "cespare/vim-toml", ft = { "toml" }, branch = "main" },
   { "hashivim/vim-terraform", ft = { "terraform", "terraform-vars" } },
 
   -- Session management plugin
@@ -415,7 +408,6 @@ local plugin_specs = {
     config = function()
       require("config.live-command")
     end,
-    event = "VeryLazy",
   },
   {
     -- show hint for code actions, the user can also implement code actions themselves,

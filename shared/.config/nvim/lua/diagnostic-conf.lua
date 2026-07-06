@@ -43,6 +43,21 @@ vim.keymap.set("n", "<space>qb", function()
 	set_qflist(0)
 end, { desc = "put buffer diagnostics to qf" })
 
+-- export current quickfix list to a file
+vim.keymap.set("n", "<space>qe", function()
+	local items = vim.fn.getqflist()
+	if #items == 0 then
+		vim.notify("Quickfix list is empty", vim.log.levels.WARN)
+		return
+	end
+	local lines = vim.tbl_map(function(e)
+		return vim.fn.bufname(e.bufnr) .. ":" .. e.lnum .. ":" .. e.col .. ": " .. e.text
+	end, items)
+	local path = vim.fn.expand("~/quickfix-export.txt")
+	vim.fn.writefile(lines, path)
+	vim.notify("Exported " .. #lines .. " items to " .. path, vim.log.levels.INFO)
+end, { desc = "export quickfix to ~/quickfix-export.txt" })
+
 -- automatically show diagnostic in float win for current line
 api.nvim_create_autocmd("CursorHold", {
 	pattern = "*",

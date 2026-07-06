@@ -120,7 +120,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 -- Enable lsp servers when they are available
 
-local capabilities = require("lsp_utils").get_default_capabilities()
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.foldingRange = {
+	dynamicRegistration = false,
+	lineFoldingOnly = true,
+}
 
 vim.lsp.config("*", {
 	capabilities = capabilities,

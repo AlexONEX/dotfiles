@@ -27,24 +27,6 @@ function M.may_create_dir(dir)
   end
 end
 
---- Generate random integers in the range [Low, High], inclusive,
---- adapted from https://stackoverflow.com/a/12739441/6064933
---- @param low integer the lower value for this range
---- @param high integer the higher value for this range
---- @return integer
-function M.rand_int(low, high)
-  -- Use lua to generate random int, see also: https://stackoverflow.com/a/20157671/6064933
-  math.randomseed(os.time())
-  return math.random(low, high)
-end
-
---- Select a random element from a sequence/list.
---- @param seq any[] the sequence to choose an element
-function M.rand_element(seq)
-  local idx = M.rand_int(1, #seq)
-  return seq[idx]
-end
-
 --- check if the current nvim version is compatible with the allowed version
 --- @param expected_version string
 --- @return boolean
@@ -113,8 +95,6 @@ function M.in_mathzone()
   if has_treesitter then
     local node = get_node_at_cursor()
     while node do
-      -- Debug: imprime el tipo de nodo
-      print("Node type:", node:type())
       if MATH_NODES[node:type()] then
         return true
       end
