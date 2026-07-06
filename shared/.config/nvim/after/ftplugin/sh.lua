@@ -27,15 +27,15 @@ function M.format_bash()
 	end
 end
 
-_G.Ftplugin_Bash = M
+_G.M = M
 
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<F9>", function()
-	Ftplugin_Bash.run_bash()
+	M.run_bash()
 end, opts)
 vim.keymap.set("n", "<C-s>", function()
-	Ftplugin_Bash.format_bash()
+	M.format_bash()
 end, opts)
 vim.keymap.set("n", "<space>f", function()
-	Ftplugin_Bash.format_bash()
+	M.format_bash()
 end, opts)

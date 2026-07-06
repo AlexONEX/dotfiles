@@ -38,36 +38,36 @@ function M.clippy_rust()
 	vim.cmd("!cargo clippy")
 end
 
-_G.Ftplugin_Rust = M
+_G.M = M
 
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<C-s>", function()
-	Ftplugin_Rust.format_and_save()
+	M.format_and_save()
 end, opts)
 vim.keymap.set("n", "<space>f", function()
-	Ftplugin_Rust.format_and_save()
+	M.format_and_save()
 end, opts)
 
 vim.keymap.set("n", "<F9>", function()
-	Ftplugin_Rust.run_rust()
+	M.run_rust()
 end, opts)
 
 vim.keymap.set("n", "<space>rr", function()
-	Ftplugin_Rust.run_rust()
+	M.run_rust()
 end, { buffer = true, desc = "Cargo run" })
 
 vim.keymap.set("n", "<space>rb", function()
-	Ftplugin_Rust.build_rust()
+	M.build_rust()
 end, { buffer = true, desc = "Cargo build" })
 
 vim.keymap.set("n", "<space>rt", function()
-	Ftplugin_Rust.test_rust()
+	M.test_rust()
 end, { buffer = true, desc = "Cargo test" })
 
 vim.keymap.set("n", "<space>rc", function()
-	Ftplugin_Rust.check_rust()
+	M.check_rust()
 end, { buffer = true, desc = "Cargo check" })
 
 vim.keymap.set("n", "<space>rl", function()
-	Ftplugin_Rust.clippy_rust()
+	M.clippy_rust()
 end, { buffer = true, desc = "Cargo clippy" })

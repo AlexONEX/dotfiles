@@ -15,14 +15,14 @@ function M.format_and_save()
 	end
 end
 
-_G.Ftplugin_Toml = M
+_G.M = M
 
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<C-s>", function()
-	Ftplugin_Toml.format_and_save()
+	M.format_and_save()
 end, opts)
 vim.keymap.set("n", "<space>f", function()
-	Ftplugin_Toml.format_and_save()
+	M.format_and_save()
 end, opts)
 
 vim.api.nvim_buf_create_user_command(0, "FormatAndSaveToml", function()

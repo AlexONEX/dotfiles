@@ -40,12 +40,12 @@ function M.format_and_save()
 	vim.cmd("write")
 end
 
-_G.Ftplugin_Yaml = M
+_G.M = M
 
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<C-s>", function()
-	Ftplugin_Yaml.format_and_save()
+	M.format_and_save()
 end, opts)
 vim.keymap.set("n", "<space>f", function()
-	Ftplugin_Yaml.format_and_save()
+	M.format_and_save()
 end, opts)

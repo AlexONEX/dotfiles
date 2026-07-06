@@ -39,15 +39,15 @@ function M.run_vim_script()
 	vim.notify("Vim script executed", vim.log.levels.INFO)
 end
 
-_G.Ftplugin_Vim = M
+_G.M = M
 
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<F9>", function()
-	Ftplugin_Vim.run_vim_script()
+	M.run_vim_script()
 end, opts)
 vim.keymap.set("n", "<C-s>", function()
-	Ftplugin_Vim.format_and_save()
+	M.format_and_save()
 end, opts)
 vim.keymap.set("n", "<space>f", function()
-	Ftplugin_Vim.format_and_save()
+	M.format_and_save()
 end, opts)

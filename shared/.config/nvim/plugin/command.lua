@@ -1,39 +1,14 @@
--- Copy file path to clipboard
-vim.api.nvim_create_user_command("CopyPath", function(context)
+-- Copy relative file path (relative to project root) to clipboard
+vim.api.nvim_create_user_command("CopyPath", function()
   local full_path = vim.fn.glob("%:p")
-
-  local file_path = nil
-  if context["args"] == "nameonly" then
-    file_path = vim.fn.fnamemodify(full_path, ":t")
+  local project_root = vim.fs.root(0, { ".git", "pyproject.toml" })
+  if project_root == nil then
+    vim.print("can not find project root")
+    return
   end
-
-  -- get the file path relative to project root
-  if context["args"] == "relative" then
-    local project_marker = { ".git", "pyproject.toml" }
-    local project_root = vim.fs.root(0, project_marker)
-    if project_root == nil then
-      vim.print("can not find project root")
-      return
-    end
-
-    file_path = vim.fn.substitute(full_path, project_root, "<project-root>", "g")
-  end
-
-  if context["args"] == "absolute" then
-    file_path = full_path
-  end
-
-  vim.fn.setreg("+", file_path)
+  vim.fn.setreg("+", vim.fn.substitute(full_path, project_root, "<project-root>", "g"))
   vim.print("Filepath copied to clipboard!")
-end, {
-  bang = false,
-  nargs = 1,
-  force = true,
-  desc = "Copy current file path to clipboard",
-  complete = function()
-    return { "nameonly", "relative", "absolute" }
-  end,
-})
+end, { desc = "Copy relative file path to clipboard" })
 
 -- JSON format part of or the whole file
 vim.api.nvim_create_user_command("JSONFormat", function(context)

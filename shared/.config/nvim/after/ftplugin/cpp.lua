@@ -122,33 +122,33 @@ function M.debug_cpp()
   end
 end
 
-_G.Ftplugin_Cpp = M
+_G.M = M
 
 local opts = { buffer = true, silent = true }
 
 vim.keymap.set("n", "<F9>", function()
-  Ftplugin_Cpp.compile_run_cpp()
+  M.compile_run_cpp()
 end, opts)
 
 vim.keymap.set("n", "<F11>", function()
-  Ftplugin_Cpp.compile_run_cpp()
+  M.compile_run_cpp()
 end, opts)
 
 vim.keymap.set("n", "<F5>", function()
-  Ftplugin_Cpp.compile_only_cpp()
+  M.compile_only_cpp()
 end, { buffer = true, desc = "Compile C++" })
 
 vim.keymap.set("n", "<F6>", function()
-  Ftplugin_Cpp.run_executable()
+  M.run_executable()
 end, { buffer = true, desc = "Run executable" })
 
 vim.keymap.set("n", "<C-s>", function()
-  Ftplugin_Cpp.format_cpp()
+  M.format_cpp()
 end, { buffer = true, silent = true, desc = "Format with clang-format" })
 vim.keymap.set("n", "<space>f", function()
-  Ftplugin_Cpp.format_cpp()
+  M.format_cpp()
 end, { buffer = true, desc = "Format with clang-format" })
 
 vim.keymap.set("n", "<F7>", function()
-  Ftplugin_Cpp.debug_cpp()
+  M.debug_cpp()
 end, { buffer = true, desc = "Debug with GDB" })

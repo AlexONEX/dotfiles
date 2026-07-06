@@ -15,9 +15,9 @@ function M.format_and_save()
 	end
 end
 
-_G.Ftplugin_Sql = M
+_G.M = M
 
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<C-s>", function()
-	Ftplugin_Sql.format_and_save()
+	M.format_and_save()
 end, opts)

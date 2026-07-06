@@ -23,15 +23,15 @@ function M.run_lua()
 	vim.notify("Lua file executed", vim.log.levels.INFO)
 end
 
-_G.Ftplugin_Lua = M
+_G.M = M
 
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<C-s>", function()
-	Ftplugin_Lua.format_and_save()
+	M.format_and_save()
 end, opts)
 vim.keymap.set("n", "<F9>", function()
-	Ftplugin_Lua.run_lua()
+	M.run_lua()
 end, opts)
 vim.keymap.set("n", "<space>f", function()
-	Ftplugin_Lua.format_and_save()
+	M.format_and_save()
 end, opts)

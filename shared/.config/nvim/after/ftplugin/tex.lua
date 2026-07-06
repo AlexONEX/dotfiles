@@ -40,7 +40,7 @@ function M.toggle_concealment()
 	end
 end
 
-_G.Ftplugin_Tex = M
+_G.M = M
 
 if vim.fn.filereadable(vim.fn.stdpath("config") .. "/lua/config/vimtex.lua") then
 	local vimtex_config = require("config.vimtex")
@@ -52,10 +52,10 @@ vim.defer_fn(disable_treesitter, 100)
 local opts = { buffer = true, silent = true }
 vim.keymap.set("i", "<A-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u", opts)
 vim.keymap.set("n", "<C-s>", function()
-	Ftplugin_Tex.format_and_save()
+	M.format_and_save()
 end, opts)
 vim.keymap.set("n", "<leader>lh", function()
-	Ftplugin_Tex.toggle_concealment()
+	M.toggle_concealment()
 end, opts)
 vim.keymap.set("i", ";;", "\\", { buffer = true })
 vim.keymap.set("i", "$$", "$$ $$<left><left><left>", { buffer = true })

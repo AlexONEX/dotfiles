@@ -62,18 +62,18 @@ function M.lint_python()
 	end
 end
 
-_G.Ftplugin_Python = M
+_G.M = M
 
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<F9>", function()
-	Ftplugin_Python.run_python()
+	M.run_python()
 end, opts)
 vim.keymap.set("n", "<C-s>", function()
-	Ftplugin_Python.format_and_save()
+	M.format_and_save()
 end, opts)
 vim.keymap.set("n", "<space>f", function()
-	Ftplugin_Python.format_and_save()
+	M.format_and_save()
 end, opts)
 vim.keymap.set("n", "<space>l", function()
-	Ftplugin_Python.lint_python()
+	M.lint_python()
 end, opts)

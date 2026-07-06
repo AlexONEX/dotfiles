@@ -18,8 +18,8 @@ function M.format_and_save()
   end
 end
 
-_G.Ftplugin_Terraform = M
+_G.M = M
 
 local opts = { buffer = true, silent = true }
-vim.keymap.set("n", "<C-s>", function() Ftplugin_Terraform.format_and_save() end, opts)
-vim.keymap.set("n", "<space>f", function() Ftplugin_Terraform.format_and_save() end, opts)
+vim.keymap.set("n", "<C-s>", function() M.format_and_save() end, opts)
+vim.keymap.set("n", "<space>f", function() M.format_and_save() end, opts)
