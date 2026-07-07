@@ -17,6 +17,9 @@ require("custom-autocmd")
 require("mappings")
 -- Nvim quality of life improvements
 require("improvements")
+-- Fix common typos
+vim.cmd("iabbrev reqire require")
+vim.cmd("iabbrev serveral several")
 
 -- all the plugins installed and their configurations
 vim.cmd("source " .. vim.fs.joinpath(config_dir, "viml_conf/plugins.vim"))

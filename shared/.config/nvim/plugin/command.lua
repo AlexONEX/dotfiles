@@ -32,3 +32,47 @@ end, {
   desc = "Format JSON string",
   range = "%",
 })
+
+-- Capture command output to a register
+vim.api.nvim_create_user_command("Redir", function(context)
+  vim.fn["utils#CaptureCommandOutput"](context.args)
+end, { nargs = 1, complete = "command", desc = "capture command output to scratch buffer" })
+
+-- Open multiple files matching patterns
+vim.api.nvim_create_user_command("Edit", function(context)
+  vim.fn["utils#MultiEdit"](vim.split(context.args, "%s+"))
+end, { nargs = "+", complete = "file", bar = true, desc = "open files matching patterns" })
+vim.cmd("cabbrev edit Edit")
+
+vim.cmd("cabbrev man Man")
+
+-- Show current date and time
+vim.api.nvim_create_user_command("Datetime", function(context)
+  vim.print(vim.fn["utils#iso_time"](context.args))
+end, { nargs = "?", desc = "show current date/time" })
+
+-- Convert Markdown to PDF via pandoc
+vim.api.nvim_create_user_command("ToPDF", function()
+  if vim.fn.executable("pandoc") ~= 1 then
+    vim.notify("pandoc not found", vim.log.levels.ERROR)
+    return
+  end
+  local md_path = vim.fn.expand("%:p")
+  local pdf_path = vim.fn.fnamemodify(md_path, ":r") .. ".pdf"
+  local header_path = vim.fn.stdpath("config") .. "/resources/head.tex"
+  local cmd = table.concat({
+    "pandoc", "--pdf-engine=xelatex", "--highlight-style=zenburn", "--table-of-content",
+    "--include-in-header=" .. header_path, "-V fontsize=10pt", "-V colorlinks",
+    "-V toccolor=NavyBlue", "-V linkcolor=red", "-V urlcolor=teal",
+    "-V filecolor=magenta", "-s", md_path, "-o", pdf_path,
+  }, " ")
+  if vim.g.is_mac then
+    cmd = cmd .. " && open " .. pdf_path
+  elseif vim.g.is_win then
+    cmd = cmd .. " && start " .. pdf_path
+  end
+  local id = vim.fn.jobstart(cmd, vim.env.SHELL)
+  if id == 0 or id == -1 then
+    vim.notify("error running pandoc", vim.log.levels.ERROR)
+  end
+end, { desc = "convert markdown to PDF" })
