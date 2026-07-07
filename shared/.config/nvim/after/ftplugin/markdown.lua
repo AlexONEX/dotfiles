@@ -114,7 +114,7 @@ function M.get_ref_link_labels()
       else
         -- Find reference links like [link text][label]
         ---@diagnostic disable-next-line: lowercase-global
-		local match_start, match_end, label_link = string.find(line, "%[.-%]%[(.-)%]", start_pos)
+        local match_start, match_end, label_link = string.find(line, "%[.-%]%[(.-)%]", start_pos)
         if match_start then
           if label_link and label_link ~= "" and not seen[label_link] then
             table.insert(labels, label_link)

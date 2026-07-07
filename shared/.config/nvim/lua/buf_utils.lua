@@ -3,7 +3,7 @@
 local M = {}
 
 local function get_buf_nums()
-  local bufinfos = vim.fn.getbufinfo({ buflisted = 1 })
+  local bufinfos = vim.fn.getbufinfo { buflisted = 1 }
   local nums = {}
   for _, info in ipairs(bufinfos) do
     table.insert(nums, info.bufnr)

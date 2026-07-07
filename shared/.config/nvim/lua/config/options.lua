@@ -36,12 +36,12 @@ end
 opt.swapfile = false
 
 -- Ignore certain files and folders when globing
-opt.wildignore:append({ "*.o", "*.obj", "*.dylib", "*.bin", "*.dll", "*.exe" })
-opt.wildignore:append({ "*/.git/*", "*/.svn/*", "*/__pycache__/*", "*/build/**" })
-opt.wildignore:append({ "*.jpg", "*.png", "*.jpeg", "*.bmp", "*.gif", "*.tiff", "*.svg", "*.ico" })
-opt.wildignore:append({ "*.pyc", "*.pkl" })
-opt.wildignore:append({ "*.DS_Store" })
-opt.wildignore:append({ "*.aux", "*.bbl", "*.blg", "*.brf", "*.fls", "*.fdb_latexmk", "*.synctex.gz", "*.xdv" })
+opt.wildignore:append { "*.o", "*.obj", "*.dylib", "*.bin", "*.dll", "*.exe" }
+opt.wildignore:append { "*/.git/*", "*/.svn/*", "*/__pycache__/*", "*/build/**" }
+opt.wildignore:append { "*.jpg", "*.png", "*.jpeg", "*.bmp", "*.gif", "*.tiff", "*.svg", "*.ico" }
+opt.wildignore:append { "*.pyc", "*.pkl" }
+opt.wildignore:append { "*.DS_Store" }
+opt.wildignore:append { "*.aux", "*.bbl", "*.blg", "*.brf", "*.fls", "*.fdb_latexmk", "*.synctex.gz", "*.xdv" }
 opt.wildignorecase = true -- ignore file and dir name cases in cmd-completion
 
 -- Set up backup directory
@@ -58,7 +58,7 @@ opt.shiftwidth = 2 -- number of spaces to use for autoindent
 opt.expandtab = true -- expand tab to spaces so that tabs are spaces
 
 -- Set matching pairs of characters and highlight matching brackets
-opt.matchpairs:append({ "<:>", "「:」", "『:』", "【:】", "“:”", "‘:’", "《:》" })
+opt.matchpairs:append { "<:>", "「:」", "『:』", "【:】", "“:”", "‘:’", "《:》" }
 
 opt.number = true
 opt.relativenumber = true -- Show line number and relative line number
@@ -145,7 +145,7 @@ opt.shiftround = true
 opt.virtualedit = "block" -- Virtual edit is useful for visual block edit
 
 -- Correctly break multi-byte characters such as CJK
-opt.formatoptions:append({ m = true, M = true })
+opt.formatoptions:append { m = true, M = true }
 
 -- Tilde (~) is an operator, thus must be followed by motions like `e` or `w`.
 opt.tildeop = true

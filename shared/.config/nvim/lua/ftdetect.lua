@@ -1,6 +1,6 @@
 -- Filetype detection (migrated from ftdetect/*.vim)
 
-vim.filetype.add({
+vim.filetype.add {
   extension = {
     pdc = "markdown",
     snippets = "snippets",
@@ -16,7 +16,7 @@ vim.filetype.add({
     [".*%.zshrc"] = "sh",
     [".zprofile"] = "sh",
   },
-})
+}
 
 -- Set b:is_zsh / b:is_bash for relevant shell files
 local shell_ft_augroup = vim.api.nvim_create_augroup("shell_filetypes", { clear = true })
