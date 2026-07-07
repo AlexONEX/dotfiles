@@ -37,17 +37,24 @@ end
 
 _G.M = M
 
-if vim.fn.filereadable(vim.fn.stdpath("config") .. "/lua/config/vimtex.lua") then
-  local vimtex_config = require("config.vimtex")
-  vimtex_config.setup()
-end
-
 vim.defer_fn(disable_treesitter, 100)
 
-local opts = { buffer = true, silent = true }
-vim.keymap.set("i", "<A-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u", opts)
+local bufopts = { buffer = true, silent = true }
+
+-- <space>l{c,v,k,e,...} = LaTeX commands (vimtex defaults are disabled)
+local lp = "<space>l"
+vim.keymap.set("n", lp .. "c", "<cmd>VimtexCompile<cr>", bufopts)
+vim.keymap.set("n", lp .. "v", "<cmd>VimtexView<cr>", bufopts)
+vim.keymap.set("n", lp .. "k", "<cmd>VimtexStop<cr>", bufopts)
+vim.keymap.set("n", lp .. "e", "<cmd>VimtexErrors<cr>", bufopts)
+vim.keymap.set("n", lp .. "C", "<cmd>VimtexClean<cr>", bufopts)
+vim.keymap.set("n", lp .. "t", "<cmd>VimtexTocOpen<cr>", bufopts)
+vim.keymap.set("n", lp .. "w", "<cmd>VimtexCountWords<cr>", bufopts)
+
+-- spell fix: <A-l> jumps to prev misspelling and fixes with first suggestion
+vim.keymap.set("i", "<A-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u", bufopts)
 vim.keymap.set("n", "<leader>lh", function()
   M.toggle_concealment()
-end, opts)
+end, bufopts)
 vim.keymap.set("i", ";;", "\\", { buffer = true })
 vim.keymap.set("i", "$$", "$$ $$<left><left><left>", { buffer = true })
