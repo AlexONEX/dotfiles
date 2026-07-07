@@ -203,9 +203,7 @@ local plugin_specs = {
     "kylechui/nvim-surround",
     version = "*",
     event = "InsertEnter",
-    config = function()
-      require("config.nvim-surround")
-    end,
+    opts = {},
   },
 
   -- Multiple cursor plugin like Sublime Text?
@@ -274,9 +272,12 @@ local plugin_specs = {
   {
     "kevinhwang91/nvim-bqf",
     ft = "qf",
-    config = function()
-      require("config.bqf")
-    end,
+    opts = {
+      auto_resize_height = false,
+      preview = {
+        auto_preview = false,
+      },
+    },
   },
 
 
@@ -355,9 +356,12 @@ local plugin_specs = {
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
-    config = function()
-      require("config.which-key")
-    end,
+    opts = {
+      preset = "modern",
+      icons = {
+        mappings = false,
+      },
+    },
   },
 
   {
