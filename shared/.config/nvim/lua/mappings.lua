@@ -63,8 +63,12 @@ keymap.set("x", "<A-j>", function()
   autoload.move_selection("down")
 end, { desc = "move selection down" })
 -- Insert blank line without moving cursor
-keymap.set("n", "<space>o", "printf('m`%so<ESC>``', v:count1)", { expr = true, desc = "insert line below" })
-keymap.set("n", "<space>O", "printf('m`%sO<ESC>``', v:count1)", { expr = true, desc = "insert line above" })
+keymap.set("n", "<space>o", function()
+  vim.cmd("normal! m`" .. vim.v.count1 .. "o\027``")
+end, { desc = "insert line below" })
+keymap.set("n", "<space>O", function()
+  vim.cmd("normal! m`" .. vim.v.count1 .. "O\027``")
+end, { desc = "insert line above" })
 -- Visual indent stays in visual mode
 keymap.set("x", "<", "<gv")
 keymap.set("x", ">", ">gv")
@@ -77,7 +81,11 @@ keymap.set("i", "<A-;>", "<Esc>miA;<Esc>`ii")
 keymap.set("n", "<leader>p", "m`o<ESC>p``", { desc = "paste below current line" })
 keymap.set("n", "<leader>P", "m`O<ESC>p``", { desc = "paste above current line" })
 -- Reselect last pasted area
-keymap.set("n", "<leader>v", "printf('`[%s`]', getregtype()[0])", { expr = true, desc = "reselect last pasted area" })
+keymap.set("n", "<leader>v", function()
+  local t = vim.fn.getregtype()
+  local c = (t and #t > 0) and t:sub(1, 1) or "v"
+  return "`[" .. c .. "`]"
+end, { expr = true, desc = "reselect last pasted area" })
 -- Strip trailing whitespace
 keymap.set("n", "<leader><space>", "<cmd>StripTrailingWhitespace<cr>", { desc = "remove trailing space" })
 -- Break undo units on punctuation in insert mode
@@ -113,18 +121,18 @@ keymap.set({ "x", "o" }, "iB", function()
 end, { desc = "buffer text object" })
 
 -- ─── Buffers ────────────────────────────────────────────────────────────────
-keymap.set(
-  "n",
-  "<Tab>",
-  ":if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bnext<CR>",
-  { noremap = true, silent = true }
-)
-keymap.set(
-  "n",
-  "<S-Tab>",
-  ":if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bprevious<CR>",
-  { noremap = true, silent = true }
-)
+local function save_and_switch(cmd)
+  if vim.bo.modifiable and not vim.bo.readonly and vim.bo.modified then
+    vim.cmd("write")
+  end
+  vim.cmd(cmd)
+end
+keymap.set("n", "<Tab>", function()
+  save_and_switch("bnext")
+end, { desc = "save and next buffer" })
+keymap.set("n", "<S-Tab>", function()
+  save_and_switch("bprevious")
+end, { desc = "save and previous buffer" })
 -- Delete current buffer without closing the window
 keymap.set("n", "<C-w>", "<cmd>bprevious <bar> bdelete #<cr>", { silent = true, desc = "delete current buffer" })
 keymap.set("n", [[\D]], function()
@@ -147,24 +155,24 @@ keymap.set("n", [[\x]], "<cmd>windo lclose <bar> cclose <cr>", { silent = true, 
 
 -- ─── File & Clipboard ───────────────────────────────────────────────────────
 keymap.set("n", "<leader>y", "<cmd>%yank<cr>", { desc = "yank entire buffer" })
-keymap.set(
-  "n",
-  "<space>yp",
-  '"+yy:let @+=expand("%:p")<CR>:echo "Copied path: " . @+<CR>',
-  { desc = "copy file path", silent = true }
-)
-keymap.set(
-  "n",
-  "<space>yn",
-  '"+yy:let @+=expand("%:t")<CR>:echo "Copied filename: " . @+<CR>',
-  { desc = "copy file name", silent = true }
-)
-keymap.set(
-  "n",
-  "gx",
-  [[:silent execute '!$BROWSER ' . shellescape(expand('<cfile>'), 1)<CR>]],
-  { noremap = true, silent = true, desc = "open URL in browser" }
-)
+keymap.set("n", "<space>yp", function()
+  vim.fn.setreg("+", vim.fn.expand("%:p"))
+  vim.print("Copied path: " .. vim.fn.expand("%:p"))
+end, { desc = "copy file path" })
+keymap.set("n", "<space>yn", function()
+  vim.fn.setreg("+", vim.fn.expand("%:t"))
+  vim.print("Copied filename: " .. vim.fn.expand("%:t"))
+end, { desc = "copy file name" })
+keymap.set("n", "gx", function()
+  local url = vim.fn.expand("<cfile>")
+  local browser = vim.env.BROWSER
+  if browser then
+    vim.system({ browser, url }, { text = true }):wait()
+    vim.notify("Opening: " .. url, vim.log.levels.INFO)
+  else
+    require("utils").open_url_under_cursor()
+  end
+end, { desc = "open URL in browser" })
 
 -- ─── Explorer & Workspace ───────────────────────────────────────────────────
 keymap.set("n", "<Space>e", function()

@@ -40,28 +40,24 @@ function M.inside_git_repo()
   return true
 end
 
-local function execute_open_command(url)
-  local cmd
-  if vim.fn.has("unix") == 1 then
-    if vim.fn.executable("xdg-open") == 1 then
-      cmd = string.format("xdg-open '%s' &", url)
-    elseif vim.fn.executable("firefox") == 1 then
-      cmd = string.format("firefox '%s' &", url)
-    end
-  elseif vim.fn.has("mac") == 1 then
-    cmd = string.format("open '%s'", url)
+local function open_url(url)
+  local r
+  if vim.fn.has("mac") == 1 then
+    r = vim.system({ "open", url }, { text = true }):wait()
+  elseif vim.fn.has("unix") == 1 then
+    local cmd = vim.fn.executable("xdg-open") == 1 and "xdg-open" or "firefox"
+    r = vim.system({ cmd, url }, { text = true }):wait()
   elseif vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
-    cmd = string.format('start "" "%s"', url)
-  end
-
-  if cmd then
-    vim.fn.system(cmd)
-    vim.notify("Opening: " .. url, vim.log.levels.INFO)
-    return true
+    r = vim.system({ "cmd.exe", "/c", "start", "", url }, { text = true }):wait()
   else
-    vim.notify("No command found to open URL (e.g., xdg-open, open, start)", vim.log.levels.ERROR)
+    vim.notify("No command found to open URL (e.g., open, xdg-open, start)", vim.log.levels.ERROR)
     return false
   end
+  if r.code == 0 then
+    vim.notify("Opening: " .. url, vim.log.levels.INFO)
+    return true
+  end
+  return false
 end
 
 function M.open_url_under_cursor()
@@ -69,12 +65,12 @@ function M.open_url_under_cursor()
 
   local md_url = line:match("%[.-%]%((https?://[%w%-%._~:/?#%[%]@!$&'()*+,;=]+)%)")
   if md_url then
-    return execute_open_command(md_url)
+    return open_url(md_url)
   end
 
   local plain_url = line:match("(https?://[%w%-%._~:/?#%[%]@!$&'()*+,;=]+)")
   if plain_url then
-    return execute_open_command(plain_url)
+    return open_url(plain_url)
   end
 
   vim.notify("No URL found in the current line", vim.log.levels.WARN)

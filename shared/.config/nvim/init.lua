@@ -12,14 +12,14 @@ require("config.options")
 require("custom-autocmd")
 -- all the user-defined mappings
 require("mappings")
--- Nvim quality of life improvements
-require("improvements")
 -- Fix common typos
 vim.cmd("iabbrev reqire require")
 vim.cmd("iabbrev serveral several")
 
 -- plugin specs & lazy.nvim bootstrap (was viml_conf/plugins.vim)
 require("plugin_specs")
+-- user commands (was plugin/command.lua)
+require("commands")
 -- plugin settings
 require("config.plugin-settings")
 

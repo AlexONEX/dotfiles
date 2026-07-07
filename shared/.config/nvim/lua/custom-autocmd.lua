@@ -2,6 +2,48 @@ local fn = vim.fn
 local api = vim.api
 local utils = require("utils")
 
+-- ─── Search index (merged from improvements.lua) ──────────────────────
+local search_count_extmark_id
+
+local function show_search_index()
+  local searchCount = vim.fn.searchcount { recompute = 1, maxcount = 0 }
+  if searchCount.current == 0 or searchCount.total == 0 then
+    return
+  end
+
+  local namespaceId = vim.api.nvim_create_namespace("search")
+  vim.api.nvim_buf_clear_namespace(0, namespaceId, 0, -1)
+
+  search_count_extmark_id = vim.api.nvim_buf_set_extmark(0, namespaceId, vim.api.nvim_win_get_cursor(0)[1] - 1, 0, {
+    virt_text = { { "[" .. searchCount.current .. "/" .. searchCount.total .. "]", "StatusLine" } },
+    virt_text_pos = "eol",
+  })
+
+  pcall(function()
+    vim.cmd("redraw")
+  end)
+end
+
+local search_keys = { "n", "N", "*", "#", "g*", "g#" }
+for _, key in ipairs(search_keys) do
+  vim.keymap.set("n", key, function()
+    vim.cmd("normal! " .. key)
+    show_search_index()
+  end, { noremap = true })
+end
+
+local search_index_group = vim.api.nvim_create_augroup("SearchIndex", { clear = true })
+vim.api.nvim_create_autocmd("CmdlineLeave", {
+  group = search_index_group,
+  callback = function(event)
+    if event.match == "/" or event.match == "?" then
+      vim.defer_fn(function()
+        pcall(show_search_index)
+      end, 10)
+    end
+  end,
+})
+
 -- Replacement for whitespace.nvim
 vim.api.nvim_create_user_command("StripTrailingWhitespace", function()
   local view = vim.fn.winsaveview()
