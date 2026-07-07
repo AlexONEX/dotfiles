@@ -1,5 +1,6 @@
 local lint = require("lint")
 local utils = require("utils")
+local python_lib = require("python")
 
 lint.linters_by_ft = {
   cpp = {},
@@ -39,7 +40,7 @@ lint.linters.ruff = {
   end,
   stdin = true,
   args = function()
-    local python_info = utils.get_python_info()
+    local python_info = python_lib.get_python_info()
     return {
       "--select=E,F,W,I,N,B,RUF",
       "--format=text",

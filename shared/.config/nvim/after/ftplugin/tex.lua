@@ -24,11 +24,6 @@ local function disable_treesitter()
 	end
 end
 
-function M.format_and_save()
-	vim.lsp.buf.format()
-	vim.cmd("write")
-end
-
 function M.toggle_concealment()
 	local current_level = vim.api.nvim_get_option_value("conceallevel", { scope = "local" })
 	if current_level == 0 then
@@ -51,15 +46,10 @@ vim.defer_fn(disable_treesitter, 100)
 
 local opts = { buffer = true, silent = true }
 vim.keymap.set("i", "<A-l>", "<c-g>u<Esc>[s1z=`]a<c-g>u", opts)
-vim.keymap.set("n", "<C-s>", function()
-	M.format_and_save()
-end, opts)
 vim.keymap.set("n", "<leader>lh", function()
 	M.toggle_concealment()
 end, opts)
 vim.keymap.set("i", ";;", "\\", { buffer = true })
 vim.keymap.set("i", "$$", "$$ $$<left><left><left>", { buffer = true })
 
-vim.api.nvim_buf_create_user_command(0, "FormatAndSaveLatex", function()
-	M.format_and_save()
-end, { desc = "Format and save LaTeX file" })
+

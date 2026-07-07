@@ -135,6 +135,15 @@ keymap.set("n", "<leader>wo", function()
 	end
 end, { desc = "go to wiki directory" })
 
+-- ─── Format ──────────────────────────────────────────────────────────────────
+keymap.set({ "n", "v" }, "<space>f", function()
+	vim.lsp.buf.format()
+end, { desc = "format buffer via LSP" })
+keymap.set("n", "<C-s>", function()
+	vim.lsp.buf.format()
+	vim.cmd("write")
+end, { desc = "format buffer and save" })
+
 -- ─── Config ─────────────────────────────────────────────────────────────────
 keymap.set("n", "<leader>co", "<cmd>tabnew $MYVIMRC <bar> tcd %:h<cr>", { silent = true, desc = "open init.lua" })
 keymap.set("n", "<leader>cr", function()

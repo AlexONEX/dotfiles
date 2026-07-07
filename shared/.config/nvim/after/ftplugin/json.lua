@@ -1,34 +1,8 @@
-local utils = require("utils")
-
 vim.bo.expandtab = true
 vim.bo.shiftwidth = 2
 vim.bo.softtabstop = 2
 vim.bo.tabstop = 2
 vim.opt_local.formatoptions:remove { "o", "r" }
-
-local M = {}
-
-function M.format_json()
-  if not utils.executable("jq") then
-    vim.notify("jq not found in system", vim.log.levels.WARN, { title = "JSON Format" })
-    return
-  end
-
-  local cursor_pos = vim.api.nvim_win_get_cursor(0)
-  vim.cmd([[ silent %!jq . ]])
-  vim.api.nvim_win_set_cursor(0, cursor_pos)
-  vim.notify("JSON formatted with jq", vim.log.levels.INFO, { title = "JSON Format" })
-end
-
-function M.format_and_save()
-  M.format_json()
-  vim.cmd("write")
-end
-
-local opts = { buffer = true, silent = true }
-vim.keymap.set("n", "<C-s>", M.format_and_save, vim.tbl_extend("force", opts, { desc = "Format and save JSON" }))
-vim.keymap.set("n", "<space>f", M.format_and_save, vim.tbl_extend("force", opts, { desc = "Format JSON" }))
-vim.keymap.set("n", "<leader>f", M.format_json, vim.tbl_extend("force", opts, { desc = "Format JSON with jq" }))
 
 vim.keymap.set("n", "o", function()
   local line = vim.api.nvim_get_current_line()
@@ -38,5 +12,3 @@ vim.keymap.set("n", "o", function()
     return "o"
   end
 end, { buffer = true, expr = true, desc = "Smart 'o' for commas" })
-
-return M

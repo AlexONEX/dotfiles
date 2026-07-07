@@ -95,16 +95,6 @@ function M.run_executable()
   vim.cmd("startinsert")
 end
 
-function M.format_cpp()
-  if utils.executable("clang-format") then
-    vim.cmd("silent !clang-format -i %")
-    vim.cmd("edit")
-    vim.notify("Formatted with clang-format", vim.log.levels.INFO)
-  else
-    vim.notify("clang-format not found", vim.log.levels.WARN)
-  end
-end
-
 function M.debug_cpp()
   local exe_path = vim.fn.expand("%:p:~:r")
   if vim.fn.filereadable(exe_path) == 0 then
@@ -141,13 +131,6 @@ end, { buffer = true, desc = "Compile C++" })
 vim.keymap.set("n", "<F6>", function()
   M.run_executable()
 end, { buffer = true, desc = "Run executable" })
-
-vim.keymap.set("n", "<C-s>", function()
-  M.format_cpp()
-end, { buffer = true, silent = true, desc = "Format with clang-format" })
-vim.keymap.set("n", "<space>f", function()
-  M.format_cpp()
-end, { buffer = true, desc = "Format with clang-format" })
 
 vim.keymap.set("n", "<F7>", function()
   M.debug_cpp()

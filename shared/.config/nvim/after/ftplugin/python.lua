@@ -9,7 +9,7 @@ vim.bo.tabstop = 4
 vim.opt_local.formatoptions:remove({ "o", "r" })
 
 local M = {}
-local utils = require("utils")
+local python_lib = require("python")
 
 vim.api.nvim_create_autocmd("InsertCharPre", {
 	pattern = { "*.py" },
@@ -38,20 +38,8 @@ vim.api.nvim_create_autocmd("InsertCharPre", {
 })
 
 function M.run_python()
-	local python_info = utils.get_python_info()
+	local python_info = python_lib.get_python_info()
 	vim.cmd("AsyncRun " .. python_info.exe .. ' -u "%"')
-end
-
-function M.format_and_save()
-	if utils.executable("ruff") then
-		vim.cmd("silent !ruff format %")
-		vim.cmd("silent !ruff check --fix %")
-		vim.cmd("edit")
-		vim.cmd("write")
-		vim.notify("Formatted with Ruff", vim.log.levels.INFO)
-	else
-		vim.notify("Ruff not found. Install with: pip install ruff", vim.log.levels.WARN)
-	end
 end
 
 function M.lint_python()
@@ -67,12 +55,6 @@ _G.M = M
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<F9>", function()
 	M.run_python()
-end, opts)
-vim.keymap.set("n", "<C-s>", function()
-	M.format_and_save()
-end, opts)
-vim.keymap.set("n", "<space>f", function()
-	M.format_and_save()
 end, opts)
 vim.keymap.set("n", "<space>l", function()
 	M.lint_python()

@@ -1,4 +1,3 @@
-local M = {}
 local search_count_extmark_id
 
 local function show_search_index()
@@ -67,8 +66,4 @@ vim.api.nvim_create_autocmd("CmdlineLeave", {
 	end,
 })
 
-M.show_search_index = show_search_index
-M.clear_search_index = clear_search_index
-M.clear_search_highlight_and_index = clear_search_highlight_and_index
 
-return M

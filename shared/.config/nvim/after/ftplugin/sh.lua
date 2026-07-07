@@ -16,26 +16,9 @@ function M.run_bash()
 	end
 end
 
-function M.format_bash()
-	if utils.executable("shfmt") then
-		vim.cmd("silent !shfmt -w %")
-		vim.cmd("edit")
-		vim.cmd("write")
-		vim.notify("Formatted with shfmt", vim.log.levels.INFO)
-	else
-		vim.notify("shfmt not found", vim.log.levels.WARN)
-	end
-end
-
 _G.M = M
 
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<F9>", function()
 	M.run_bash()
-end, opts)
-vim.keymap.set("n", "<C-s>", function()
-	M.format_bash()
-end, opts)
-vim.keymap.set("n", "<space>f", function()
-	M.format_bash()
 end, opts)

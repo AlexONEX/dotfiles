@@ -70,23 +70,6 @@ function M.run_haskell()
 	vim.cmd("startinsert")
 end
 
-function M.format_haskell()
-	if not utils.executable("ormolu") then
-		vim.notify("ormolu not found on the system!", vim.log.levels.ERROR)
-		return
-	end
-
-	local src_path = vim.fn.expand("%:p")
-	vim.cmd("write")
-	local result = vim.fn.system(string.format("ormolu --mode inplace %s", vim.fn.shellescape(src_path)))
-	if vim.v.shell_error == 0 then
-		vim.cmd("edit!")
-		vim.notify("Formatted with ormolu", vim.log.levels.INFO)
-	else
-		vim.notify("Error formatting file: " .. result, vim.log.levels.ERROR)
-	end
-end
-
 function M.run_hlint()
 	vim.lsp.buf.code_action()
 end
@@ -136,12 +119,6 @@ vim.keymap.set("n", "<F5>", function()
 end, opts)
 vim.keymap.set("n", "<F6>", function()
 	M.run_executable()
-end, opts)
-vim.keymap.set("n", "<C-s>", function()
-	M.format_haskell()
-end, opts)
-vim.keymap.set("n", "<space>f", function()
-	M.format_haskell()
 end, opts)
 vim.keymap.set("n", "<leader>hl", function()
 	M.run_hlint()
