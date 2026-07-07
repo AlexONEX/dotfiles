@@ -33,14 +33,16 @@ end, {
   range = "%",
 })
 
+local autoload = require("autoload")
+
 -- Capture command output to a register
 vim.api.nvim_create_user_command("Redir", function(context)
-  vim.fn["utils#CaptureCommandOutput"](context.args)
+  autoload.capture_command_output(context.args)
 end, { nargs = 1, complete = "command", desc = "capture command output to scratch buffer" })
 
 -- Open multiple files matching patterns
 vim.api.nvim_create_user_command("Edit", function(context)
-  vim.fn["utils#MultiEdit"](vim.split(context.args, "%s+"))
+  autoload.multi_edit(context.args)
 end, { nargs = "+", complete = "file", bar = true, desc = "open files matching patterns" })
 vim.cmd("cabbrev edit Edit")
 
@@ -48,7 +50,7 @@ vim.cmd("cabbrev man Man")
 
 -- Show current date and time
 vim.api.nvim_create_user_command("Datetime", function(context)
-  vim.print(vim.fn["utils#iso_time"](context.args))
+  vim.print(autoload.iso_time(context.args))
 end, { nargs = "?", desc = "show current date/time" })
 
 -- Convert Markdown to PDF via pandoc

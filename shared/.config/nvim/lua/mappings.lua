@@ -49,10 +49,19 @@ keymap.set("n", "gJ", function()
     ]])
 end, { desc = "join lines without moving cursor" })
 -- Move line / selection up and down
-keymap.set("n", "<A-k>", '<cmd>call utils#SwitchLine(line("."), "up")<cr>', { desc = "move line up" })
-keymap.set("n", "<A-j>", '<cmd>call utils#SwitchLine(line("."), "down")<cr>', { desc = "move line down" })
-keymap.set("x", "<A-k>", '<cmd>call utils#MoveSelection("up")<cr>', { desc = "move selection up" })
-keymap.set("x", "<A-j>", '<cmd>call utils#MoveSelection("down")<cr>', { desc = "move selection down" })
+local autoload = require("autoload")
+keymap.set("n", "<A-k>", function()
+  autoload.switch_line(vim.fn.line("."), "up")
+end, { desc = "move line up" })
+keymap.set("n", "<A-j>", function()
+  autoload.switch_line(vim.fn.line("."), "down")
+end, { desc = "move line down" })
+keymap.set("x", "<A-k>", function()
+  autoload.move_selection("up")
+end, { desc = "move selection up" })
+keymap.set("x", "<A-j>", function()
+  autoload.move_selection("down")
+end, { desc = "move selection down" })
 -- Insert blank line without moving cursor
 keymap.set("n", "<space>o", "printf('m`%so<ESC>``', v:count1)", { expr = true, desc = "insert line below" })
 keymap.set("n", "<space>O", "printf('m`%sO<ESC>``', v:count1)", { expr = true, desc = "insert line above" })
@@ -95,8 +104,13 @@ end, { desc = "toggle todo completion status" })
 keymap.set("n", "/", [[/\v]])
 
 -- ─── Text Objects ───────────────────────────────────────────────────────────
-keymap.set({ "x", "o" }, "iu", "<cmd>call text_obj#URL()<cr>", { desc = "URL text object" })
-keymap.set({ "x", "o" }, "iB", ":<C-U>call text_obj#Buffer()<cr>", { desc = "buffer text object" })
+local text_objs = require("text_objs")
+keymap.set({ "x", "o" }, "iu", function()
+  text_objs.url()
+end, { desc = "URL text object" })
+keymap.set({ "x", "o" }, "iB", function()
+  text_objs.buffer()
+end, { desc = "buffer text object" })
 
 -- ─── Buffers ────────────────────────────────────────────────────────────────
 keymap.set(
@@ -122,8 +136,13 @@ keymap.set("n", [[\D]], function()
     end
   end
 end, { desc = "delete other buffers" })
-keymap.set("n", "gb", '<cmd>call buf_utils#GoToBuffer(v:count, "forward")<cr>', { desc = "go to buffer (forward)" })
-keymap.set("n", "gB", '<cmd>call buf_utils#GoToBuffer(v:count, "backward")<cr>', { desc = "go to buffer (backward)" })
+local buf_utils = require("buf_utils")
+keymap.set("n", "gb", function()
+  buf_utils.go_to_buffer(vim.v.count, "forward")
+end, { desc = "go to buffer (forward)" })
+keymap.set("n", "gB", function()
+  buf_utils.go_to_buffer(vim.v.count, "backward")
+end, { desc = "go to buffer (backward)" })
 keymap.set("n", [[\x]], "<cmd>windo lclose <bar> cclose <cr>", { silent = true, desc = "close qf and location list" })
 
 -- ─── File & Clipboard ───────────────────────────────────────────────────────
@@ -190,7 +209,9 @@ end, { desc = "close floating win" })
 keymap.set("t", "<Esc>", [[<c-\><c-n>]])
 keymap.set("n", "<F11>", "<cmd>set spell!<cr>", { desc = "toggle spell" })
 keymap.set("i", "<F11>", "<c-o><cmd>set spell!<cr>", { desc = "toggle spell" })
-keymap.set("n", "<leader>cl", "<cmd>call utils#ToggleCursorCol()<cr>", { desc = "toggle cursor column" })
+keymap.set("n", "<leader>cl", function()
+  require("autoload").toggle_cursor_col()
+end, { desc = "toggle cursor column" })
 keymap.set("n", "<leader>cb", function()
   local cnt = 0
   local blink_times = 7

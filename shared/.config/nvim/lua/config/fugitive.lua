@@ -8,7 +8,7 @@ keymap.set("n", "<leader>gpu", "<cmd>15 split|term git push<cr>", { desc = "Git:
 keymap.set("v", "<leader>gb", ":Git blame<cr>", { desc = "Git: blame selected line" })
 
 -- convert git to Git in command line mode
-vim.fn["utils#Cabbrev"]("git", "Git")
+require("autoload").cabbrev("git", "Git")
 
 keymap.set("n", "<leader>gbn", function()
   vim.ui.input({ prompt = "Enter a new branch name" }, function(user_input)

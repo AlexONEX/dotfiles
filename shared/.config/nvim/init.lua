@@ -4,13 +4,10 @@ local utils = require("utils")
 local expected_version = "0.12.3"
 utils.is_compatible_version(expected_version)
 
-local config_dir = vim.fn.stdpath("config")
----@cast config_dir string
-
 -- some global settings
 require("globals")
 -- setting options in nvim
-vim.cmd("source " .. vim.fs.joinpath(config_dir, "viml_conf/options.vim"))
+require("config.options")
 -- various autocommands
 require("custom-autocmd")
 -- all the user-defined mappings
@@ -21,8 +18,16 @@ require("improvements")
 vim.cmd("iabbrev reqire require")
 vim.cmd("iabbrev serveral several")
 
--- all the plugins installed and their configurations
-vim.cmd("source " .. vim.fs.joinpath(config_dir, "viml_conf/plugins.vim"))
+-- plugin specs & lazy.nvim bootstrap (was viml_conf/plugins.vim)
+require("plugin_specs")
+-- plugin settings
+require("config.plugin-settings")
+
+-- GUI settings (was ginit.vim)
+require("gui")
+
+-- filetype detection (was ftdetect/*.vim)
+require("ftdetect")
 
 -- diagnostic related config
 require("diagnostic-conf")
