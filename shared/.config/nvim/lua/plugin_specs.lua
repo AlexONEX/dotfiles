@@ -44,8 +44,6 @@ local plugin_specs = {
     },
   },
 
-
-
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
@@ -183,10 +181,6 @@ local plugin_specs = {
   },
   { "nvim-lua/plenary.nvim", lazy = true },
 
-
-
-
-
   -- Snippet engine and snippet collection
   {
     "L3MON4D3/LuaSnip",
@@ -222,8 +216,6 @@ local plugin_specs = {
     end,
     event = { "InsertEnter" },
   },
-
-
 
   -- Git command inside vim
   {
@@ -267,8 +259,6 @@ local plugin_specs = {
     cmd = { "DiffviewOpen" },
   },
 
-
-
   {
     "kevinhwang91/nvim-bqf",
     ft = "qf",
@@ -280,8 +270,6 @@ local plugin_specs = {
     },
   },
 
-
-
   -- Markdown previewing (only for Mac and Windows)
   {
     "iamcco/markdown-preview.nvim",
@@ -291,8 +279,6 @@ local plugin_specs = {
     build = "cd app && npm install && git restore .",
     ft = { "markdown" },
   },
-
-
 
   { "chrisbra/unicode.vim", keys = { "ga" }, cmd = { "UnicodeSearch" } },
 
@@ -349,9 +335,6 @@ local plugin_specs = {
 
   -- Session management plugin
 
-
-
-
   -- showing keybindings
   {
     "folke/which-key.nvim",
@@ -380,10 +363,6 @@ local plugin_specs = {
       notifier = { enabled = true },
     },
   },
-
-
-
-
 
   {
     "zbirenbaum/copilot.lua",
@@ -433,8 +412,6 @@ local plugin_specs = {
     opts = { -- set to setup table
     },
   },
-
-
 }
 
 ---@diagnostic disable-next-line: missing-fields

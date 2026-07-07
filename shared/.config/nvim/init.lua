@@ -36,4 +36,3 @@ if not in_tmux and color_scheme.get_alacritty_mode() == "light" then
 else
   color_scheme.load_colorscheme("nord")
 end
-

@@ -32,7 +32,7 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.g.netrw_liststyle = 3
 if vim.g.is_win then
-	vim.g.netrw_http_cmd = "curl --ssl-no-revoke -Lo"
+  vim.g.netrw_http_cmd = "curl --ssl-no-revoke -Lo"
 end
 
 -- Do not load tohtml.vim

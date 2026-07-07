@@ -2,54 +2,54 @@ vim.bo.expandtab = true
 vim.bo.shiftwidth = 4
 vim.bo.softtabstop = 4
 vim.bo.tabstop = 4
-vim.opt_local.formatoptions:remove({ "o", "r" })
+vim.opt_local.formatoptions:remove { "o", "r" }
 
 local M = {}
 local utils = require("utils")
 
 function M.run_rust()
-	vim.cmd("!cargo run")
+  vim.cmd("!cargo run")
 end
 
 function M.build_rust()
-	vim.cmd("!cargo build")
+  vim.cmd("!cargo build")
 end
 
 function M.test_rust()
-	vim.cmd("!cargo test")
+  vim.cmd("!cargo test")
 end
 
 function M.check_rust()
-	vim.cmd("!cargo check")
+  vim.cmd("!cargo check")
 end
 
 function M.clippy_rust()
-	vim.cmd("!cargo clippy")
+  vim.cmd("!cargo clippy")
 end
 
 _G.M = M
 
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<F9>", function()
-	M.run_rust()
+  M.run_rust()
 end, opts)
 
 vim.keymap.set("n", "<space>rr", function()
-	M.run_rust()
+  M.run_rust()
 end, { buffer = true, desc = "Cargo run" })
 
 vim.keymap.set("n", "<space>rb", function()
-	M.build_rust()
+  M.build_rust()
 end, { buffer = true, desc = "Cargo build" })
 
 vim.keymap.set("n", "<space>rt", function()
-	M.test_rust()
+  M.test_rust()
 end, { buffer = true, desc = "Cargo test" })
 
 vim.keymap.set("n", "<space>rc", function()
-	M.check_rust()
+  M.check_rust()
 end, { buffer = true, desc = "Cargo check" })
 
 vim.keymap.set("n", "<space>rl", function()
-	M.clippy_rust()
+  M.clippy_rust()
 end, { buffer = true, desc = "Cargo clippy" })

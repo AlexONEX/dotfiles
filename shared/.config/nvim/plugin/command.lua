@@ -61,10 +61,21 @@ vim.api.nvim_create_user_command("ToPDF", function()
   local pdf_path = vim.fn.fnamemodify(md_path, ":r") .. ".pdf"
   local header_path = vim.fn.stdpath("config") .. "/resources/head.tex"
   local cmd = table.concat({
-    "pandoc", "--pdf-engine=xelatex", "--highlight-style=zenburn", "--table-of-content",
-    "--include-in-header=" .. header_path, "-V fontsize=10pt", "-V colorlinks",
-    "-V toccolor=NavyBlue", "-V linkcolor=red", "-V urlcolor=teal",
-    "-V filecolor=magenta", "-s", md_path, "-o", pdf_path,
+    "pandoc",
+    "--pdf-engine=xelatex",
+    "--highlight-style=zenburn",
+    "--table-of-content",
+    "--include-in-header=" .. header_path,
+    "-V fontsize=10pt",
+    "-V colorlinks",
+    "-V toccolor=NavyBlue",
+    "-V linkcolor=red",
+    "-V urlcolor=teal",
+    "-V filecolor=magenta",
+    "-s",
+    md_path,
+    "-o",
+    pdf_path,
   }, " ")
   if vim.g.is_mac then
     cmd = cmd .. " && open " .. pdf_path

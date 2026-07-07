@@ -1,3 +1,3 @@
 return {
-	filetypes = { "c", "cpp", "cc" },
+  filetypes = { "c", "cpp", "cc" },
 }

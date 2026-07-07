@@ -3,10 +3,10 @@ vim.bo.shiftwidth = 4
 vim.bo.softtabstop = 4
 vim.bo.tabstop = 4
 vim.opt_local.colorcolumn = "120"
-vim.opt_local.formatoptions:remove({ "o", "r" })
+vim.opt_local.formatoptions:remove { "o", "r" }
 
 local function format_and_save()
-  vim.lsp.buf.format({ async = false })
+  vim.lsp.buf.format { async = false }
   vim.cmd("write")
 end
 

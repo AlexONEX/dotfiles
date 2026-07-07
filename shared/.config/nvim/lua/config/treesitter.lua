@@ -1,8 +1,26 @@
 local parsers = {
-  "python", "cpp", "c", "lua", "vim", "vimdoc",
-  "json", "toml", "yaml", "latex", "sql", "bibtex",
-  "markdown", "markdown_inline", "haskell", "rust", "bash",
-  "typescript", "javascript", "tsx", "terraform", "hcl",
+  "python",
+  "cpp",
+  "c",
+  "lua",
+  "vim",
+  "vimdoc",
+  "json",
+  "toml",
+  "yaml",
+  "latex",
+  "sql",
+  "bibtex",
+  "markdown",
+  "markdown_inline",
+  "haskell",
+  "rust",
+  "bash",
+  "typescript",
+  "javascript",
+  "tsx",
+  "terraform",
+  "hcl",
 }
 
 -- Install missing parsers asynchronously
@@ -12,7 +30,9 @@ vim.schedule(function()
   for _, p in ipairs(cfg.get_installed("parsers")) do
     installed_set[p] = true
   end
-  local missing = vim.tbl_filter(function(p) return not installed_set[p] end, parsers)
+  local missing = vim.tbl_filter(function(p)
+    return not installed_set[p]
+  end, parsers)
   if #missing > 0 then
     require("nvim-treesitter.install").install(missing)
   end
