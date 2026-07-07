@@ -47,7 +47,6 @@ gs.setup {
       gs.reset_hunk { vim.fn.line("."), vim.fn.line("v") }
     end, { desc = "reset hunk" })
     map("n", "<leader>gS", gs.stage_buffer, { desc = "stage buffer" })
-    -- ponytail: undo_stage_hunk deprecated but no functional replacement
     map("n", "<leader>gu", gs.undo_stage_hunk, { desc = "undo stage hunk" })
     map("n", "<leader>gd", gs.diffthis, { desc = "diff this" })
     map("n", "<leader>gp", gs.preview_hunk, { desc = "preview hunk" })

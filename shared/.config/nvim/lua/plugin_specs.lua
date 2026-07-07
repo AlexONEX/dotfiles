@@ -1,5 +1,3 @@
-local utils = require("utils")
-
 local plugin_dir = vim.fn.stdpath("data") .. "/lazy"
 local lazypath = plugin_dir .. "/lazy.nvim"
 
@@ -212,7 +210,7 @@ local plugin_specs = {
   {
     "lyokha/vim-xkbswitch",
     enabled = function()
-      return vim.g.is_mac and utils.executable("xkbswitch")
+      return vim.g.is_mac and vim.fn.executable("xkbswitch") > 0
     end,
     event = { "InsertEnter" },
   },
@@ -291,7 +289,7 @@ local plugin_specs = {
     "lervag/vimtex",
     ft = { "tex" },
     enabled = function()
-      return utils.executable("latex")
+      return vim.fn.executable("latex") > 0
     end,
     config = function()
       vim.g.vimtex_view_method = "zathura"
@@ -324,7 +322,7 @@ local plugin_specs = {
   {
     "tmux-plugins/vim-tmux",
     enabled = function()
-      return utils.executable("tmux")
+      return vim.fn.executable("tmux") > 0
     end,
     ft = { "tmux" },
   },

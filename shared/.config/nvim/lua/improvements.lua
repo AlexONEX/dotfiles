@@ -21,37 +21,13 @@ local function show_search_index()
   end)
 end
 
-local function clear_search_index()
-  local namespaceId = vim.api.nvim_get_namespaces()["search"]
-  if namespaceId and search_count_extmark_id then
-    pcall(function()
-      vim.api.nvim_buf_del_extmark(0, namespaceId, search_count_extmark_id)
-    end)
-  end
-end
-
-local function clear_search_highlight_and_index()
-  clear_search_index()
-  pcall(function()
-    vim.cmd("nohlsearch")
-  end)
-end
-
 local keys = { "n", "N", "*", "#", "g*", "g#" }
 for _, key in ipairs(keys) do
   vim.keymap.set("n", key, function()
-    -- Use pcall to safely execute the normal command
-    pcall(function()
-      vim.cmd("normal! " .. key)
-    end)
-    -- Only show the index if the command succeeded
-    pcall(show_search_index)
+    vim.cmd("normal! " .. key)
+    show_search_index()
   end, { noremap = true })
 end
-
-vim.keymap.set("n", "<Esc>", function()
-  clear_search_highlight_and_index()
-end, { noremap = true })
 
 local group = vim.api.nvim_create_augroup("SearchIndex", { clear = true })
 vim.api.nvim_create_autocmd("CmdlineLeave", {

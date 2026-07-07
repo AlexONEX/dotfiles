@@ -29,7 +29,6 @@ local haskell_flags = table.concat({
 }, " ")
 
 local M = {}
-local utils = require("utils")
 
 local function create_term_buf(type, size)
   vim.opt.splitbelow = true
@@ -43,7 +42,7 @@ local function create_term_buf(type, size)
 end
 
 function M.compile_run_haskell()
-  if not utils.executable("ghc") then
+  if vim.fn.executable("ghc") == 0 then
     vim.notify("GHC not found on the system!", vim.log.levels.ERROR)
     return
   end
@@ -58,7 +57,7 @@ function M.compile_run_haskell()
 end
 
 function M.run_haskell()
-  if not utils.executable("runhaskell") then
+  if vim.fn.executable("runhaskell") == 0 then
     vim.notify("runhaskell not found on the system!", vim.log.levels.ERROR)
     return
   end
@@ -75,7 +74,7 @@ function M.run_hlint()
 end
 
 function M.compile_only_haskell()
-  if not utils.executable("ghc") then
+  if vim.fn.executable("ghc") == 0 then
     vim.notify("GHC not found!", vim.log.levels.ERROR)
     return
   end

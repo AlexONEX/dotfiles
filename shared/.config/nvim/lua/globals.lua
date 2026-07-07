@@ -1,11 +1,9 @@
-local utils = require("utils")
-
 ------------------------------------------------------------------------
 --                          custom variables                          --
 ------------------------------------------------------------------------
-vim.g.is_win = (utils.has("win32") or utils.has("win64")) and true or false
-vim.g.is_linux = (utils.has("unix") and (not utils.has("macunix"))) and true or false
-vim.g.is_mac = utils.has("macunix") and true or false
+vim.g.is_win = (vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1) and true or false
+vim.g.is_linux = (vim.fn.has("unix") == 1 and (vim.fn.has("macunix") ~= 1)) and true or false
+vim.g.is_mac = vim.fn.has("macunix") == 1 and true or false
 
 vim.g.logging_level = vim.log.levels.INFO
 ------------------------------------------------------------------------

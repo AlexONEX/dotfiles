@@ -1,5 +1,3 @@
-local utils = require("utils")
-
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("lsp_buf_conf", { clear = true }),
   callback = function(event_context)
@@ -165,7 +163,7 @@ local enabled_lsp_servers = {
 }
 
 for server_name, lsp_executable in pairs(enabled_lsp_servers) do
-  if utils.executable(lsp_executable) then
+  if vim.fn.executable(lsp_executable) > 0 then
     vim.lsp.enable(server_name)
   else
     local msg = string.format(

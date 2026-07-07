@@ -2,10 +2,9 @@ vim.bo.commentstring = "--\\ %s"
 vim.opt_local.formatoptions:remove { "o", "r" }
 
 local M = {}
-local utils = require("utils")
 
 function M.format_and_save()
-  if utils.executable("sqlfluff") then
+  if vim.fn.executable("sqlfluff") > 0 then
     vim.cmd("silent !sqlfluff fix --force %")
     vim.cmd("edit")
     vim.cmd("write")

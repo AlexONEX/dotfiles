@@ -14,31 +14,6 @@ if vim.g.GuiLoaded then
   vim.cmd("GuiFont! Hack NF:h10:l")
 end
 
--- fvim
-if vim.g.fvim_loaded then
-  vim.o.termguicolors = true
-  vim.cmd("colorscheme gruvbox8_hard")
-  vim.o.guifont = "Hack NF:h13"
-  vim.fn["FVimCursorSmoothMove"](true)
-  vim.fn["FVimCursorSmoothBlink"](true)
-  vim.fn["FVimBackgroundComposition"]("none")
-  vim.fn["FVimBackgroundOpacity"](1.0)
-  vim.fn["FVimBackgroundAltOpacity"](1.0)
-  vim.fn["FVimCustomTitleBar"](true)
-  vim.fn["FVimDrawFPS"](false)
-  vim.fn["FVimFontDrawBounds"](false)
-  vim.fn["FVimFontAntialias"](true)
-  vim.fn["FVimFontAutohint"](true)
-  vim.fn["FVimFontHintLevel"]("full")
-  vim.fn["FVimFontSubpixel"](true)
-  vim.fn["FVimFontLigature"](true)
-  vim.fn["FVimFontLineHeight"]("+1")
-  vim.fn["FVimFontAutoSnap"](true)
-  vim.fn["FVimFontNormalWeight"](100)
-  vim.fn["FVimFontBoldWeight"](700)
-  vim.fn["FVimUIPopupMenu"](false)
-end
-
 -- neovide
 if vim.g.neovide then
   vim.o.guifont = "Hack NF:h10"

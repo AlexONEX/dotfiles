@@ -5,7 +5,6 @@ vim.bo.tabstop = 4
 vim.opt_local.formatoptions:remove { "o", "r" }
 
 local M = {}
-local utils = require("utils")
 
 function M.run_rust()
   vim.cmd("!cargo run")

@@ -27,7 +27,6 @@ local cpp_flags = table.concat({
 }, " ")
 
 local M = {}
-local utils = require("utils")
 
 local function create_term_buf(type, size)
   vim.opt.splitbelow = true
@@ -41,9 +40,9 @@ local function create_term_buf(type, size)
 end
 
 local function get_cpp_compiler()
-  if utils.executable("clang++") then
+  if vim.fn.executable("clang++") > 0 then
     return "clang++"
-  elseif utils.executable("g++") then
+  elseif vim.fn.executable("g++") > 0 then
     return "g++"
   else
     return nil
@@ -102,7 +101,7 @@ function M.debug_cpp()
     return
   end
 
-  if utils.executable("gdb") then
+  if vim.fn.executable("gdb") > 0 then
     create_term_buf("h", 20)
     local cmd = string.format("term gdb %s", exe_path)
     vim.cmd(cmd)

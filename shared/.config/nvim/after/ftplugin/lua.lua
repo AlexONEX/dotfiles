@@ -5,10 +5,9 @@ vim.bo.tabstop = 2
 vim.opt_local.formatoptions:remove { "o", "r" }
 
 local M = {}
-local utils = require("utils")
 
 function M.format_and_save()
-  if utils.executable("stylua") then
+  if vim.fn.executable("stylua") > 0 then
     vim.cmd("silent !stylua %")
     vim.cmd("edit")
     vim.cmd("write")

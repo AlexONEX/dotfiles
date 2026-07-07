@@ -13,14 +13,9 @@ function M.get_python_info()
   end
 
   -- Detect Python version
-  local version_cmd = python_exe .. " --version"
-  local handle = io.popen(version_cmd .. " 2>&1")
-  local result = handle:read("*a")
-  handle:close()
-
-  -- Parse the Python version (format: "Python 3.x.y")
-  local major, minor = result:match("Python (%d+)%.(%d+)")
-  local py_version = major and minor and ("py" .. major .. minor) or "py310" -- Default to 3.10 if detection fails
+  local result = vim.system({ python_exe, "--version" }, { text = true }):wait()
+  local major, minor = result.stdout:match("Python (%d+)%.(%d+)")
+  local py_version = major and minor and ("py" .. major .. minor) or "py310"
 
   return {
     exe = python_exe,

@@ -6,10 +6,9 @@ vim.opt_local.formatoptions:remove { "o", "r" }
 vim.opt.isfname:remove("=")
 
 local M = {}
-local utils = require("utils")
 
 function M.run_bash()
-  if utils.executable("bash") then
+  if vim.fn.executable("bash") > 0 then
     vim.cmd("!bash %")
   else
     vim.notify("Bash not found", vim.log.levels.ERROR)

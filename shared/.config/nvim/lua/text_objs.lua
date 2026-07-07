@@ -55,23 +55,6 @@ function M.url()
   vim.cmd("normal! gv")
 end
 
---- Select a markdown code block (inner or around).
-function M.md_code_block(type)
-  vim.cmd("normal! $")
-  local start_row = vim.fn.searchpos("\\s*```", "bnW")[1]
-  local end_row = vim.fn.searchpos("\\s*```", "nW")[1]
-
-  local buf_num = vim.fn.bufnr()
-  if type == "i" then
-    start_row = start_row + 1
-    end_row = end_row - 1
-  end
-
-  vim.fn.setpos("'<", { buf_num, start_row, 1, 0 })
-  vim.fn.setpos("'>", { buf_num, end_row, 1, 0 })
-  vim.cmd("normal! `<V`>")
-end
-
 --- Select the entire buffer.
 function M.buffer()
   local buf_num = vim.fn.bufnr()

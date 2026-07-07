@@ -9,7 +9,6 @@ vim.bo.tabstop = 4
 vim.opt_local.formatoptions:remove { "o", "r" }
 
 local M = {}
-local utils = require("utils")
 local python_lib = require("python")
 
 vim.api.nvim_create_autocmd("InsertCharPre", {
@@ -44,7 +43,7 @@ function M.run_python()
 end
 
 function M.lint_python()
-  if utils.executable("ruff") then
+  if vim.fn.executable("ruff") > 0 then
     vim.cmd("!ruff check %")
   else
     vim.notify("Ruff not found", vim.log.levels.WARN)

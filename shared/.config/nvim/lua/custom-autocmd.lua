@@ -1,5 +1,6 @@
 local fn = vim.fn
 local api = vim.api
+local utils = require("utils")
 
 -- Replacement for whitespace.nvim
 vim.api.nvim_create_user_command("StripTrailingWhitespace", function()
@@ -7,8 +8,6 @@ vim.api.nvim_create_user_command("StripTrailingWhitespace", function()
   vim.cmd([[%s/\s\+$//e]])
   vim.fn.winrestview(view)
 end, { desc = "Remove trailing whitespace" })
-
-local utils = require("utils")
 
 -- Display a message when the current file is not in utf-8 format.
 -- Note that we need to use `unsilent` command here because of this issue:
@@ -57,7 +56,9 @@ api.nvim_create_autocmd({ "BufWritePre" }, {
   group = api.nvim_create_augroup("auto_create_dir", { clear = true }),
   callback = function(ctx)
     local dir = fn.fnamemodify(ctx.file, ":p:h")
-    utils.may_create_dir(dir)
+    if fn.isdirectory(dir) == 0 then
+      fn.mkdir(dir, "p")
+    end
   end,
 })
 

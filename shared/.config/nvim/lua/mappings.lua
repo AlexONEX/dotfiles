@@ -203,9 +203,19 @@ keymap.set("n", "<leader>q", "<cmd>x<cr>", { silent = true, desc = "quit current
 keymap.set("n", "<leader>Q", "<cmd>qa!<cr>", { silent = true, desc = "quit nvim" })
 
 -- ─── UI & Misc ──────────────────────────────────────────────────────────────
+-- Esc: close floating win if open, else clear search highlight
 keymap.set("n", "<Esc>", function()
   vim.cmd("fclose!")
-end, { desc = "close floating win" })
+  pcall(function()
+    vim.cmd("nohlsearch")
+  end)
+  local ns = vim.api.nvim_get_namespaces()["search"]
+  if ns then
+    pcall(function()
+      vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
+    end)
+  end
+end, { desc = "close float & clear search" })
 keymap.set("t", "<Esc>", [[<c-\><c-n>]])
 keymap.set("n", "<F11>", "<cmd>set spell!<cr>", { desc = "toggle spell" })
 keymap.set("i", "<F11>", "<c-o><cmd>set spell!<cr>", { desc = "toggle spell" })

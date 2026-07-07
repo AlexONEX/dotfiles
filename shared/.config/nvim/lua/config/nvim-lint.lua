@@ -1,5 +1,4 @@
 local lint = require("lint")
-local utils = require("utils")
 
 lint.linters_by_ft = {
   cpp = {},
@@ -31,7 +30,7 @@ lint.linters.luacheck.args = {
 }
 
 -- Shell linter configuration
-if utils.executable("shellcheck") then
+if vim.fn.executable("shellcheck") > 0 then
   lint.linters.shellcheck.args = {
     "--format=json",
     "--severity=style",
@@ -41,7 +40,7 @@ if utils.executable("shellcheck") then
 end
 
 -- LaTeX linter configuration
-if utils.executable("chktex") then
+if vim.fn.executable("chktex") > 0 then
   lint.linters.chktex.args = {
     "-q",
     "-v0",
