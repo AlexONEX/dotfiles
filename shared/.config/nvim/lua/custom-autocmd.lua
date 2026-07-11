@@ -27,7 +27,7 @@ end
 local search_keys = { "n", "N", "*", "#", "g*", "g#" }
 for _, key in ipairs(search_keys) do
   vim.keymap.set("n", key, function()
-    vim.cmd("normal! " .. key)
+    pcall(vim.cmd, "normal! " .. key)
     show_search_index()
   end, { noremap = true })
 end

@@ -76,8 +76,8 @@ opt.linebreak = true
 -- Character to show before the lines that have been soft-wrapped
 opt.showbreak = "↪"
 
--- List all matches and complete till longest common string
-opt.wildmode = "list:longest"
+-- Complete to next full match, navigate with Tab/Shift-Tab
+opt.wildmode = "full"
 
 -- Minimum lines to keep above and below cursor when scrolling
 opt.scrolloff = 3

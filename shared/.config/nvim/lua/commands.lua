@@ -75,3 +75,8 @@ vim.api.nvim_create_user_command("ToPDF", function()
     vim.notify("error running pandoc", vim.log.levels.ERROR)
   end
 end, { desc = "convert markdown to PDF" })
+
+-- Check all LSP servers and tools are installed
+vim.api.nvim_create_user_command("LspCheck", function()
+  require("lsp-checker").check()
+end, { desc = "check installed LSP servers and tools" })

@@ -157,7 +157,7 @@ vim.lsp.config("pylsp", {
         jedi_definition = { enabled = false },
         jedi_references = { enabled = false },
         jedi_hover = { enabled = false },
-        jedi_rename = { enabled = false },
+        jedi_rename = { enabled = true },
         jedi_signatures = { enabled = false },
         -- enable ONLY rope refactoring
         rope_completion = { enabled = true },
