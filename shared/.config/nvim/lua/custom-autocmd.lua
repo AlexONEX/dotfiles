@@ -264,24 +264,11 @@ api.nvim_create_autocmd("BufReadPre", {
 
 api.nvim_create_user_command("ToggleTheme", function()
   local colorschemes = require("colorschemes")
-  local zshenv_file = vim.fn.expand("~/.zshenv")
-  local new_theme_name
-  local new_nvim_theme
-
-  vim.fn.system { "grep", "-q", 'export CLI_THEME="dark"', zshenv_file }
-  if vim.v.shell_error == 0 then
-    vim.fn.system { "sed", "-i", 's/export CLI_THEME="dark"/export CLI_THEME="light"/', zshenv_file }
-    new_theme_name = "light"
-    new_nvim_theme = "github_light"
-  else
-    vim.fn.system { "sed", "-i", 's/export CLI_THEME="light"/export CLI_THEME="dark"/', zshenv_file }
-    new_theme_name = "dark"
-    new_nvim_theme = "nord"
-  end
-
-  colorschemes.load_colorscheme(new_nvim_theme)
-  vim.notify("Tema cambiado a: " .. new_theme_name, vim.log.levels.INFO, { title = "Theme Toggle" })
+  local current = vim.g.colors_name or "nord"
+  local new_theme = current == "nord" and "github_dark" or "nord"
+  colorschemes.load_colorscheme(new_theme)
+  vim.notify("Theme: " .. new_theme, vim.log.levels.INFO, { title = "Theme Toggle" })
 end, {
   nargs = 0,
-  desc = "Alternate between light and dark themes",
+  desc = "Alternate between nord and github_dark",
 })

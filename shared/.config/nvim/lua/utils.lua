@@ -10,7 +10,7 @@ function M.is_compatible_version(expected_version)
   local actual_ver = vim.version()
   if expect_ver == nil then
     local msg = string.format("Unsupported version string: %s", expected_version)
-    vim.api.nvim_echo({ { msg } }, true, { err = true })
+    vim.notify(msg, vim.log.levels.ERROR)
     return false
   end
   local result = version.cmp(expect_ver, actual_ver)
@@ -21,7 +21,7 @@ function M.is_compatible_version(expected_version)
       expected_version,
       ver
     )
-    vim.api.nvim_echo({ { msg } }, true, { err = true })
+    vim.notify(msg, vim.log.levels.WARN)
   end
   return true
 end

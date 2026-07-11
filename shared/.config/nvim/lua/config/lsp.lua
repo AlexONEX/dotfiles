@@ -143,7 +143,7 @@ vim.lsp.config("*", {
 
 -- A mapping from lsp server name to the executable name
 local enabled_lsp_servers = {
-  pyright = "delance-langserver",
+  pyright = "pyright",
   ruff = "ruff",
   lua_ls = "lua-language-server",
   ltex = "ltex-ls",
@@ -156,7 +156,7 @@ local enabled_lsp_servers = {
   texlab = "texlab",
   terraformls = "terraform-ls",
   ts_ls = "typescript-language-server",
-  jsonls = "vscode-json-language-server",
+  jsonls = "vscode-json-languageserver",
   taplo = "taplo",
   pylsp = "pylsp",
   jdtls = "jdtls",
@@ -174,3 +174,21 @@ for server_name, lsp_executable in pairs(enabled_lsp_servers) do
     vim.notify(msg, vim.log.levels.WARN, { title = "Nvim-config" })
   end
 end
+
+-- pylsp settings: enable rope for extract method/variable refactoring
+vim.lsp.config('pylsp', {
+  settings = {
+    pylsp = {
+      plugins = {
+        rope_completion = { enabled = true },
+        rope = { enabled = true },
+        -- disable overlapping tools from pyright/ruff
+        pycodestyle = { enabled = false },
+        pyflakes = { enabled = false },
+        mccabe = { enabled = false },
+        autopep8 = { enabled = false },
+        yapf = { enabled = false },
+      },
+    },
+  },
+})

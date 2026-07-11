@@ -120,7 +120,9 @@ opt.shortmess:append("S")
 -- Disable showing intro message
 opt.shortmess:append("I")
 
-opt.messagesopt = "wait:5000,history:500"
+if vim.fn.has("nvim-0.11") == 1 then
+  opt.messagesopt = "wait:5000,history:500"
+end
 
 -- Completion behaviour
 opt.completeopt:append("menuone") -- Show menu even if there is only one item
@@ -130,7 +132,9 @@ opt.pumheight = 10 -- Maximum number of items to show in popup menu
 opt.pumblend = 5 -- pseudo transparency for completion menu
 
 opt.winblend = 0 -- pseudo transparency for floating window
-vim.o.winborder = "none"
+if vim.fn.has("nvim-0.11") == 1 then
+  vim.o.winborder = "none"
+end
 
 -- Insert mode key word completion setting
 -- Default is ".,w,b,u,t,i,kspell"; we remove slow sources (w,b,u,t) but keep .,i,kspell

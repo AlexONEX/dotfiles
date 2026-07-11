@@ -19,8 +19,9 @@ alias u='sudo apt update -y && sudo apt upgrade -y'
 alias p='sudo apt autoremove --purge'
 
 # ─── Reload config ───────────────────────────────────────────────────────────
+alias vim='nvim'
 alias r='source ~/.bashrc'
-alias a='vim ~/.bash_aliases'
+alias a='nvim ~/.bash_aliases'
 
 # ─── OpenCode / Meridian Profile Switching ───────────────────────────────────
 # Switch profiles at runtime — OpenCode picks it up automatically via Meridian

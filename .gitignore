@@ -24,6 +24,7 @@ __pycache__/
 .config/tmux/plugins
 .config/lazygit/config.yml
 shared/.zsh/plugins
+shared/.local/bin/
 
 # Android backup data (local only)
 .local/bin/android-backup/backups/
