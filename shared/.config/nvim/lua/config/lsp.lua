@@ -141,6 +141,32 @@ vim.lsp.config("*", {
   },
 })
 
+-- pylsp: only used for rope-based refactoring (extract method/variable, inline)
+-- everything else is handled by pyright (type checking) and ruff (linting/formatting)
+vim.lsp.config("pylsp", {
+  settings = {
+    pylsp = {
+      plugins = {
+        -- disable everything that overlaps with pyright/ruff
+        pycodestyle = { enabled = false },
+        pyflakes = { enabled = false },
+        mccabe = { enabled = false },
+        autopep8 = { enabled = false },
+        yapf = { enabled = false },
+        jedi_completion = { enabled = false },
+        jedi_definition = { enabled = false },
+        jedi_references = { enabled = false },
+        jedi_hover = { enabled = false },
+        jedi_rename = { enabled = false },
+        jedi_signatures = { enabled = false },
+        -- enable ONLY rope refactoring
+        rope_completion = { enabled = true },
+        rope = { enabled = true },
+      },
+    },
+  },
+})
+
 -- A mapping from lsp server name to the executable name
 local enabled_lsp_servers = {
   pyright = "pyright",
@@ -174,21 +200,3 @@ for server_name, lsp_executable in pairs(enabled_lsp_servers) do
     vim.notify(msg, vim.log.levels.WARN, { title = "Nvim-config" })
   end
 end
-
--- pylsp settings: enable rope for extract method/variable refactoring
-vim.lsp.config('pylsp', {
-  settings = {
-    pylsp = {
-      plugins = {
-        rope_completion = { enabled = true },
-        rope = { enabled = true },
-        -- disable overlapping tools from pyright/ruff
-        pycodestyle = { enabled = false },
-        pyflakes = { enabled = false },
-        mccabe = { enabled = false },
-        autopep8 = { enabled = false },
-        yapf = { enabled = false },
-      },
-    },
-  },
-})

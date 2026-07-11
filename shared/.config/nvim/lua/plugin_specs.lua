@@ -430,25 +430,4 @@ require("lazy").setup {
     enabled = false,
     hererocks = false,
   },
-  -- Refactoring: extract method/variable for languages where LSP does not support it
-  {
-    "ThePrimeagen/refactoring.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "ibhagwan/fzf-lua",
-    },
-    event = "BufReadPost",
-    config = function()
-      require("refactoring").setup({})
-      vim.keymap.set({ "n", "x" }, "<space>rr", function()
-        require("refactoring").refactor("Extract Function")
-      end, { desc = "Extract Function" })
-      vim.keymap.set({ "n", "x" }, "<space>rv", function()
-        require("refactoring").refactor("Extract Variable")
-      end, { desc = "Extract Variable" })
-      vim.keymap.set({ "n", "x" }, "<space>ri", function()
-        require("refactoring").refactor("Inline Variable")
-      end, { desc = "Inline Variable" })
-    end,
-  },
 }
