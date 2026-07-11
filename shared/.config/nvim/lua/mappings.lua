@@ -19,7 +19,6 @@ keymap.set({ "n", "x" }, "LL", "<End>")
 keymap.set("i", "<C-A>", "<HOME>")
 keymap.set("i", "<C-E>", "<END>")
 keymap.set("c", "<C-A>", "<HOME>")
-keymap.set("i", "<C-D>", "<DEL>")
 -- Window navigation via arrow keys
 keymap.set("n", "<left>", "<c-w>h")
 keymap.set("n", "<Right>", "<C-W>l")
@@ -176,7 +175,7 @@ end, { desc = "open URL in browser" })
 
 -- ─── Explorer & Workspace ───────────────────────────────────────────────────
 keymap.set("n", "<Space>e", function()
-  Snacks.explorer()
+  Snacks.explorer { hidden = true }
 end, { desc = "file explorer" })
 keymap.set("n", "<leader>cd", "<cmd>lcd %:p:h<cr><cmd>pwd<cr>", { desc = "change cwd" })
 keymap.set("n", "<leader>wo", function()

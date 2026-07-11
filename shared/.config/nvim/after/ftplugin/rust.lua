@@ -26,8 +26,6 @@ function M.clippy_rust()
   vim.cmd("!cargo clippy")
 end
 
-_G.M = M
-
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<F9>", function()
   M.run_rust()
@@ -52,3 +50,5 @@ end, { buffer = true, desc = "Cargo check" })
 vim.keymap.set("n", "<space>rl", function()
   M.clippy_rust()
 end, { buffer = true, desc = "Cargo clippy" })
+
+return M

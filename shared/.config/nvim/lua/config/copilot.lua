@@ -41,3 +41,17 @@ require("copilot").setup {
   copilot_node_command = "node",
   server_opts_overrides = {},
 }
+
+vim.api.nvim_create_user_command("KeybindsCopilot", function()
+  local lines = {
+    "Copilot keybindings (suggestion mode):",
+    "",
+    "  <M-;>    Accept suggestion",
+    "  <M-w>    Accept word",
+    "  <M-L>    Accept line",
+    "  <M-]>    Next suggestion",
+    "  <M-[>    Prev suggestion",
+    "  <C-]>    Dismiss suggestion",
+  }
+  vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "Copilot Keybinds" })
+end, { desc = "Show copilot keybindings" })

@@ -1,9 +1,9 @@
 ------------------------------------------------------------------------
 --                          custom variables                          --
 ------------------------------------------------------------------------
-vim.g.is_win = (vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1) and true or false
-vim.g.is_linux = (vim.fn.has("unix") == 1 and (vim.fn.has("macunix") ~= 1)) and true or false
-vim.g.is_mac = vim.fn.has("macunix") == 1 and true or false
+vim.g.is_win = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
+vim.g.is_linux = vim.fn.has("unix") == 1 and vim.fn.has("macunix") ~= 1
+vim.g.is_mac = vim.fn.has("macunix") == 1
 
 vim.g.logging_level = vim.log.levels.INFO
 ------------------------------------------------------------------------
@@ -28,10 +28,6 @@ vim.cmd([[language en_US.UTF-8]])
 -- Whether to load netrw by default, see https://github.com/bling/dotvim/issues/4
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-vim.g.netrw_liststyle = 3
-if vim.g.is_win then
-  vim.g.netrw_http_cmd = "curl --ssl-no-revoke -Lo"
-end
 
 -- Do not load tohtml.vim
 vim.g.loaded_2html_plugin = 1

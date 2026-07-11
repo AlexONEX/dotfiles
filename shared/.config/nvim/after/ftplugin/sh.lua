@@ -15,9 +15,9 @@ function M.run_bash()
   end
 end
 
-_G.M = M
-
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<F9>", function()
   M.run_bash()
 end, opts)
+
+return M

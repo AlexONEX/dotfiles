@@ -13,9 +13,9 @@ function M.run_vim_script()
   vim.notify("Vim script executed", vim.log.levels.INFO)
 end
 
-_G.M = M
-
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<F9>", function()
   M.run_vim_script()
 end, opts)
+
+return M

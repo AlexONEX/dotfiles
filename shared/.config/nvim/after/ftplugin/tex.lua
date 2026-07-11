@@ -35,8 +35,6 @@ function M.toggle_concealment()
   end
 end
 
-_G.M = M
-
 vim.defer_fn(disable_treesitter, 100)
 
 local bufopts = { buffer = true, silent = true }
@@ -58,3 +56,5 @@ vim.keymap.set("n", "<leader>lh", function()
 end, bufopts)
 vim.keymap.set("i", ";;", "\\", { buffer = true })
 vim.keymap.set("i", "$$", "$$ $$<left><left><left>", { buffer = true })
+
+return M

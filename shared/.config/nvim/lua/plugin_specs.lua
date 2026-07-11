@@ -300,12 +300,7 @@ local plugin_specs = {
       -- vimtex syntax is better than treesitter for LaTeX
       --vim.g.tex_conceal = "abdmg"
       vim.g.vimtex_filetypes = { "tex" }
-      -- disable all default vimtex mappings — we use <space>l prefix instead
-      vim.g.vimtex_mappings_disable = {
-        ["n"] = { "ll", "lv", "lk", "le", "lC", "lt", "lm", "lM", "lx", "li", "lI", "ls" },
-        ["x"] = { "li", "lI" },
-        ["i"] = { "$$", "$$.", "lF" },
-      }
+      vim.g.vimtex_mappings_enabled = 0 -- disable all defaults, we use <space>l prefix
       vim.opt.conceallevel = 2
     end,
   },

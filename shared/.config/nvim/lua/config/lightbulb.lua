@@ -5,7 +5,7 @@ require("nvim-lightbulb").setup {
     updatetime = -1,
   },
   ---@diagnostic disable-next-line: unused-local
-  filter = function(client_name, result)
+  filter = function(_, result)
     -- Ruff always sends these two actions even if there are no action to take,
     -- so it is better to just ignore this to avoid noise. See also discussion below:
     -- https://github.com/astral-sh/ruff-lsp/issues/91

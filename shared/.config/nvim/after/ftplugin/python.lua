@@ -50,8 +50,6 @@ function M.lint_python()
   end
 end
 
-_G.M = M
-
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<F9>", function()
   M.run_python()
@@ -59,3 +57,5 @@ end, opts)
 vim.keymap.set("n", "<space>l", function()
   M.lint_python()
 end, opts)
+
+return M

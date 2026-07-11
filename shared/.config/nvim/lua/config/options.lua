@@ -1,7 +1,6 @@
 -- Editor options (migrated from viml_conf/options.vim)
 local opt = vim.opt
 local o = vim.o
-local wo = vim.wo
 
 -- change fillchars for folding, vertical split, end of buffer, and message separator
 opt.fillchars = {

@@ -111,8 +111,6 @@ function M.debug_cpp()
   end
 end
 
-_G.M = M
-
 local opts = { buffer = true, silent = true }
 
 vim.keymap.set("n", "<F9>", function()
@@ -134,3 +132,5 @@ end, { buffer = true, desc = "Run executable" })
 vim.keymap.set("n", "<F7>", function()
   M.debug_cpp()
 end, { buffer = true, desc = "Debug with GDB" })
+
+return M

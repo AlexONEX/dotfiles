@@ -114,13 +114,13 @@ function M.get_ref_link_labels()
       else
         -- Find reference links like [link text][label]
         ---@diagnostic disable-next-line: lowercase-global
-        local match_start, match_end, label_link = string.find(line, "%[.-%]%[(.-)%]", start_pos)
-        if match_start then
+        local match_start2, match_end2, label_link = string.find(line, "%[.-%]%[(.-)%]", start_pos)
+        if match_start2 then
           if label_link and label_link ~= "" and not seen[label_link] then
             table.insert(labels, label_link)
             seen[label_link] = true
           end
-          start_pos = match_end + 1
+          start_pos = match_end2 + 1
         else
           break
         end
@@ -236,6 +236,6 @@ function M.setup()
   })
 end
 
-_G.Ftplugin_Markdown = M
-
 M.setup()
+
+return M

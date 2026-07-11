@@ -14,9 +14,9 @@ function M.format_and_save()
   end
 end
 
-_G.M = M
-
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<C-s>", function()
   M.format_and_save()
 end, opts)
+
+return M

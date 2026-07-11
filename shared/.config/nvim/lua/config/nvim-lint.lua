@@ -2,7 +2,7 @@ local lint = require("lint")
 
 lint.linters_by_ft = {
   cpp = {},
-  lua = { "luacheck" },
+  lua = { "selene", "luacheck" },
   markdown = { "markdownlint" },
   sh = { "shellcheck" },
   sql = { "sqlfluff" },

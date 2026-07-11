@@ -101,8 +101,6 @@ function M.run_executable()
   vim.cmd("startinsert")
 end
 
-_G.M = M
-
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<F9>", function()
   M.compile_run_haskell()
@@ -122,3 +120,5 @@ end, opts)
 vim.keymap.set("n", "<leader>hl", function()
   M.run_hlint()
 end, opts)
+
+return M

@@ -3,7 +3,6 @@ local api = vim.api
 local utils = require("utils")
 
 -- ─── Search index (merged from improvements.lua) ──────────────────────
-local search_count_extmark_id
 
 local function show_search_index()
   local searchCount = vim.fn.searchcount { recompute = 1, maxcount = 0 }
@@ -14,7 +13,7 @@ local function show_search_index()
   local namespaceId = vim.api.nvim_create_namespace("search")
   vim.api.nvim_buf_clear_namespace(0, namespaceId, 0, -1)
 
-  search_count_extmark_id = vim.api.nvim_buf_set_extmark(0, namespaceId, vim.api.nvim_win_get_cursor(0)[1] - 1, 0, {
+  vim.api.nvim_buf_set_extmark(0, namespaceId, vim.api.nvim_win_get_cursor(0)[1] - 1, 0, {
     virt_text = { { "[" .. searchCount.current .. "/" .. searchCount.total .. "]", "StatusLine" } },
     virt_text_pos = "eol",
   })
@@ -85,7 +84,7 @@ api.nvim_create_autocmd({ "CursorMoved" }, {
 api.nvim_create_autocmd("TextYankPost", {
   pattern = "*",
   group = yank_group,
-  callback = function(ev)
+  callback = function()
     if vim.v.event.operator == "y" then
       vim.fn.setpos(".", vim.g.current_cursor_pos)
     end
@@ -109,9 +108,11 @@ api.nvim_create_autocmd({ "BufWritePre" }, {
 -- line before executing this command, see also https://vi.stackexchange.com/a/20397/15292 .
 api.nvim_create_augroup("auto_read", { clear = true })
 
+local auto_read_group = api.nvim_create_augroup("auto_read", { clear = true })
+
 api.nvim_create_autocmd({ "FileChangedShellPost" }, {
   pattern = "*",
-  group = "auto_read",
+  group = auto_read_group,
   callback = function()
     vim.notify("File changed on disk. Buffer reloaded!", vim.log.levels.WARN, { title = "nvim-config" })
   end,
@@ -119,7 +120,7 @@ api.nvim_create_autocmd({ "FileChangedShellPost" }, {
 
 api.nvim_create_autocmd({ "FocusGained", "CursorHold" }, {
   pattern = "*",
-  group = "auto_read",
+  group = auto_read_group,
   callback = function()
     if fn.getcmdwintype() == "" then
       vim.cmd("checktime")
@@ -135,9 +136,9 @@ api.nvim_create_autocmd("VimResized", {
 })
 
 -- Do not use smart case in command line mode, extracted from https://vi.stackexchange.com/a/16511/15292.
-api.nvim_create_augroup("dynamic_smartcase", { clear = true })
+local dynamic_smartcase_group = api.nvim_create_augroup("dynamic_smartcase", { clear = true })
 api.nvim_create_autocmd("CmdLineEnter", {
-  group = "dynamic_smartcase",
+  group = dynamic_smartcase_group,
   pattern = ":",
   callback = function()
     vim.o.smartcase = false
@@ -145,7 +146,7 @@ api.nvim_create_autocmd("CmdLineEnter", {
 })
 
 api.nvim_create_autocmd("CmdLineLeave", {
-  group = "dynamic_smartcase",
+  group = dynamic_smartcase_group,
   pattern = ":",
   callback = function()
     vim.o.smartcase = true
@@ -208,7 +209,7 @@ api.nvim_create_autocmd("BufEnter", {
   pattern = "*",
   group = api.nvim_create_augroup("auto_close_win", { clear = true }),
   desc = "Quit Nvim if we have only one window, and its filetype match our pattern",
-  callback = function(ev)
+  callback = function()
     local quit_filetypes = { "qf", "vista" }
 
     local should_quit = true

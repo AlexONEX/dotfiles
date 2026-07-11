@@ -2,7 +2,7 @@ local fn = vim.fn
 
 local function spell()
   if vim.o.spell then
-    return string.format("[SPELL]")
+    return "[SPELL]"
   end
 
   return ""

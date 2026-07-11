@@ -22,8 +22,6 @@ function M.run_lua()
   vim.notify("Lua file executed", vim.log.levels.INFO)
 end
 
-_G.M = M
-
 local opts = { buffer = true, silent = true }
 vim.keymap.set("n", "<C-s>", function()
   M.format_and_save()
@@ -34,3 +32,5 @@ end, opts)
 vim.keymap.set("n", "<space>f", function()
   M.format_and_save()
 end, opts)
+
+return M

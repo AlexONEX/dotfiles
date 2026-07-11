@@ -141,32 +141,6 @@ vim.lsp.config("*", {
   },
 })
 
--- pylsp: only used for rope-based refactoring (extract method/variable, inline)
--- everything else is handled by pyright (type checking) and ruff (linting/formatting)
-vim.lsp.config("pylsp", {
-  settings = {
-    pylsp = {
-      plugins = {
-        -- disable everything that overlaps with pyright/ruff
-        pycodestyle = { enabled = false },
-        pyflakes = { enabled = false },
-        mccabe = { enabled = false },
-        autopep8 = { enabled = false },
-        yapf = { enabled = false },
-        jedi_completion = { enabled = false },
-        jedi_definition = { enabled = false },
-        jedi_references = { enabled = false },
-        jedi_hover = { enabled = false },
-        jedi_rename = { enabled = true },
-        jedi_signatures = { enabled = false },
-        -- enable ONLY rope refactoring
-        rope_completion = { enabled = true },
-        rope = { enabled = true },
-      },
-    },
-  },
-})
-
 -- A mapping from lsp server name to the executable name
 local enabled_lsp_servers = {
   pyright = "pyright",
@@ -182,10 +156,9 @@ local enabled_lsp_servers = {
   texlab = "texlab",
   terraformls = "terraform-ls",
   ts_ls = "typescript-language-server",
-  jsonls = "vscode-json-languageserver",
+  jsonls = "vscode-json-language-server",
   taplo = "taplo",
   pylsp = "pylsp",
-  jdtls = "jdtls",
 }
 
 for server_name, lsp_executable in pairs(enabled_lsp_servers) do
@@ -199,4 +172,31 @@ for server_name, lsp_executable in pairs(enabled_lsp_servers) do
     )
     vim.notify(msg, vim.log.levels.WARN, { title = "Nvim-config" })
   end
+end
+
+-- Configure jdtls before enabling (needed for lazy-load to work)
+if vim.fn.executable("jdtls") > 0 then
+  vim.lsp.config("jdtls", {
+    cmd = { "jdtls" },
+    root_markers = { "pom.xml", "build.gradle", "build.gradle.kts", ".git" },
+    capabilities = capabilities,
+    settings = {
+      java = {
+        sources = {
+          organizeImports = {
+            starThreshold = 9999,
+            staticStarThreshold = 9999,
+          },
+        },
+        contentProvider = { preferred = "fernflower" },
+        references = {
+          includeDecompiledSources = true,
+        },
+      },
+    },
+  })
+
+  vim.api.nvim_create_user_command("JdtlsStart", function()
+    vim.lsp.enable("jdtls")
+  end, { desc = "Start jdtls" })
 end
