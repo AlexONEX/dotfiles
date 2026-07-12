@@ -49,9 +49,7 @@ Sin preguntar, cuando aparece:
 
 ## Calendarios
 
-Siempre consultar **ambos**:
-- `alejandro.schwartzmann@allaria.com.ar` (Allaria)
-- `alejandro.schwartzmann@almafintech.com.ar` (AlmaFintech)
+Siempre consultar **TODAS** las cuentas configuradas (`gog_auth_list`). Ejecutar el mismo comando de calendar para cada cuenta. No asumir que la default alcanza.
 
 ## Jira
 

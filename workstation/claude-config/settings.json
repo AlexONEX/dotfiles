@@ -37,8 +37,10 @@
   "enabledPlugins": {
     "everything-claude-code@everything-claude-code": true
   },
+  "tui": "fullscreen",
   "theme": "dark-ansi",
   "editorMode": "vim",
   "verbose": true,
-  "fileCheckpointingEnabled": false
+  "fileCheckpointingEnabled": false,
+  "model": "haiku"
 }

@@ -17,7 +17,7 @@
       "command": ["gogcli-mcp"],
       "enabled": true,
       "environment": {
-        "GOG_ACCOUNT": "alejandro.schwartzmann@allaria.com.ar"
+        "GOG_ACCOUNT": "alejandro.schwartzmann@almafintech.com.ar"
       }
     }
   },
