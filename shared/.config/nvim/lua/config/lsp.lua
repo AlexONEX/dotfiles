@@ -61,7 +61,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       require("fzf-lua").lsp_references()
     end, { desc = "LSP references" })
     map("n", "gi", vim.lsp.buf.implementation, { desc = "LSP implementation" })
-    map("n", "<space>D", vim.lsp.buf.type_definition, { desc = "LSP type definition" })
+    map("n", "<space>cD", vim.lsp.buf.type_definition, { desc = "type definition" })
     map("n", "[d", function()
       vim.diagnostic.goto_prev { float = true }
     end, { desc = "prev diagnostic" })
@@ -74,7 +74,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("n", "]e", function()
       vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR, float = true }
     end, { desc = "next error" })
-    map("n", "<space>ih", function()
+    map("n", "<space>ci", function()
       vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = 0 }, { bufnr = 0 })
     end, { desc = "toggle inlay hints" })
     map("n", "K", function()
@@ -85,10 +85,19 @@ vim.api.nvim_create_autocmd("LspAttach", {
         close_events = { "CursorMoved", "BufLeave", "WinLeave", "LSPDetach" },
       }
     end)
+    map("n", "<space>ch", function()
+      vim.lsp.buf.hover {
+        border = "single",
+        max_height = 20,
+        max_width = 130,
+        close_events = { "CursorMoved", "BufLeave", "WinLeave", "LSPDetach" },
+      }
+    end, { desc = "hover" })
     map("n", "<C-k>", vim.lsp.buf.signature_help)
-    map("n", "<space>rn", vim.lsp.buf.rename, { desc = "variable rename" })
-    map({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, { desc = "LSP code action" })
-    map("n", "<space>oi", function()
+    map("n", "<space>cC", vim.lsp.buf.signature_help, { desc = "signature help" })
+    map("n", "<space>cr", vim.lsp.buf.rename, { desc = "rename" })
+    map({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, { desc = "code action" })
+    map("n", "<space>co", function()
       vim.lsp.buf.code_action {
         context = { only = { "source.organizeImports" } },
         apply = true,

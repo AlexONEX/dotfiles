@@ -189,7 +189,7 @@ keymap.set("n", "<leader>wo", function()
 end, { desc = "go to wiki directory" })
 
 -- ─── Format ──────────────────────────────────────────────────────────────────
-keymap.set({ "n", "v" }, "<space>f", function()
+keymap.set({ "n", "v" }, "<space>cf", function()
   vim.lsp.buf.format()
 end, { desc = "format buffer via LSP" })
 keymap.set("n", "<C-s>", function()

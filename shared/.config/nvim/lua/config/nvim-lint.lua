@@ -81,6 +81,6 @@ vim.keymap.set("n", "<leader>le", function()
 end, { desc = "Enable linting" })
 
 -- Agregar keymap para mostrar diagnósticos flotantes manualmente
-vim.keymap.set("n", "<leader>lf", function()
+vim.keymap.set("n", "<space>ce", function()
   vim.diagnostic.open_float { scope = "line" }
 end, { desc = "Show diagnostics in float window" })
