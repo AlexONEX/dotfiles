@@ -263,6 +263,69 @@ api.nvim_create_autocmd("BufReadPre", {
   end,
 })
 
+-- Close certain filetypes with q
+local close_with_q_group = api.nvim_create_augroup("close_with_q", { clear = true })
+api.nvim_create_autocmd("FileType", {
+  group = close_with_q_group,
+  pattern = {
+    "help",
+    "lspinfo",
+    "qf",
+    "checkhealth",
+    "man",
+    "startuptime",
+    "tsplayground",
+  },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.schedule(function()
+      vim.keymap.set("n", "q", function()
+        vim.cmd("close")
+        pcall(api.nvim_buf_delete, event.buf, { force = true })
+      end, { buffer = event.buf, silent = true, desc = "Quit buffer" })
+    end)
+  end,
+})
+
+-- Dismiss notifications and floating windows with q
+api.nvim_create_autocmd("BufEnter", {
+  group = close_with_q_group,
+  pattern = "*",
+  callback = function(event)
+    local win = vim.api.nvim_get_current_win()
+    local config = vim.api.nvim_win_get_config(win)
+    if config.relative ~= "" then
+      vim.keymap.set("n", "q", function()
+        vim.cmd("close")
+      end, { buffer = event.buf, silent = true, desc = "Close float" })
+    end
+  end,
+})
+
+-- Enable wrap + spell for text-like filetypes
+local wrap_spell_group = api.nvim_create_augroup("wrap_spell", { clear = true })
+api.nvim_create_autocmd("FileType", {
+  group = wrap_spell_group,
+  pattern = { "text", "plaintex", "gitcommit", "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = true
+  end,
+})
+
+-- Search result: center on screen and open folds
+local function center_search(key)
+  return function()
+    local ok = pcall(vim.cmd, "normal! " .. key .. " zvzz")
+    if not ok then
+      -- no search pattern yet, just run the key normally
+      pcall(vim.cmd, "normal! " .. key)
+    end
+  end
+end
+vim.keymap.set("n", "n", center_search("n"), { desc = "next search result (centered)" })
+vim.keymap.set("n", "N", center_search("N"), { desc = "prev search result (centered)" })
+
 api.nvim_create_user_command("ToggleTheme", function()
   local colorschemes = require("colorschemes")
   local current = vim.g.colors_name or "nord"

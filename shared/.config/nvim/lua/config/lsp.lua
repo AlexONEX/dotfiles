@@ -74,6 +74,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("n", "]e", function()
       vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR, float = true }
     end, { desc = "next error" })
+    map("n", "[w", function()
+      vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.WARN, float = true }
+    end, { desc = "prev warning" })
+    map("n", "]w", function()
+      vim.diagnostic.goto_next { severity = vim.diagnostic.severity.WARN, float = true }
+    end, { desc = "next warning" })
     map("n", "<space>ci", function()
       vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = 0 }, { bufnr = 0 })
     end, { desc = "toggle inlay hints" })
@@ -183,29 +189,4 @@ for server_name, lsp_executable in pairs(enabled_lsp_servers) do
   end
 end
 
--- Configure jdtls before enabling (needed for lazy-load to work)
-if vim.fn.executable("jdtls") > 0 then
-  vim.lsp.config("jdtls", {
-    cmd = { "jdtls" },
-    root_markers = { "pom.xml", "build.gradle", "build.gradle.kts", ".git" },
-    capabilities = capabilities,
-    settings = {
-      java = {
-        sources = {
-          organizeImports = {
-            starThreshold = 9999,
-            staticStarThreshold = 9999,
-          },
-        },
-        contentProvider = { preferred = "fernflower" },
-        references = {
-          includeDecompiledSources = true,
-        },
-      },
-    },
-  })
-
-  vim.api.nvim_create_user_command("JdtlsStart", function()
-    vim.lsp.enable("jdtls")
-  end, { desc = "Start jdtls" })
-end
+-- jdtls is managed by nvim-jdtls via after/ftplugin/java.lua

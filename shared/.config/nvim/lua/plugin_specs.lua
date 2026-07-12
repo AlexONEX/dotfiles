@@ -50,6 +50,8 @@ local plugin_specs = {
     end,
   },
 
+  { "mfussenegger/nvim-jdtls", ft = "java" },
+
   {
     "dnlhc/glance.nvim",
     config = function()

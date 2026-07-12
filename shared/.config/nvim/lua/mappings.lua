@@ -177,6 +177,12 @@ end, { desc = "open URL in browser" })
 keymap.set("n", "<Space>e", function()
   Snacks.explorer { hidden = true }
 end, { desc = "file explorer" })
+-- Lazygit (requires lazygit installed)
+if vim.fn.executable("lazygit") == 1 then
+  keymap.set("n", "<leader>gg", function()
+    Snacks.lazygit()
+  end, { desc = "lazygit" })
+end
 keymap.set("n", "<leader>cd", "<cmd>lcd %:p:h<cr><cmd>pwd<cr>", { desc = "change cwd" })
 keymap.set("n", "<leader>wo", function()
   local wiki_dir = vim.fn.expand("~/wiki")
