@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh all Meridian Claude OAuth tokens
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'export PATH=$HOME/.local/bin:$(ls -d ~/.local/share/fnm/node-versions/*/installation/bin 2>/dev/null | tail -1):$PATH && exec meridian-refresh-all'
+Environment=HOME=/home/alex
+StandardOutput=journal
+StandardError=journal
+SuccessExitStatus=0

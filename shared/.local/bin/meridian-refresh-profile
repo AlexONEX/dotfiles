@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // meridian-refresh-profile <profile-id>
-// Reads OAuth creds from macOS Keychain, refreshes via Anthropic, writes back.
+// Refreshes OAuth token for a single meridian profile.
+// macOS: reads/writes Keychain  |  Linux: reads/writes .credentials.json
 
 const { execSync } = require('child_process');
 const os = require('os');
@@ -8,15 +9,22 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 
+const IS_MACOS = process.platform === 'darwin';
+
+// ── Args ─────────────────────────────────────────────────────────────────────
+
 const PROFILE = process.argv[2];
+const FORCE = process.argv.includes('--force');
+
 if (!PROFILE) {
   const ps = JSON.parse(fs.readFileSync(os.homedir() + '/.config/meridian/profiles.json', 'utf8'));
-  console.error(`Usage: meridian-refresh-profile <profile-id>`);
+  console.error(`Usage: meridian-refresh-profile <profile-id> [--force]`);
   console.error(`Profiles: ${ps.map(p => p.id).join(' ')}`);
   process.exit(1);
 }
 
-// Load profile config
+// ── Load profile ─────────────────────────────────────────────────────────────
+
 const profiles = JSON.parse(fs.readFileSync(os.homedir() + '/.config/meridian/profiles.json', 'utf8'));
 const profile = profiles.find(p => p.id === PROFILE);
 if (!profile) {
@@ -30,16 +38,53 @@ if (!configDir) {
   process.exit(1);
 }
 
-// Compute keychain service name
-const defaultDir = os.homedir() + '/.claude';
-const absDir = path.resolve(configDir);
-const service = absDir === path.resolve(defaultDir)
-  ? 'Claude Code-credentials'
-  : `Claude Code-credentials-${crypto.createHash('sha256').update(absDir).digest('hex').slice(0, 8)}`;
+const absDir = path.resolve(configDir.replace('$HOME', os.homedir()));
 
-// Read credentials from keychain
-const raw = execSync(`security find-generic-password -l "${service}" -w`, { encoding: 'utf-8' });
-const creds = JSON.parse(raw.trim());
+// ── Storage helpers ──────────────────────────────────────────────────────────
+
+function readCreds() {
+  if (IS_MACOS) {
+    const defaultDir = path.resolve(os.homedir() + '/.claude');
+    const service = absDir === defaultDir
+      ? 'Claude Code-credentials'
+      : `Claude Code-credentials-${crypto.createHash('sha256').update(absDir).digest('hex').slice(0, 8)}`;
+    console.error(`   Keychain: ${service}`);
+    const raw = execSync(`security find-generic-password -l "${service}" -w`, { encoding: 'utf-8' });
+    return JSON.parse(raw.trim());
+  }
+  const credFile = path.join(absDir, '.credentials.json');
+  console.error(`   File: ${credFile}`);
+  if (!fs.existsSync(credFile)) throw new Error('no .credentials.json');
+  return JSON.parse(fs.readFileSync(credFile, 'utf8'));
+}
+
+function writeCreds(creds) {
+  const updated = JSON.stringify(creds, null, 0).replace(/\n\s*/g, '');
+  if (IS_MACOS) {
+    const defaultDir = path.resolve(os.homedir() + '/.claude');
+    const service = absDir === defaultDir
+      ? 'Claude Code-credentials'
+      : `Claude Code-credentials-${crypto.createHash('sha256').update(absDir).digest('hex').slice(0, 8)}`;
+    execSync(`security add-generic-password -U -s "${service}" -a "${os.userInfo().username}" -w '${updated}'`);
+  } else {
+    fs.writeFileSync(path.join(absDir, '.credentials.json'), updated, { mode: 0o600 });
+  }
+}
+
+// ── Main ─────────────────────────────────────────────────────────────────────
+
+console.error(`🔄 Refreshing token for ${PROFILE}`);
+console.error(`   Config: ${absDir}`);
+
+let creds;
+try {
+  creds = readCreds();
+} catch (err) {
+  console.error(`❌ Cannot read credentials: ${err.message}`);
+  console.error(`   Run: meridian profile login ${PROFILE}`);
+  process.exit(1);
+}
+
 const oauth = creds.claudeAiOauth || creds;
 
 if (!oauth.refreshToken) {
@@ -48,11 +93,15 @@ if (!oauth.refreshToken) {
   process.exit(1);
 }
 
-console.error(`🔄 Refreshing token for ${PROFILE}`);
-console.error(`   Config: ${absDir}`);
-console.error(`   Keychain: ${service}`);
+// Skip if still fresh (unless --force)
+if (!FORCE && oauth.expiresAt) {
+  const h = (oauth.expiresAt - Date.now()) / 3600000;
+  if (h > 6) {
+    console.error(`⏭ Token still fresh (${h.toFixed(1)}h remaining). Use --force to refresh anyway.`);
+    process.exit(0);
+  }
+}
 
-// Refresh via Anthropic OAuth
 const OAUTH_URL = 'https://platform.claude.com/v1/oauth/token';
 const CLIENT_ID = '9d1c250a-e61b-44d9-88ed-5944d1962f5e';
 
@@ -80,9 +129,7 @@ fetch(OAUTH_URL, {
   if (tokenData.refresh_token) oauth.refreshToken = tokenData.refresh_token;
   oauth.expiresAt = expiresAt;
 
-  // Write back — compact JSON (claude-code parser requirement)
-  const updated = JSON.stringify(creds, null, 0).replace(/\n\s*/g, '');
-  execSync(`security add-generic-password -U -s "${service}" -a "${os.userInfo().username}" -w '${updated}'`);
+  writeCreds(creds);
 
   const exp = new Date(expiresAt).toISOString().replace('T', ' ').replace(/\.\d+Z/, '');
   console.error(`✅ Token refreshed for '${PROFILE}'`);

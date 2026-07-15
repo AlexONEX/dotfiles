@@ -1,0 +1,9 @@
+[Unit]
+Description=Refresh Meridian Claude OAuth tokens twice daily
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=12h
+
+[Install]
+WantedBy=timers.target

@@ -221,6 +221,16 @@ if [[ "$MACHINE" == "homelab" ]]; then
   sed "s|\$HOME|$HOME|g" "$DOTFILES/workstation/meridian-config/profiles.json.tpl" > ~/.config/meridian/profiles.json
   ln -sf "$DOTFILES/workstation/meridian-config/settings.json" ~/.config/meridian/settings.json
 
+  # ─── Meridian token refresh (systemd user timer) ────────────────────────
+  mkdir -p ~/.config/systemd/user
+  ln -sf "$DOTFILES/homelab/meridian-config/meridian-token-refresh.service" \
+         ~/.config/systemd/user/meridian-token-refresh.service
+  ln -sf "$DOTFILES/homelab/meridian-config/meridian-token-refresh.timer" \
+         ~/.config/systemd/user/meridian-token-refresh.timer
+  systemctl --user daemon-reload
+  systemctl --user enable meridian-token-refresh.timer 2>/dev/null
+  systemctl --user start  meridian-token-refresh.timer 2>/dev/null
+
 fi
 
 echo ""
