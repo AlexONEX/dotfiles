@@ -1,5 +1,8 @@
 [vim]
 any = true
 
+[jit]
+any = true
+
 [Snacks]
 any = true

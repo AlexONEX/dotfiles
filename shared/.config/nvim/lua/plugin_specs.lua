@@ -70,6 +70,9 @@ local plugin_specs = {
     event = { "BufReadPost", "BufNewFile" },
     branch = "main",
     build = ":TSUpdate",
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" },
+    },
     config = function()
       require("config.treesitter")
     end,
@@ -198,6 +201,16 @@ local plugin_specs = {
     version = "*",
     event = "InsertEnter",
     opts = {},
+  },
+
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    config = function()
+      require("nvim-autopairs").setup {
+        check_ts = true, -- treesitter integration
+      }
+    end,
   },
 
   -- Multiple cursor plugin like Sublime Text?

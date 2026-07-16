@@ -153,6 +153,18 @@ api.nvim_create_autocmd("CmdLineLeave", {
   end,
 })
 
+-- Force ftplugin loading when opening files via fzf-lua or similar
+-- (fzf-lua's :edit doesn't always trigger BufReadPre/BufNewFile properly)
+api.nvim_create_autocmd("BufRead", {
+  pattern = "*",
+  group = api.nvim_create_augroup("ensure_ftplugin", { clear = true }),
+  callback = function()
+    vim.schedule(function()
+      pcall(vim.cmd, "runtime! after/ftplugin/" .. vim.bo.filetype .. ".lua")
+    end)
+  end,
+})
+
 api.nvim_create_autocmd("TermOpen", {
   group = api.nvim_create_augroup("term_start", { clear = true }),
   pattern = "*",
