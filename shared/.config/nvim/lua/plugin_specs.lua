@@ -62,10 +62,7 @@ local plugin_specs = {
   {
     "nvim-treesitter/nvim-treesitter",
     enabled = function()
-      if vim.g.is_mac or vim.g.is_linux then
-        return true
-      end
-      return false
+      return vim.g.is_mac or vim.g.is_linux
     end,
     event = { "BufReadPost", "BufNewFile" },
     branch = "main",
@@ -201,16 +198,6 @@ local plugin_specs = {
     version = "*",
     event = "InsertEnter",
     opts = {},
-  },
-
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    config = function()
-      require("nvim-autopairs").setup {
-        check_ts = true, -- treesitter integration
-      }
-    end,
   },
 
   -- Multiple cursor plugin like Sublime Text?
@@ -423,8 +410,6 @@ local plugin_specs = {
   {
     "catgoose/nvim-colorizer.lua",
     event = "BufReadPre",
-    opts = { -- set to setup table
-    },
   },
 }
 
