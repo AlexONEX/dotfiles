@@ -156,6 +156,58 @@ local plugin_specs = {
       }
     end,
   },
+
+  -- mini.ai: extended textobjects (a/i for argument, function call, etc.)
+  -- Disables treesitter af/if/ac/ic since mini.ai covers them better.
+  {
+    "nvim-mini/mini.ai",
+    version = false,
+    event = "VeryLazy",
+    config = function()
+      require("mini.ai").setup {
+        n_lines = 50,
+      }
+    end,
+  },
+
+  -- mini.splitjoin: split/join arguments with gS
+  {
+    "nvim-mini/mini.splitjoin",
+    version = false,
+    event = "VeryLazy",
+    config = function()
+      require("mini.splitjoin").setup()
+    end,
+  },
+
+  -- mini.bracketed: [] bracket navigation for diagnostics, buffers, etc.
+  -- Disabled targets that clash:
+  --   comment (c) → clashes with treesitter ]c/[c (class jump)
+  --   file (f)    → clashes with treesitter ]f/[f (function jump)
+  --   oldfile (o) → clashes with opencode ]o/[o
+  {
+    "nvim-mini/mini.bracketed",
+    version = false,
+    event = "VeryLazy",
+    config = function()
+      require("mini.bracketed").setup {
+        buffer = { suffix = "b", options = {} },
+        comment = { suffix = "", options = {} }, -- disabled: clashes with treesitter ]c/[c
+        conflict = { suffix = "x", options = {} },
+        diagnostic = { suffix = "d", options = {} },
+        file = { suffix = "", options = {} }, -- disabled: clashes with treesitter ]f/[f
+        indent = { suffix = "i", options = {} },
+        jump = { suffix = "j", options = {} },
+        location = { suffix = "l", options = {} },
+        oldfile = { suffix = "", options = {} }, -- disabled: clashes with opencode ]o/[o
+        quickfix = { suffix = "q", options = {} },
+        treesitter = { suffix = "t", options = {} },
+        undo = { suffix = "u", options = {} },
+        window = { suffix = "w", options = {} },
+        yank = { suffix = "y", options = {} },
+      }
+    end,
+  },
   {
     "luukvbaal/statuscol.nvim",
     event = "BufReadPost",
@@ -370,6 +422,15 @@ local plugin_specs = {
     event = "VeryLazy",
     config = function()
       require("config.copilot")
+    end,
+  },
+
+  {
+    "nickjvandyke/opencode.nvim",
+    version = "*",
+    event = "VeryLazy",
+    config = function()
+      require("config.opencode")
     end,
   },
 

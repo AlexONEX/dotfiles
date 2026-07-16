@@ -242,10 +242,18 @@ keymap.set("n", "<Esc>", function()
     vim.cmd("close")
     return
   end
-  -- if multiple tabs, close current tab
+  -- if multiple tabs, close all EXCEPT current tab
   if vim.fn.tabpagenr("$") > 1 then
-    vim.cmd("tabclose")
+    vim.cmd("tabonly")
     return
+  end
+  -- close other listed buffers, keep current
+  local cur = vim.api.nvim_get_current_buf()
+  local listed = vim.fn.getbufinfo { buflisted = 1 }
+  for _, b in ipairs(listed) do
+    if b.bufnr ~= cur then
+      vim.api.nvim_buf_delete(b.bufnr, { force = true })
+    end
   end
   -- otherwise clear search highlight
   pcall(function()
@@ -264,6 +272,17 @@ keymap.set("i", "<F11>", "<c-o><cmd>set spell!<cr>", { desc = "toggle spell" })
 keymap.set("n", "<leader>cl", function()
   require("autoload").toggle_cursor_col()
 end, { desc = "toggle cursor column" })
+keymap.set("n", "<space>cL", function()
+  local log = vim.lsp.log.get_filename()
+  -- find existing buffer with the log
+  for _, b in ipairs(vim.fn.getbufinfo { buflisted = 1 }) do
+    if b.name == log then
+      vim.api.nvim_buf_delete(b.bufnr, { force = true })
+      return
+    end
+  end
+  vim.cmd("tabnew " .. log)
+end, { desc = "toggle LSP log" })
 keymap.set("n", "<leader>cb", function()
   local cnt = 0
   local blink_times = 7

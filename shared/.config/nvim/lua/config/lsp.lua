@@ -156,6 +156,8 @@ vim.lsp.config("*", {
   },
 })
 
+-- jdtls: handled by nvim-jdtls in after/ftplugin/java.lua
+
 -- A mapping from lsp server name to the executable name
 local enabled_lsp_servers = {
   pyright = "pyright",

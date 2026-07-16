@@ -16,7 +16,7 @@ end
 
 vim.list_extend(cmd, {
   "--jvm-arg=-javaagent:" .. lombok_jar,
-  "--jvm-arg=-Xmx2g",
+  "--jvm-arg=-Xmx4g",
   "--jvm-arg=-XX:+UseG1GC",
   "--jvm-arg=-XX:+ParallelRefProcEnabled",
   "--jvm-arg=-XX:-OmitStackTraceInFastThrow",

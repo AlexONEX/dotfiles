@@ -89,25 +89,7 @@ vim.api.nvim_create_autocmd("CursorMoved", {
 })
 
 -- ─── Textobjects (nvim-treesitter-textobjects) ─────────────────────────────
--- New treesitter API (branch=main) does NOT auto-generated keymaps from config.
--- We define them manually, deferring require() inside each callback.
-
--- Select: work in visual + operator-pending (d, c, y, v)
---   af = around function, if = inner function
---   ac = around class,   ic = inner class
-local textobj_map = {
-  af = "@function.outer",
-  ["if"] = "@function.inner",
-  ac = "@class.outer",
-  ic = "@class.inner",
-}
-for lhs, query in pairs(textobj_map) do
-  vim.keymap.set({ "x", "o" }, lhs, function()
-    ---@diagnostic disable-next-line: must_use
-    require("nvim-treesitter-textobjects.select").select_textobject(query, "textobjects")
-  end, { desc = lhs:gsub(".", " ") .. " textobject" })
-end
-
+-- Select (af/if/ac/ic) handled by mini.ai — not mapped here.
 -- Move: jump between functions/classes in normal mode
 --   ]f/[f = next/prev function, ]c/[c = next/prev class
 local move_map = {
