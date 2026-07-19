@@ -32,5 +32,8 @@ require("ftdetect")
 -- diagnostic related config
 require("diagnostic-conf")
 
+-- LSP: native vim.lsp.config/enable, no lspconfig plugin needed
+require("config.lsp")
+
 -- colorscheme settings
 require("colorschemes").load_colorscheme("nord")

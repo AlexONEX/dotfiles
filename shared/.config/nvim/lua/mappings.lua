@@ -222,40 +222,17 @@ end, { silent = true, desc = "close window or quit" })
 keymap.set("n", "<leader>Q", "<cmd>qa!<cr>", { silent = true, desc = "quit nvim" })
 
 -- ─── UI & Misc ──────────────────────────────────────────────────────────────
--- Esc: close float → close tab → clear search
+-- Esc: close float → clear search
 keymap.set("n", "<Esc>", function()
   -- close any floating window first
-  local closed_float = false
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local ok, config = pcall(vim.api.nvim_win_get_config, win)
     if ok and config and config.relative ~= "" then
       vim.api.nvim_win_close(win, false)
-      closed_float = true
-      break
+      return
     end
   end
-  if closed_float then
-    return
-  end
-  -- if multiple windows, close current window
-  if vim.fn.winnr("$") > 1 then
-    vim.cmd("close")
-    return
-  end
-  -- if multiple tabs, close all EXCEPT current tab
-  if vim.fn.tabpagenr("$") > 1 then
-    vim.cmd("tabonly")
-    return
-  end
-  -- close other listed buffers, keep current
-  local cur = vim.api.nvim_get_current_buf()
-  local listed = vim.fn.getbufinfo { buflisted = 1 }
-  for _, b in ipairs(listed) do
-    if b.bufnr ~= cur then
-      vim.api.nvim_buf_delete(b.bufnr, { force = true })
-    end
-  end
-  -- otherwise clear search highlight
+  -- clear search highlight
   pcall(function()
     vim.cmd("nohlsearch")
   end)
@@ -265,7 +242,7 @@ keymap.set("n", "<Esc>", function()
       vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
     end)
   end
-end, { desc = "close float → close tab → clear search" })
+end, { desc = "close float → clear search" })
 keymap.set("t", "<Esc>", [[<c-\><c-n>]])
 keymap.set("n", "<F11>", "<cmd>set spell!<cr>", { desc = "toggle spell" })
 keymap.set("i", "<F11>", "<c-o><cmd>set spell!<cr>", { desc = "toggle spell" })

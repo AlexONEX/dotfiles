@@ -4,7 +4,8 @@ end
 
 local root_dir = require("jdtls.setup").find_root { ".git", "gradlew", "mvnw" } or vim.fn.getcwd()
 local workspace_dir = vim.fn.expand("~/.local/share/jdtls/workspace/") .. vim.fn.fnamemodify(root_dir, ":t")
-local lombok_jar = vim.fn.expand("~/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar")
+local lombok_jars = vim.fn.glob(vim.fn.expand("~/.m2/repository/org/projectlombok/lombok/*/lombok-*.jar"), false, true)
+local lombok_jar = (type(lombok_jars) == "table" and #lombok_jars > 0) and lombok_jars[#lombok_jars] or ""
 
 local cmd = { "jdtls" }
 
@@ -14,8 +15,10 @@ if vim.g.is_mac and jit.arch == "arm64" then
   table.insert(cmd, "--jvm-arg=-Dosgi.sharedConfiguration.area=" .. jdtls_home .. "/libexec/config_mac_arm")
 end
 
+if lombok_jar ~= "" then
+  table.insert(cmd, "--jvm-arg=-javaagent:" .. lombok_jar)
+end
 vim.list_extend(cmd, {
-  "--jvm-arg=-javaagent:" .. lombok_jar,
   "--jvm-arg=-Xmx4g",
   "--jvm-arg=-XX:+UseG1GC",
   "--jvm-arg=-XX:+ParallelRefProcEnabled",

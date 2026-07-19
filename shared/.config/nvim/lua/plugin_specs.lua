@@ -42,23 +42,11 @@ local plugin_specs = {
     },
   },
 
-  {
-    "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile" },
-    config = function()
-      require("config.lsp")
-    end,
-  },
+  -- lsp loaded via autocmd in init.lua
 
   { "mfussenegger/nvim-jdtls", ft = "java" },
 
-  {
-    "dnlhc/glance.nvim",
-    config = function()
-      require("config.glance")
-    end,
-    event = "VeryLazy",
-  },
+  -- glance.nvim removed: gd/gr/gi covered by native LSP + fzf-lua
   {
     "nvim-treesitter/nvim-treesitter",
     enabled = function()
@@ -75,12 +63,12 @@ local plugin_specs = {
     end,
   },
 
-  { "machakann/vim-swap", event = "VeryLazy" },
+  -- vim-swap removed
 
   -- Super fast buffer jump
   {
     "smoka7/hop.nvim",
-    keys = { "f" },
+    event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("config.nvim_hop")
     end,

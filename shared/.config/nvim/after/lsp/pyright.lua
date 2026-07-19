@@ -1,4 +1,3 @@
--- ponytail: find .venv relative to the buffer's project root
 local function find_venv_python(bufnr)
   local root = vim.fs.root(bufnr, { "pyproject.toml", ".git" })
   if not root then
@@ -32,6 +31,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 return {
   cmd = { "delance-langserver", "--stdio" },
+  filetypes = { "python" },
   root_markers = { "pyproject.toml", ".git" },
   settings = {
     pyright = {

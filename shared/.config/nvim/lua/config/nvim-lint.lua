@@ -10,6 +10,7 @@ lint.linters_by_ft = {
   tex = { "chktex", "lacheck" },
   text = {},
   toml = {},
+  java = { "pmd" },
   yaml = { "yamllint" },
   gitcommit = {},
   gitignore = {},
