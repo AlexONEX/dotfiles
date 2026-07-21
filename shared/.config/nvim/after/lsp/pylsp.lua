@@ -1,6 +1,8 @@
 -- Runs alongside pyright/ruff purely for rope refactoring code actions.
 -- Everything that pyright or ruff handles is disabled to avoid duplicates.
 return {
+  cmd = { "pylsp" },
+  filetypes = { "python" },
   settings = {
     pylsp = {
       plugins = {
