@@ -200,6 +200,11 @@ if [[ "$MACHINE" == "workstation" ]]; then
   mkdir -p ~/.claude-alma
   ln -sf "$DOTFILES/workstation/claude-config/alma.settings.json" ~/.claude-alma/settings.json
 
+  # Claude MCP servers (jira OAuth + gogcli) — only if claude CLI is present
+  if command -v claude >/dev/null 2>&1; then
+    bash "$DOTFILES/workstation/claude-config/setup-mcp.sh" || true
+  fi
+
 fi
 
 # =============================================================================
