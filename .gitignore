@@ -31,3 +31,7 @@ shared/.local/bin/
 
 **/thunar.xml
 .config/xfce4/xfconf/xfce-perchannel-xml
+
+# Claude local (machine-specific) settings — never commit
+settings.local.json
+**/settings.local.json

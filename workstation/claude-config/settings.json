@@ -27,20 +27,48 @@
       "Bash(ping:*)"
     ]
   },
+  "model": "claude-sonnet-4-6",
+  "availableModels": [
+    "claude-sonnet-4-6",
+    "claude-opus-4-8",
+    "claude-haiku-4-5",
+    "claude-fable-5"
+  ],
   "hooks": {
-    "SessionStart": []
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          { "type": "command", "command": "~/.config/claude-profiles/hooks/doc-blocker.sh" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "~/.config/claude-profiles/hooks/git-push-guard.sh" }
+        ]
+      }
+    ]
   },
   "statusLine": {
     "type": "command",
     "command": "~/.config/claude-profiles/context-bar.sh"
   },
   "enabledPlugins": {
-    "everything-claude-code@everything-claude-code": true
+    "ponytail@ponytail": true
+  },
+  "extraKnownMarketplaces": {
+    "ponytail": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/alex/ponytail"
+      }
+    }
   },
   "tui": "fullscreen",
   "theme": "dark-ansi",
   "editorMode": "vim",
   "verbose": true,
-  "fileCheckpointingEnabled": false,
-  "model": "haiku"
+  "preferredNotifChannel": "ghostty",
+  "fileCheckpointingEnabled": false
 }
