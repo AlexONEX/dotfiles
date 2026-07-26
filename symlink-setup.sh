@@ -152,6 +152,22 @@ if [[ "$MACHINE" == "homelab" ]]; then
 fi
 
 # =============================================================================
+# [CLAUDE SKILLS PARITY] — Mirror opencode skills into Claude personal skills
+# ~/.config/opencode/skills is fully populated above; mirror every skill dir
+# that has a SKILL.md into ~/.claude/skills so Claude sees the same set.
+# =============================================================================
+echo "  ── claude skills (mirror opencode) ──"
+mkdir -p ~/.claude/skills
+for skill_path in "$HOME/.config/opencode/skills/"*/; do
+  [ -f "$skill_path/SKILL.md" ] || continue
+  name=$(basename "$skill_path")
+  real=$(cd "$skill_path" && pwd -P)
+  tgt="$HOME/.claude/skills/$name"
+  [ -e "$tgt" ] && [ ! -L "$tgt" ] && rm -rf "$tgt"
+  ln -sfn "$real" "$tgt"
+done
+
+# =============================================================================
 # [WORKSTATION ONLY] — Mac with AI agentic stack
 # =============================================================================
 
