@@ -194,22 +194,18 @@ else
 fi
 
 # Build output with profile label in front
-if [[ -n "$EMOJI" ]]; then
-    label_display="${C_ACCENT}[${LABEL}]${C_RESET} ${C_ACCENT}${EMOJI}${C_GRAY}"
-else
-    label_display="${C_ACCENT}[${LABEL}]${C_GRAY}"
-fi
+label_display="${C_ACCENT}[${LABEL}]${C_GRAY}"
 
-output="${label_display} ${C_ACCENT}${model}${C_GRAY} | 📁${dir}"
-[[ -n "$branch" ]] && output+=" | 🔀${branch} ${git_status}"
+output="${label_display} ${C_ACCENT}${model}${C_GRAY} | [${dir}"
+[[ -n "$branch" ]] && output+=" | @${branch} ${git_status}"
 output+=" | ${ctx}${C_RESET}"
 
 printf '%b\n' "$output"
 
 # Show last user message
 if [[ -n "$transcript_path" && -f "$transcript_path" ]]; then
-    plain_output="${LABEL} ${model} | 📁${dir}"
-    [[ -n "$branch" ]] && plain_output+=" | 🔀${branch} ${git_status}"
+    plain_output="${LABEL} ${model} | [${dir}"
+    [[ -n "$branch" ]] && plain_output+=" | @${branch} ${git_status}"
     plain_output+=" | xxxxxxxxxx ${pct}% of ${max_display} tokens"
     max_len=${#plain_output}
     last_user_msg=$(jq -rs '
@@ -232,9 +228,9 @@ if [[ -n "$transcript_path" && -f "$transcript_path" ]]; then
 
     if [[ -n "$last_user_msg" ]]; then
         if [[ ${#last_user_msg} -gt $max_len ]]; then
-            echo "💬 ${last_user_msg:0:$((max_len - 3))}..."
+            echo "> ${last_user_msg:0:$((max_len - 3))}..."
         else
-            echo "💬 ${last_user_msg}"
+            echo "> ${last_user_msg}"
         fi
     fi
 fi
