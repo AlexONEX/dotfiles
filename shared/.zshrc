@@ -249,3 +249,5 @@ autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/terraform terraform
 
 export GITLAB_TOKEN=$(security find-generic-password -s "gitlab-allaria" -a "alex" -w 2>/dev/null)
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$(npm config get prefix)/bin:$PATH"
