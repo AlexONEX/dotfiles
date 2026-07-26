@@ -35,7 +35,20 @@
     "claude-fable-5"
   ],
   "hooks": {
-    "SessionStart": []
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          { "type": "command", "command": "~/.config/claude-profiles/hooks/doc-blocker.sh" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "~/.config/claude-profiles/hooks/git-push-guard.sh" }
+        ]
+      }
+    ]
   },
   "statusLine": {
     "type": "command",

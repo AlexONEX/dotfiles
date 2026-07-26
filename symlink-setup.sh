@@ -207,6 +207,11 @@ if [[ "$MACHINE" == "workstation" ]]; then
   cp "$DOTFILES/workstation/claude-config/status.sh"         "$CLAUDE_PROFILES_DIR/status.sh"
   cp "$DOTFILES/workstation/claude-config/completion.zsh"    "$CLAUDE_PROFILES_DIR/completion.zsh"
 
+  # Claude hooks (doc-blocker, git-push-guard) — referenced from settings.json
+  mkdir -p "$CLAUDE_PROFILES_DIR/hooks"
+  cp "$DOTFILES/workstation/claude-config/hooks/"*.sh "$CLAUDE_PROFILES_DIR/hooks/"
+  chmod +x "$CLAUDE_PROFILES_DIR/hooks/"*.sh
+
   sed "s|\$HOME|$HOME|g" "$DOTFILES/workstation/claude-config/profiles.json.tpl" > "$CLAUDE_PROFILES_DIR/profiles.json"
 
   # Claude profile dirs & settings
