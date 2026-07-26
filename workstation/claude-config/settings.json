@@ -27,7 +27,7 @@
       "Bash(ping:*)"
     ]
   },
-  "model": "sonnet",
+  "model": "claude-sonnet-4-6",
   "availableModels": [
     "claude-sonnet-4-6",
     "claude-opus-4-8",
