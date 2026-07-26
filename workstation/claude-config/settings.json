@@ -42,7 +42,6 @@
     "command": "~/.config/claude-profiles/context-bar.sh"
   },
   "enabledPlugins": {
-    "everything-claude-code@everything-claude-code": true,
     "ponytail@ponytail": true
   },
   "extraKnownMarketplaces": {

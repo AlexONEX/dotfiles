@@ -213,6 +213,12 @@ if [[ "$MACHINE" == "workstation" ]]; then
   mkdir -p ~/.claude
   ln -sf "$DOTFILES/workstation/claude-config/settings.json" ~/.claude/settings.json
 
+  # Claude subagents (ported from opencode + curated from ECC)
+  mkdir -p ~/.claude/agents
+  for f in "$DOTFILES/workstation/claude-config/agents/"*.md; do
+    [ -f "$f" ] && ln -sf "$f" ~/.claude/agents/"$(basename "$f")"
+  done
+
   mkdir -p ~/.claude-alma
   ln -sf "$DOTFILES/workstation/claude-config/alma.settings.json" ~/.claude-alma/settings.json
 
