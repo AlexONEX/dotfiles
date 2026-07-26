@@ -220,8 +220,12 @@ if [[ "$MACHINE" == "workstation" ]]; then
   sed "s|\$HOME|$HOME|g" "$DOTFILES/workstation/claude-config/profiles.json.tpl" > "$CLAUDE_PROFILES_DIR/profiles.json"
 
   # Claude profile dirs & settings
+  # settings.json is versioned (symlink); settings.local.json holds
+  # machine-specific runtime grants (git-ignored) so Claude's writes don't
+  # churn the versioned file. Seed the local file once if absent.
   mkdir -p ~/.claude
   ln -sf "$DOTFILES/workstation/claude-config/settings.json" ~/.claude/settings.json
+  [ -f ~/.claude/settings.local.json ] || printf '{\n  "permissions": {\n    "allow": []\n  }\n}\n' > ~/.claude/settings.local.json
 
   # Claude subagents (ported from opencode + curated from ECC)
   mkdir -p ~/.claude/agents
