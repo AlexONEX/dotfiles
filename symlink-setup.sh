@@ -45,6 +45,11 @@ done
 # Git
 ln -sf "$DOTFILES/shared/.gitconfig" ~/.gitconfig
 
+# Claude rules (deduped, path-scoped) — versioned here, loaded via ~/.claude/rules
+mkdir -p ~/.claude ~/.claude-shared
+ln -sfn "$DOTFILES/workstation/claude-config/rules" ~/.claude/rules
+ln -sfn "$DOTFILES/workstation/claude-config/rules" ~/.claude-shared/rules
+
 # Zsh plugins dir
 target="$HOME/.zsh"
 [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
