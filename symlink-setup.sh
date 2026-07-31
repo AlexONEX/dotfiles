@@ -45,6 +45,11 @@ done
 # Git
 ln -sf "$DOTFILES/shared/.gitconfig" ~/.gitconfig
 
+# Claude rules (deduped, path-scoped) — versioned here, loaded via ~/.claude/rules
+mkdir -p ~/.claude ~/.claude-shared
+ln -sfn "$DOTFILES/workstation/claude-config/rules" ~/.claude/rules
+ln -sfn "$DOTFILES/workstation/claude-config/rules" ~/.claude-shared/rules
+
 # Zsh plugins dir
 target="$HOME/.zsh"
 [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
@@ -152,6 +157,22 @@ if [[ "$MACHINE" == "homelab" ]]; then
 fi
 
 # =============================================================================
+# [CLAUDE SKILLS PARITY] — Mirror opencode skills into Claude personal skills
+# ~/.config/opencode/skills is fully populated above; mirror every skill dir
+# that has a SKILL.md into ~/.claude/skills so Claude sees the same set.
+# =============================================================================
+echo "  ── claude skills (mirror opencode) ──"
+mkdir -p ~/.claude/skills
+for skill_path in "$HOME/.config/opencode/skills/"*/; do
+  [ -f "$skill_path/SKILL.md" ] || continue
+  name=$(basename "$skill_path")
+  real=$(cd "$skill_path" && pwd -P)
+  tgt="$HOME/.claude/skills/$name"
+  [ -e "$tgt" ] && [ ! -L "$tgt" ] && rm -rf "$tgt"
+  ln -sfn "$real" "$tgt"
+done
+
+# =============================================================================
 # [WORKSTATION ONLY] — Mac with AI agentic stack
 # =============================================================================
 
@@ -191,14 +212,34 @@ if [[ "$MACHINE" == "workstation" ]]; then
   cp "$DOTFILES/workstation/claude-config/status.sh"         "$CLAUDE_PROFILES_DIR/status.sh"
   cp "$DOTFILES/workstation/claude-config/completion.zsh"    "$CLAUDE_PROFILES_DIR/completion.zsh"
 
+  # Claude hooks (doc-blocker, git-push-guard) — referenced from settings.json
+  mkdir -p "$CLAUDE_PROFILES_DIR/hooks"
+  cp "$DOTFILES/workstation/claude-config/hooks/"*.sh "$CLAUDE_PROFILES_DIR/hooks/"
+  chmod +x "$CLAUDE_PROFILES_DIR/hooks/"*.sh
+
   sed "s|\$HOME|$HOME|g" "$DOTFILES/workstation/claude-config/profiles.json.tpl" > "$CLAUDE_PROFILES_DIR/profiles.json"
 
   # Claude profile dirs & settings
+  # settings.json is versioned (symlink); settings.local.json holds
+  # machine-specific runtime grants (git-ignored) so Claude's writes don't
+  # churn the versioned file. Seed the local file once if absent.
   mkdir -p ~/.claude
   ln -sf "$DOTFILES/workstation/claude-config/settings.json" ~/.claude/settings.json
+  [ -f ~/.claude/settings.local.json ] || printf '{\n  "permissions": {\n    "allow": []\n  }\n}\n' > ~/.claude/settings.local.json
+
+  # Claude subagents (ported from opencode + curated from ECC)
+  mkdir -p ~/.claude/agents
+  for f in "$DOTFILES/workstation/claude-config/agents/"*.md; do
+    [ -f "$f" ] && ln -sf "$f" ~/.claude/agents/"$(basename "$f")"
+  done
 
   mkdir -p ~/.claude-alma
   ln -sf "$DOTFILES/workstation/claude-config/alma.settings.json" ~/.claude-alma/settings.json
+
+  # Claude MCP servers (jira OAuth + gogcli) — only if claude CLI is present
+  if command -v claude >/dev/null 2>&1; then
+    bash "$DOTFILES/workstation/claude-config/setup-mcp.sh" || true
+  fi
 
 fi
 
