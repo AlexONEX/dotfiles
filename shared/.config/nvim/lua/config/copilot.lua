@@ -19,9 +19,9 @@ require("copilot").setup {
     auto_trigger = true,
     debounce = 75,
     keymap = {
-      accept = "<M-;>",
+      accept = "<M-,>",
       accept_word = "<M-w>",
-      accept_line = "<M-L>",
+      accept_line = "<M-l>",
       next = "<M-]>",
       prev = "<M-[>",
       dismiss = "<C-]>",
@@ -46,9 +46,9 @@ vim.api.nvim_create_user_command("KeybindsCopilot", function()
   local lines = {
     "Copilot keybindings (suggestion mode):",
     "",
-    "  <M-;>    Accept suggestion",
+    "  <M-,>    Accept all suggestion",
+    "  <M-l>    Accept line",
     "  <M-w>    Accept word",
-    "  <M-L>    Accept line",
     "  <M-]>    Next suggestion",
     "  <M-[>    Prev suggestion",
     "  <C-]>    Dismiss suggestion",

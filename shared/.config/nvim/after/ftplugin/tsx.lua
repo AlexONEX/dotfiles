@@ -3,6 +3,3 @@ vim.bo.shiftwidth = 2
 vim.bo.softtabstop = 2
 vim.bo.tabstop = 2
 vim.opt_local.formatoptions:remove { "o", "r" }
-
--- Default commentstring for TypeScript (ts-context-commentstring overrides dynamically)
-vim.bo.commentstring = "// %s"

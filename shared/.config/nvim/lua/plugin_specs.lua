@@ -42,43 +42,33 @@ local plugin_specs = {
     },
   },
 
-  {
-    "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile" },
-    config = function()
-      require("config.lsp")
-    end,
-  },
+  -- lsp loaded via autocmd in init.lua
 
-  {
-    "dnlhc/glance.nvim",
-    config = function()
-      require("config.glance")
-    end,
-    event = "VeryLazy",
-  },
+  { "mfussenegger/nvim-jdtls", ft = "java" },
+
+  -- glance.nvim removed: gd/gr/gi covered by native LSP + fzf-lua
   {
     "nvim-treesitter/nvim-treesitter",
     enabled = function()
-      if vim.g.is_mac or vim.g.is_linux then
-        return true
-      end
-      return false
+      return vim.g.is_mac or vim.g.is_linux
     end,
     event = { "BufReadPost", "BufNewFile" },
     branch = "main",
     build = ":TSUpdate",
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" },
+    },
     config = function()
       require("config.treesitter")
     end,
   },
 
-  { "machakann/vim-swap", event = "VeryLazy" },
+  -- vim-swap removed
 
   -- Super fast buffer jump
   {
     "smoka7/hop.nvim",
-    keys = { "f" },
+    event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("config.nvim_hop")
     end,
@@ -151,6 +141,58 @@ local plugin_specs = {
           animation = mini_indent.gen_animation.none(),
         },
         symbol = "▏",
+      }
+    end,
+  },
+
+  -- mini.ai: extended textobjects (a/i for argument, function call, etc.)
+  -- Disables treesitter af/if/ac/ic since mini.ai covers them better.
+  {
+    "nvim-mini/mini.ai",
+    version = false,
+    event = "VeryLazy",
+    config = function()
+      require("mini.ai").setup {
+        n_lines = 50,
+      }
+    end,
+  },
+
+  -- mini.splitjoin: split/join arguments with gS
+  {
+    "nvim-mini/mini.splitjoin",
+    version = false,
+    event = "VeryLazy",
+    config = function()
+      require("mini.splitjoin").setup()
+    end,
+  },
+
+  -- mini.bracketed: [] bracket navigation for diagnostics, buffers, etc.
+  -- Disabled targets that clash:
+  --   comment (c) → clashes with treesitter ]c/[c (class jump)
+  --   file (f)    → clashes with treesitter ]f/[f (function jump)
+  --   oldfile (o) → clashes with opencode ]o/[o
+  {
+    "nvim-mini/mini.bracketed",
+    version = false,
+    event = "VeryLazy",
+    config = function()
+      require("mini.bracketed").setup {
+        buffer = { suffix = "b", options = {} },
+        comment = { suffix = "", options = {} }, -- disabled: clashes with treesitter ]c/[c
+        conflict = { suffix = "x", options = {} },
+        diagnostic = { suffix = "d", options = {} },
+        file = { suffix = "", options = {} }, -- disabled: clashes with treesitter ]f/[f
+        indent = { suffix = "i", options = {} },
+        jump = { suffix = "j", options = {} },
+        location = { suffix = "l", options = {} },
+        oldfile = { suffix = "", options = {} }, -- disabled: clashes with opencode ]o/[o
+        quickfix = { suffix = "q", options = {} },
+        treesitter = { suffix = "t", options = {} },
+        undo = { suffix = "u", options = {} },
+        window = { suffix = "w", options = {} },
+        yank = { suffix = "y", options = {} },
       }
     end,
   },
@@ -372,6 +414,15 @@ local plugin_specs = {
   },
 
   {
+    "nickjvandyke/opencode.nvim",
+    version = "*",
+    event = "VeryLazy",
+    config = function()
+      require("config.opencode")
+    end,
+  },
+
+  {
     "folke/lazydev.nvim",
     ft = "lua", -- only load on lua files
     opts = {
@@ -408,8 +459,6 @@ local plugin_specs = {
   {
     "catgoose/nvim-colorizer.lua",
     event = "BufReadPre",
-    opts = { -- set to setup table
-    },
   },
 }
 

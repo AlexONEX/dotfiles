@@ -20,6 +20,9 @@ M.load_colorscheme = function(colorscheme)
   else
     vim.cmd.colorscheme(theme)
   end
+
+  -- Make inlay hints readable
+  vim.api.nvim_set_hl(0, "LspInlayHint", { fg = "#999AAA" })
 end
 
 return M

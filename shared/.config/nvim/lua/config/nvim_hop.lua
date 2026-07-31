@@ -7,22 +7,22 @@ hop.setup {
   match_mappings = { "zh_sc" },
 }
 
-keymap.set({ "n", "v", "o" }, "<C-l>", "", {
+keymap.set({ "n", "v", "o" }, "<leader>hl", "", {
   silent = true,
   noremap = true,
   callback = function()
     hop.hint_lines()
   end,
-  desc = "nvim-hop char",
+  desc = "hop lines",
 })
 
-keymap.set({ "n", "v", "o" }, "<C-d>", "", {
+keymap.set({ "n", "v", "o" }, "<leader>hc", "", {
   silent = true,
   noremap = true,
   callback = function()
     hop.hint_words()
   end,
-  desc = "nvim-hop words",
+  desc = "hop words",
 })
 
 vim.api.nvim_create_autocmd("ColorScheme", {

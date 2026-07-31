@@ -177,6 +177,12 @@ end, { desc = "open URL in browser" })
 keymap.set("n", "<Space>e", function()
   Snacks.explorer { hidden = true }
 end, { desc = "file explorer" })
+-- Lazygit (requires lazygit installed)
+if vim.fn.executable("lazygit") == 1 then
+  keymap.set("n", "<leader>gg", function()
+    Snacks.lazygit()
+  end, { desc = "lazygit" })
+end
 keymap.set("n", "<leader>cd", "<cmd>lcd %:p:h<cr><cmd>pwd<cr>", { desc = "change cwd" })
 keymap.set("n", "<leader>wo", function()
   local wiki_dir = vim.fn.expand("~/wiki")
@@ -206,13 +212,27 @@ keymap.set("n", "<leader>cr", function()
     ]])
   vim.notify("Nvim config successfully reloaded!", vim.log.levels.INFO, { title = "nvim-config" })
 end, { silent = true, desc = "reload init.lua" })
-keymap.set("n", "<leader>q", "<cmd>x<cr>", { silent = true, desc = "quit current window" })
+keymap.set("n", "<leader>q", function()
+  if vim.fn.winnr("$") == 1 then
+    vim.cmd("qall")
+  else
+    vim.cmd("close")
+  end
+end, { silent = true, desc = "close window or quit" })
 keymap.set("n", "<leader>Q", "<cmd>qa!<cr>", { silent = true, desc = "quit nvim" })
 
 -- ─── UI & Misc ──────────────────────────────────────────────────────────────
--- Esc: close floating win if open, else clear search highlight
+-- Esc: close float → clear search
 keymap.set("n", "<Esc>", function()
-  vim.cmd("fclose!")
+  -- close any floating window first
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local ok, config = pcall(vim.api.nvim_win_get_config, win)
+    if ok and config and config.relative ~= "" then
+      vim.api.nvim_win_close(win, false)
+      return
+    end
+  end
+  -- clear search highlight
   pcall(function()
     vim.cmd("nohlsearch")
   end)
@@ -222,13 +242,24 @@ keymap.set("n", "<Esc>", function()
       vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
     end)
   end
-end, { desc = "close float & clear search" })
+end, { desc = "close float → clear search" })
 keymap.set("t", "<Esc>", [[<c-\><c-n>]])
 keymap.set("n", "<F11>", "<cmd>set spell!<cr>", { desc = "toggle spell" })
 keymap.set("i", "<F11>", "<c-o><cmd>set spell!<cr>", { desc = "toggle spell" })
 keymap.set("n", "<leader>cl", function()
   require("autoload").toggle_cursor_col()
 end, { desc = "toggle cursor column" })
+keymap.set("n", "<space>cL", function()
+  local log = vim.lsp.log.get_filename()
+  -- find existing buffer with the log
+  for _, b in ipairs(vim.fn.getbufinfo { buflisted = 1 }) do
+    if b.name == log then
+      vim.api.nvim_buf_delete(b.bufnr, { force = true })
+      return
+    end
+  end
+  vim.cmd("tabnew " .. log)
+end, { desc = "toggle LSP log" })
 keymap.set("n", "<leader>cb", function()
   local cnt = 0
   local blink_times = 7

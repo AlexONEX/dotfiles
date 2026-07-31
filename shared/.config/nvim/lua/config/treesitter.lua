@@ -53,3 +53,53 @@ vim.api.nvim_create_autocmd("FileType", {
     end
   end,
 })
+
+-- Context-aware comments for TSX: cursor inside JSX → {/* */}
+local comment_timer = assert(vim.uv.new_timer())
+local comment_debounce_ms = 50
+
+vim.api.nvim_create_autocmd("CursorMoved", {
+  pattern = { "*.tsx", "*.jsx", "*.ts", "*.js" },
+  callback = function()
+    comment_timer:stop()
+    comment_timer:start(
+      comment_debounce_ms,
+      0,
+      vim.schedule_wrap(function()
+        local ok, ts_utils = pcall(require, "nvim-treesitter.ts_utils")
+        if not ok then
+          return
+        end
+        local node = ts_utils.get_node_at_cursor()
+        if not node then
+          return
+        end
+        local current = node
+        while current do
+          if current:type():match("jsx") then
+            vim.bo.commentstring = "{/* %s */}"
+            return
+          end
+          current = current:parent()
+        end
+        vim.bo.commentstring = "// %s"
+      end)
+    )
+  end,
+})
+
+-- ─── Textobjects (nvim-treesitter-textobjects) ─────────────────────────────
+-- Select (af/if/ac/ic) handled by mini.ai — not mapped here.
+-- Move: jump between functions/classes in normal mode
+--   ]f/[f = next/prev function, ]c/[c = next/prev class
+local move_map = {
+  ["]f"] = { fn = "goto_next_start", query = "@function.outer" },
+  ["[f"] = { fn = "goto_previous_start", query = "@function.outer" },
+  ["]c"] = { fn = "goto_next_start", query = "@class.outer" },
+  ["[c"] = { fn = "goto_previous_start", query = "@class.outer" },
+}
+for lhs, spec in pairs(move_map) do
+  vim.keymap.set("n", lhs, function()
+    require("nvim-treesitter-textobjects.move")[spec.fn](spec.query, "textobjects")
+  end, { desc = lhs:sub(2) .. " " .. spec.query:match("@(%w+)"):gsub("_", " ") })
+end
