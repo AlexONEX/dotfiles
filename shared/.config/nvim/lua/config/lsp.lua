@@ -61,7 +61,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       require("fzf-lua").lsp_references()
     end, { desc = "LSP references" })
     map("n", "gi", vim.lsp.buf.implementation, { desc = "LSP implementation" })
-    map("n", "<space>cD", vim.lsp.buf.type_definition, { desc = "type definition" })
+    map("n", "<leader>cD", vim.lsp.buf.type_definition, { desc = "type definition" })
     map("n", "[d", function()
       vim.diagnostic.goto_prev { float = true }
     end, { desc = "prev diagnostic" })
@@ -80,7 +80,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("n", "]w", function()
       vim.diagnostic.goto_next { severity = vim.diagnostic.severity.WARN, float = true }
     end, { desc = "next warning" })
-    map("n", "<space>ci", function()
+    map("n", "<leader>ci", function()
       vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = 0 }, { bufnr = 0 })
     end, { desc = "toggle inlay hints" })
     map("n", "K", function()
@@ -91,7 +91,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         close_events = { "CursorMoved", "BufLeave", "WinLeave", "LSPDetach" },
       }
     end)
-    map("n", "<space>ch", function()
+    map("n", "<leader>ch", function()
       vim.lsp.buf.hover {
         border = "single",
         max_height = 20,
@@ -100,10 +100,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
       }
     end, { desc = "hover" })
     map("n", "<C-k>", vim.lsp.buf.signature_help)
-    map("n", "<space>cC", vim.lsp.buf.signature_help, { desc = "signature help" })
-    map("n", "<space>cr", vim.lsp.buf.rename, { desc = "rename" })
-    map({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, { desc = "code action" })
-    map("n", "<space>co", function()
+    map("n", "<leader>cC", vim.lsp.buf.signature_help, { desc = "signature help" })
+    map("n", "<leader>cr", vim.lsp.buf.rename, { desc = "rename" })
+    map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "code action" })
+    map("n", "<leader>co", function()
       vim.lsp.buf.code_action {
         context = { only = { "source.organizeImports" } },
         apply = true,

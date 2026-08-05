@@ -177,13 +177,16 @@ end, { desc = "open URL in browser" })
 keymap.set("n", "<Space>e", function()
   Snacks.explorer { hidden = true }
 end, { desc = "file explorer" })
--- Lazygit (requires lazygit installed)
+-- Lazygit (requires lazygit installed): primary tool for reviewing/staging what
+-- you're about to commit — per-hunk/per-line staging in the main view.
 if vim.fn.executable("lazygit") == 1 then
   keymap.set("n", "<leader>gg", function()
     Snacks.lazygit()
   end, { desc = "lazygit" })
+  keymap.set("n", "<leader>gG", function()
+    Snacks.lazygit.log_file()
+  end, { desc = "lazygit: current file history" })
 end
-keymap.set("n", "<leader>cd", "<cmd>lcd %:p:h<cr><cmd>pwd<cr>", { desc = "change cwd" })
 keymap.set("n", "<leader>wo", function()
   local wiki_dir = vim.fn.expand("~/wiki")
   if vim.fn.isdirectory(wiki_dir) == 1 then
@@ -195,7 +198,7 @@ keymap.set("n", "<leader>wo", function()
 end, { desc = "go to wiki directory" })
 
 -- ─── Format ──────────────────────────────────────────────────────────────────
-keymap.set({ "n", "v" }, "<space>cf", function()
+keymap.set({ "n", "v" }, "<leader>cf", function()
   vim.lsp.buf.format()
 end, { desc = "format buffer via LSP" })
 keymap.set("n", "<C-s>", function()
@@ -204,8 +207,7 @@ keymap.set("n", "<C-s>", function()
 end, { desc = "format buffer and save" })
 
 -- ─── Config ─────────────────────────────────────────────────────────────────
-keymap.set("n", "<leader>co", "<cmd>tabnew $MYVIMRC <bar> tcd %:h<cr>", { silent = true, desc = "open init.lua" })
-keymap.set("n", "<leader>cr", function()
+keymap.set("n", "<leader>rr", function()
   vim.cmd([[
       update $MYVIMRC
       source $MYVIMRC
@@ -246,10 +248,7 @@ end, { desc = "close float → clear search" })
 keymap.set("t", "<Esc>", [[<c-\><c-n>]])
 keymap.set("n", "<F11>", "<cmd>set spell!<cr>", { desc = "toggle spell" })
 keymap.set("i", "<F11>", "<c-o><cmd>set spell!<cr>", { desc = "toggle spell" })
-keymap.set("n", "<leader>cl", function()
-  require("autoload").toggle_cursor_col()
-end, { desc = "toggle cursor column" })
-keymap.set("n", "<space>cL", function()
+keymap.set("n", "<leader>cL", function()
   local log = vim.lsp.log.get_filename()
   -- find existing buffer with the log
   for _, b in ipairs(vim.fn.getbufinfo { buflisted = 1 }) do
@@ -260,28 +259,6 @@ keymap.set("n", "<space>cL", function()
   end
   vim.cmd("tabnew " .. log)
 end, { desc = "toggle LSP log" })
-keymap.set("n", "<leader>cb", function()
-  local cnt = 0
-  local blink_times = 7
-  local timer = uv.new_timer()
-  if timer == nil then
-    return
-  end
-  timer:start(
-    0,
-    100,
-    vim.schedule_wrap(function()
-      vim.cmd([[
-      set cursorcolumn!
-      set cursorline!
-    ]])
-      if cnt == blink_times then
-        timer:close()
-      end
-      cnt = cnt + 1
-    end)
-  )
-end, { desc = "show cursor" })
 -- q records macros by accident; use Q instead
 keymap.set("n", "q", function()
   vim.print("q is remapped to Q in Normal mode!")
