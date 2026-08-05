@@ -37,20 +37,21 @@ gs.setup {
       return "<Ignore>"
     end, { expr = true, desc = "previous hunk" })
 
-    -- Actions
-    map("n", "<leader>gs", gs.stage_hunk, { desc = "stage hunk" })
-    map("n", "<leader>gr", gs.reset_hunk, { desc = "reset hunk" })
-    map("v", "<leader>gs", function()
+    -- Actions (under <leader>gh = "hunks", keeps <leader>g{s,p,b,d} free for
+    -- fugitive/gitlinker which are global and would otherwise be shadowed here)
+    map("n", "<leader>ghs", gs.stage_hunk, { desc = "stage hunk" })
+    map("n", "<leader>ghr", gs.reset_hunk, { desc = "reset hunk" })
+    map("v", "<leader>ghs", function()
       gs.stage_hunk { vim.fn.line("."), vim.fn.line("v") }
     end, { desc = "stage hunk" })
-    map("v", "<leader>gr", function()
+    map("v", "<leader>ghr", function()
       gs.reset_hunk { vim.fn.line("."), vim.fn.line("v") }
     end, { desc = "reset hunk" })
-    map("n", "<leader>gS", gs.stage_buffer, { desc = "stage buffer" })
-    map("n", "<leader>gu", gs.undo_stage_hunk, { desc = "undo stage hunk" })
-    map("n", "<leader>gd", gs.diffthis, { desc = "diff this" })
-    map("n", "<leader>gp", gs.preview_hunk, { desc = "preview hunk" })
-    map("n", "<leader>gb", function()
+    map("n", "<leader>ghS", gs.stage_buffer, { desc = "stage buffer" })
+    map("n", "<leader>ghu", gs.undo_stage_hunk, { desc = "undo stage hunk" })
+    map("n", "<leader>ghd", gs.diffthis, { desc = "diff this" })
+    map("n", "<leader>ghp", gs.preview_hunk, { desc = "preview hunk" })
+    map("n", "<leader>ghb", function()
       gs.blame_line { full = true }
     end, { desc = "blame line" })
   end,
