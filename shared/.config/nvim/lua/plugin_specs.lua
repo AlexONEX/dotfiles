@@ -106,14 +106,6 @@ local plugin_specs = {
   },
 
   {
-    "nvim-lualine/lualine.nvim",
-    event = "BufRead",
-    config = function()
-      require("config.lualine")
-    end,
-  },
-
-  {
     "akinsho/bufferline.nvim",
     event = { "BufEnter" },
     config = function()

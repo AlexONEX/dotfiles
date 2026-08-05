@@ -37,3 +37,6 @@ require("config.lsp")
 
 -- colorscheme settings
 require("colorschemes").load_colorscheme("nord")
+
+-- native statusline (replaces lualine)
+require("config.statusline")
