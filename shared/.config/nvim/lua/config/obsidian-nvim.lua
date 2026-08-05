@@ -1,6 +1,8 @@
 local opts = {
   dir = "~/wiki",
   new_notes_location = "current_dir",
+  -- Single-bracket markdown links [alias](target) instead of wiki [[target|alias]]
+  preferred_link_style = "markdown",
   note_id_func = function(title)
     if title and title ~= "" then
       return title:gsub("%s+", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
@@ -169,7 +171,7 @@ end
 
 local function CreateCheckbox()
   local line = vim.api.nvim_get_current_line()
-  local indent, content = line:match("(^%s*)(.*)")
+  local indent, content = line:match("^(%s*)(.*)")
   if indent == nil then
     indent = ""
   end
@@ -183,7 +185,7 @@ end
 
 local function ToggleExistingCheckbox()
   local line = vim.api.nvim_get_current_line()
-  local indent = line:match("(^%s*)")
+  local indent = line:match("^(%s*)")
   if indent == nil then
     indent = ""
   end
@@ -205,27 +207,37 @@ end, {})
 local map = vim.keymap.set
 local leader = "<leader>"
 
+-- Global under <leader>n: access + note creation, usable from anywhere.
 map("n", leader .. "np", function()
   CreateParaNote("Project")
-end, { desc = "Obsidian: New Project Note" })
+end, { desc = "Obsidian: new project note" })
 map("n", leader .. "na", function()
   CreateParaNote("Area")
-end, { desc = "Obsidian: New Area Note" })
+end, { desc = "Obsidian: new area note" })
 map("n", leader .. "nr", function()
   CreateParaNote("Resource")
-end, { desc = "Obsidian: New Resource Note" })
+end, { desc = "Obsidian: new resource note" })
 map("n", leader .. "nc", function()
   CreateParaNote("Archive")
-end, { desc = "Obsidian: New Archive Note" })
+end, { desc = "Obsidian: new archive note" })
+map("n", leader .. "nj", "<cmd>ObsidianSmartToday<cr>", { desc = "Obsidian: smart today" })
+map("n", leader .. "nJ", CreateJournalNote, { desc = "Obsidian: new journal note" })
+map("n", leader .. "no", "<cmd>ObsidianOpen<cr>", { desc = "Obsidian: open vault" })
+map("n", leader .. "ns", "<cmd>ObsidianSearch<cr>", { desc = "Obsidian: search notes" })
 
-map("n", leader .. "nj", "<cmd>ObsidianSmartToday<cr>", { desc = "Obsidian: Smart Today (no templates)" })
-map("n", leader .. "njj", CreateJournalNote, { desc = "Obsidian: New Journal Note" })
-
-map("v", leader .. "nl", "<cmd>ObsidianLinkNew<cr>", { desc = "Obsidian: Link New" })
-map("n", leader .. "ncc", CreateCheckbox, { desc = "Obsidian: Create Checkbox" })
-map("n", leader .. "x", ToggleExistingCheckbox, { desc = "Obsidian: Toggle Checkbox" })
-map("n", leader .. "wo", "<cmd>ObsidianOpen<cr>", { desc = "Obsidian: Open Vault" })
-map("n", leader .. "wf", "<cmd>ObsidianSearch<cr>", { desc = "Obsidian: Search notes" })
-map("n", leader .. "wb", "<cmd>ObsidianBacklinks<cr>", { desc = "Obsidian: Show backlinks" })
-map("n", leader .. "nte", "<cmd>ObsidianTemplate<cr>", { desc = "Obsidian: Show template" })
-map("n", leader .. "gl", "<cmd>ObsidianFollowLink<cr>", { desc = "Obsidian: Follow link under cursor" })
+-- Note-editing maps only make sense inside a note → buffer-local to markdown,
+-- so they never sit in the global namespace and can't clash with code maps.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function(ev)
+    local function bmap(mode, lhs, rhs, desc)
+      map(mode, leader .. lhs, rhs, { buffer = ev.buf, desc = desc })
+    end
+    bmap("n", "nx", ToggleExistingCheckbox, "Obsidian: toggle checkbox")
+    bmap("n", "nb", CreateCheckbox, "Obsidian: create checkbox")
+    bmap("n", "nf", "<cmd>ObsidianFollowLink<cr>", "Obsidian: follow link")
+    bmap("n", "nk", "<cmd>ObsidianBacklinks<cr>", "Obsidian: backlinks")
+    bmap("n", "nt", "<cmd>ObsidianTemplate<cr>", "Obsidian: template")
+    bmap("v", "nl", "<cmd>ObsidianLinkNew<cr>", "Obsidian: link new")
+  end,
+})
