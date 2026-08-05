@@ -16,6 +16,8 @@ vim.g.did_install_default_menus = 1 -- do not load menu
 
 -- Custom mapping <leader> (see `:h mapleader` for more info)
 vim.g.mapleader = ","
+-- <localleader> = <space>; octo.nvim buffer maps live here (review/PR context)
+vim.g.maplocalleader = " "
 
 -- Enable highlighting for lua HERE doc inside vim script
 vim.g.vimsyn_embed = "l"

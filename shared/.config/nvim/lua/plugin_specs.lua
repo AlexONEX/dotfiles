@@ -292,6 +292,29 @@ local plugin_specs = {
   },
 
   {
+    "pwntester/octo.nvim",
+    cmd = "Octo",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    -- <localleader> is <space>; these launchers open octo from anywhere.
+    -- In-review buffer maps (add comment, submit, resolve, navigate) are octo
+    -- defaults, also on <space> via <localleader>.
+    keys = {
+      { "<localleader>gp", "<cmd>Octo pr list<cr>", desc = "octo: PR list" },
+      { "<localleader>gc", "<cmd>Octo pr create<cr>", desc = "octo: PR create" },
+      { "<localleader>gs", "<cmd>Octo review start<cr>", desc = "octo: review start" },
+      { "<localleader>gR", "<cmd>Octo review resume<cr>", desc = "octo: review resume" },
+      { "<localleader>gb", "<cmd>Octo review browse<cr>", desc = "octo: review browse" },
+      { "<localleader>gi", "<cmd>Octo issue list<cr>", desc = "octo: issue list" },
+      { "<localleader>gI", "<cmd>Octo issue create<cr>", desc = "octo: issue create" },
+      { "<localleader>gf", "<cmd>Octo search<cr>", desc = "octo: search" },
+      { "<localleader>gn", "<cmd>Octo notification list<cr>", desc = "octo: notifications" },
+    },
+    config = function()
+      require("config.octo")
+    end,
+  },
+
+  {
     "kevinhwang91/nvim-bqf",
     ft = "qf",
     opts = {
