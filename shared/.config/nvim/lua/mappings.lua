@@ -24,6 +24,8 @@ keymap.set("n", "<left>", "<c-w>h")
 keymap.set("n", "<Right>", "<C-W>l")
 keymap.set("n", "<Up>", "<C-W>k")
 keymap.set("n", "<Down>", "<C-W>j")
+-- Close current buffer without closing the window
+keymap.set("n", "<C-w>u", ":bd<CR>", { desc = "close current buffer" })
 
 -- ─── Text Editing ───────────────────────────────────────────────────────────
 -- Change without contaminating register

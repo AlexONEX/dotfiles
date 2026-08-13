@@ -29,7 +29,17 @@ require("blink.cmp").setup {
   -- Default list of enabled providers defined so that you can extend it
   -- elsewhere in your config, without redefining it, due to `opts_extend`
   sources = {
-    default = { "lsp", "path", "snippets", "buffer" },
+    providers = {
+      sonicpi = {
+        name = "Sonic Pi",
+        module = "config.sonicpi-provider",
+        -- ponytail: el codigo Sonic Pi vive en .rb por ahora; estrechar a "sonicpi" si se escribe Ruby puro
+        enabled = function()
+          return vim.tbl_contains({ "sonicpi", "ruby" }, vim.bo.filetype)
+        end,
+      },
+    },
+    default = { "lsp", "path", "snippets", "buffer", "sonicpi" },
   },
 
   -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance

@@ -475,6 +475,23 @@ local plugin_specs = {
     "catgoose/nvim-colorizer.lua",
     event = "BufReadPre",
   },
+
+  -- nvim-cmp: requerido solo como API de la fuente cmp-sonicpi (blink v1 no tiene compat layer)
+  {
+    "hrsh7th/nvim-cmp",
+    lazy = true,
+  },
+  {
+    "magicmonty/sonicpi.nvim",
+    ft = { "sonicpi", "ruby" },
+    dependencies = { "hrsh7th/nvim-cmp" },
+    config = function()
+      require("sonicpi").setup {
+        server_dir = "/Applications/Sonic Pi.app/Contents/Resources/app/server",
+        mappings = {}, -- envío OSC propio (,sr/,ss), no el daemon del plugin
+      }
+    end,
+  },
 }
 
 ---@diagnostic disable-next-line: missing-fields

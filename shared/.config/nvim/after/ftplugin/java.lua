@@ -7,7 +7,7 @@ local workspace_dir = vim.fn.expand("~/.local/share/jdtls/workspace/") .. vim.fn
 local lombok_jars = vim.fn.glob(vim.fn.expand("~/.m2/repository/org/projectlombok/lombok/*/lombok-*.jar"), false, true)
 local lombok_jar = (type(lombok_jars) == "table" and #lombok_jars > 0) and lombok_jars[#lombok_jars] or ""
 
-local cmd = { "jdtls" }
+local cmd = { "jdtls", "--jvm-arg=-Djava.import.generatesMetadataFilesAtProjectRoot=false" }
 
 -- On macOS ARM, jdtls.py picks config_mac (x86_64 launcher), override to config_mac_arm
 if vim.g.is_mac and jit.arch == "arm64" then
@@ -36,8 +36,17 @@ capabilities.textDocument.foldingRange = {
 require("jdtls").start_or_attach {
   cmd = cmd,
   capabilities = capabilities,
+  on_exit = function(code, signal, _)
+    if code ~= 0 or signal ~= 0 then
+      vim.fn.delete(workspace_dir, "rf")
+      vim.schedule(function()
+        vim.notify("jdtls exited dirty: workspace wiped, reopen the .java file", vim.log.levels.WARN)
+      end)
+    end
+  end,
   settings = {
     java = {
+      saveActions = { organizeImports = true },
       format = { enabled = true },
       completion = {
         importOrder = { "java", "javax", "jakarta", "org", "com" },

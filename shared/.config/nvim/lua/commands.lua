@@ -80,3 +80,16 @@ end, { desc = "convert markdown to PDF" })
 vim.api.nvim_create_user_command("LspCheck", function()
   require("lsp-checker").check()
 end, { desc = "check installed LSP servers and tools" })
+
+-- Send current buffer to Sonic Pi (live-coding)
+vim.api.nvim_create_user_command("SonicRun", function()
+  local buffer = table.concat(vim.fn.getline(1, "$"), "\n")
+  local result = vim.fn.system({ "sonic-send.py", "run" }, buffer)
+  if result ~= "" then
+    vim.print("Sonic Pi: " .. result)
+  end
+end, { desc = "send current buffer to Sonic Pi" })
+
+vim.api.nvim_create_user_command("SonicStop", function()
+  vim.fn.system("sonic-send.py stop")
+end, { desc = "stop all Sonic Pi jobs" })

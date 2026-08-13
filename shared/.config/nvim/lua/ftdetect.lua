@@ -4,6 +4,7 @@ vim.filetype.add {
   extension = {
     pdc = "markdown",
     snippets = "snippets",
+    sonicpi = "sonicpi",
   },
   pattern = {
     [".*%.sh"] = "sh",
@@ -44,5 +45,22 @@ vim.api.nvim_create_autocmd({ "BufRead" }, {
     elseif line1:match("^#!.*bash") then
       vim.b.is_bash = 1
     end
+  end,
+})
+
+-- Sonic Pi live-coding keymaps for Ruby and Sonic Pi buffers
+vim.api.nvim_create_augroup("sonic_pi", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  group = "sonic_pi",
+  pattern = { "ruby", "sonicpi" },
+  callback = function()
+    vim.keymap.set("n", "<leader>sr", ":SonicRun<CR>", { buffer = true, desc = "send buffer to Sonic Pi" })
+    vim.keymap.set("n", "<leader>ss", ":SonicStop<CR>", { buffer = true, desc = "stop Sonic Pi" })
+    vim.keymap.set(
+      "n",
+      "<leader>sd",
+      "<Cmd>edit /Applications/Sonic\\ Pi.app/Contents/Resources/etc/doc/tutorial/<CR>",
+      { buffer = true, desc = "browse Sonic Pi tutorial docs" }
+    )
   end,
 })

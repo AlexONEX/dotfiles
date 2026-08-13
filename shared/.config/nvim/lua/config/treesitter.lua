@@ -93,13 +93,13 @@ vim.api.nvim_create_autocmd("CursorMoved", {
 -- Move: jump between functions/classes in normal mode
 --   ]f/[f = next/prev function, ]c/[c = next/prev class
 local move_map = {
-  ["]f"] = { fn = "goto_next_start", query = "@function.outer" },
-  ["[f"] = { fn = "goto_previous_start", query = "@function.outer" },
-  ["]c"] = { fn = "goto_next_start", query = "@class.outer" },
-  ["[c"] = { fn = "goto_previous_start", query = "@class.outer" },
+  ["]f"] = { fn = "goto_next_start", query = "@function.outer", desc = "next function" },
+  ["[f"] = { fn = "goto_previous_start", query = "@function.outer", desc = "prev function" },
+  ["]c"] = { fn = "goto_next_start", query = "@class.outer", desc = "next class" },
+  ["[c"] = { fn = "goto_previous_start", query = "@class.outer", desc = "prev class" },
 }
 for lhs, spec in pairs(move_map) do
   vim.keymap.set("n", lhs, function()
     require("nvim-treesitter-textobjects.move")[spec.fn](spec.query, "textobjects")
-  end, { desc = lhs:sub(2) .. " " .. spec.query:match("@(%w+)"):gsub("_", " ") })
+  end, { desc = spec.desc })
 end
