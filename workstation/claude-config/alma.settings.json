@@ -3,11 +3,7 @@
     "commit": "",
     "pr": ""
   },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.config/claude-profiles/context-bar.sh"
-  },
-  "theme": "dark-ansi",
+  "model": "claude-sonnet-4-6",
   "availableModels": [
     "claude-haiku-4-5",
     "claude-sonnet-4-6",
@@ -15,5 +11,33 @@
     "claude-fable-5",
     "claude-sonnet-5",
     "claude-opus-5"
-  ]
+  ],
+  "statusLine": {
+    "type": "command",
+    "command": "~/.config/claude-profiles/context-bar.sh"
+  },
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "langfuse-observability@langfuse-observability": true,
+    "pyright-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "langfuse-observability": {
+      "source": {
+        "source": "github",
+        "repo": "langfuse/Claude-Observability-Plugin"
+      }
+    }
+  },
+  "pluginConfigs": {
+    "langfuse-observability@langfuse-observability": {
+      "options": {
+        "LANGFUSE_PUBLIC_KEY": "pk-lf-a3c1fc7e-b9ef-47b4-bd4c-4c847592ddb6",
+        "LANGFUSE_BASE_URL": "https://langfuse.svc.internal.allaria.dev",
+        "LANGFUSE_USER_ID": "alejandro-schwartzmann",
+        "CC_LANGFUSE_DEBUG": true
+      }
+    }
+  },
+  "theme": "dark-ansi"
 }
