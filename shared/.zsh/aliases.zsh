@@ -445,22 +445,15 @@ extractf() {
 }
 
 extractfall() {
-	# Desactivar 'nomatch' temporalmente
 	setopt +o nomatch
-
-	# Encontrar todos los archivos comprimidos en el directorio actual
 	local files=(*.tar.bz2 *.tar.gz *.bz2 *.rar *.gz *.tar *.tbz2 *.tgz *.zip *.Z *.7z)
 
-	# Restaurar 'nomatch'
 	setopt nomatch
-
-	# Verificar si hay archivos que procesar
 	if [ ${#files[@]} -eq 0 ]; then
 		echo "No se encontraron archivos comprimidos en el directorio actual"
 		return
 	fi
 
-	# Procesar cada archivo encontrado
 	for file in "${files[@]}"; do
 		if [ -f "$file" ]; then
 			extractf "$file"

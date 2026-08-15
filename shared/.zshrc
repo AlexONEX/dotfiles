@@ -136,9 +136,6 @@ if [ -f ~/.zsh/database.zsh ]; then
     . ~/.zsh/database.zsh
 fi
 
-if [ -f ~/secure/zsh_credentials.env ]; then
-    source ~/secure/zsh_credentials.env
-fi
 # SDKMAN lazy-load — se activa solo al primer `sdk` o `java` etc
 export SDKMAN_DIR="$HOME/.sdkman"
 sdk() {
