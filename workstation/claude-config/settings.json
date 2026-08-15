@@ -27,25 +27,33 @@
       "Bash(ping:*)"
     ]
   },
-  "model": "claude-sonnet-4-6",
+  "model": "claude-opus-4-8",
   "availableModels": [
+    "claude-haiku-4-5",
     "claude-sonnet-4-6",
     "claude-opus-4-8",
-    "claude-haiku-4-5",
-    "claude-fable-5"
+    "claude-fable-5",
+    "claude-sonnet-5",
+    "claude-opus-5"
   ],
   "hooks": {
     "PreToolUse": [
       {
         "matcher": "Write",
         "hooks": [
-          { "type": "command", "command": "~/.config/claude-profiles/hooks/doc-blocker.sh" }
+          {
+            "type": "command",
+            "command": "~/.config/claude-profiles/hooks/doc-blocker.sh"
+          }
         ]
       },
       {
         "matcher": "Bash",
         "hooks": [
-          { "type": "command", "command": "~/.config/claude-profiles/hooks/git-push-guard.sh" }
+          {
+            "type": "command",
+            "command": "~/.config/claude-profiles/hooks/git-push-guard.sh"
+          }
         ]
       }
     ]
