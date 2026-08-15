@@ -201,10 +201,10 @@ end, { desc = "go to wiki directory" })
 
 -- ─── Format ──────────────────────────────────────────────────────────────────
 keymap.set({ "n", "v" }, "<leader>cf", function()
-  vim.lsp.buf.format()
+  vim.lsp.buf.format { async = true }
 end, { desc = "format buffer via LSP" })
 keymap.set("n", "<C-s>", function()
-  vim.lsp.buf.format()
+  vim.lsp.buf.format { timeout_ms = 3000 }
   vim.cmd("write")
 end, { desc = "format buffer and save" })
 

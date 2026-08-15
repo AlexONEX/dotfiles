@@ -32,6 +32,10 @@ end
 
 require("ufo").setup {
   fold_virt_text_handler = handler,
+  -- auto-close the import fold when opening a file (LSP folding kind "imports")
+  close_fold_kinds_for_ft = {
+    java = { "imports" },
+  },
 }
 
 vim.keymap.set("n", "zR", require("ufo").openAllFolds)
