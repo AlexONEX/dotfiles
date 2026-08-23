@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config",
+  "model": "google/antigravity-gemini-3.1-pro",
   "mcp": {
     "jira": {
       "type": "remote",
@@ -16,6 +17,29 @@
     }
   },
   "provider": {
+    "google": {
+      "npm": "@ai-sdk/google",
+      "models": {
+        "antigravity-gemini-3.1-pro": {
+          "name": "Gemini 3.1 Pro (Antigravity)",
+          "limit": { "context": 1048576, "output": 65535 },
+          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
+          "variants": {
+            "low": { "thinkingLevel": "low" },
+            "high": { "thinkingLevel": "high" }
+          }
+        },
+        "antigravity-claude-opus-4-6-thinking": {
+          "name": "Claude Opus 4.6 Thinking (Antigravity)",
+          "limit": { "context": 200000, "output": 64000 },
+          "modalities": { "input": ["text", "image", "pdf"], "output": ["text"] },
+          "variants": {
+            "low": { "thinkingConfig": { "thinkingBudget": 8192 } },
+            "max": { "thinkingConfig": { "thinkingBudget": 32768 } }
+          }
+        }
+      }
+    },
     "anthropic": {
       "options": {
         "baseURL": "http://127.0.0.1:3456",
@@ -24,6 +48,7 @@
     }
   },
   "plugin": [
+    "opencode-antigravity-auth@latest",
     "opencode-with-claude",
     "/opt/homebrew/lib/node_modules/@rynfar/meridian/plugin/meridian.ts",
     "./ponytail/.opencode/plugins/ponytail.mjs"
