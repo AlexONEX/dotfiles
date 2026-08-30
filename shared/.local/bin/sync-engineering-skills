@@ -12,7 +12,11 @@
 
 set -euo pipefail
 
-DOTFILES_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+# Resolve symlinks: this script is stow-symlinked into ~/.local/bin, where a bare
+# $0 makes ../../.. climb to /home (not a git repo -> "fatal: not a git repository").
+# readlink -f lands on the real path inside the dotfiles repo so ../../.. is correct.
+SELF="$(readlink -f "$0")"
+DOTFILES_DIR="$(cd "$(dirname "$SELF")/../../.." && pwd)"
 SUBMODULE="$DOTFILES_DIR/external/mattpocock-skills"
 SKILLS_DIR="$DOTFILES_DIR/shared/opencode-skills"
 
