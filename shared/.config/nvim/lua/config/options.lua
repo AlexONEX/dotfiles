@@ -14,6 +14,34 @@ opt.fillchars = {
   diff = "╱",
 }
 
+-- Folding: native treesitter foldexpr by default, upgrade to LSP folding on attach.
+-- Replaces nvim-ufo (0.11+). ponytail: lost only ufo's fold preview (<leader>K peek).
+o.foldcolumn = "1"
+o.foldlevel = 99
+o.foldlevelstart = 99
+o.foldenable = true
+o.foldtext = "" -- native: keep syntax highlighting on the fold line
+o.foldmethod = "expr"
+o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.api.nvim_create_autocmd("LspAttach", {
+  desc = "Use LSP folding when the server supports it",
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client:supports_method("textDocument/foldingRange") then
+      vim.wo[vim.api.nvim_get_current_win()][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
+    end
+  end,
+})
+-- Auto-close the imports fold on open (native replacement for ufo's close_fold_kinds).
+vim.api.nvim_create_autocmd("LspNotify", {
+  desc = "Collapse the imports fold when a file opens",
+  callback = function(args)
+    if args.data.method == "textDocument/didOpen" and vim.bo[args.buf].filetype == "java" then
+      vim.lsp.foldclose("imports", vim.fn.bufwinid(args.buf))
+    end
+  end,
+})
+
 -- Split window below/right when creating horizontal/vertical windows
 opt.splitbelow = true
 opt.splitright = true

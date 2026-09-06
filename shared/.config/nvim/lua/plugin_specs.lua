@@ -196,21 +196,7 @@ local plugin_specs = {
       require("config.nvim-statuscol")
     end,
   },
-  {
-    "kevinhwang91/nvim-ufo",
-    dependencies = "kevinhwang91/promise-async",
-    event = "VeryLazy",
-    opts = {},
-    init = function()
-      vim.o.foldcolumn = "1" -- '0' is not bad
-      vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
-      vim.o.foldlevelstart = 99
-      vim.o.foldenable = true
-    end,
-    config = function()
-      require("config.nvim_ufo")
-    end,
-  },
+  -- folding: native treesitter/LSP foldexpr, configured in config/options.lua
   { "nvim-lua/plenary.nvim", lazy = true },
 
   -- Snippet engine and snippet collection
@@ -336,10 +322,6 @@ local plugin_specs = {
   },
 
   { "chrisbra/unicode.vim", keys = { "ga" }, cmd = { "UnicodeSearch" } },
-
-  -- Additional powerful text object for vim, this plugin should be studied
-  -- carefully to use its full power
-  { "wellle/targets.vim", event = "VeryLazy" },
 
   -- Only use these plugin on Windows and Mac and when LaTeX is installed
   {
