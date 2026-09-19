@@ -32,18 +32,28 @@ tf-init-dev() {
 		-backend-config="region=${region}"
 }
 
+_tf_team_name() {
+	local team="platform"
+	if [ -f "CODEOWNERS" ]; then
+		local extracted
+		extracted=$(grep -o '@allaria-tech/[a-zA-Z0-9_-]*' CODEOWNERS | head -1 | sed 's|@allaria-tech/||')
+		[ -n "$extracted" ] && team="$extracted"
+	fi
+	echo "$team"
+}
+
 tf-plan-dev() {
 	local project_name=$(basename "$PWD")
 	terraform plan -no-color \
 		-var-file="profiles/development.tfvars" \
-		-var "default_tags={Environment = \"development\", Repository = \"allaria-tech/${project_name}\"}"
+		-var "default_tags={Environment = \"development\", Repository = \"allaria-tech/${project_name}\", ManagedBy = \"terraform\", TeamName = \"$(_tf_team_name)\"}"
 }
 
 tf-apply-dev() {
 	local project_name=$(basename "$PWD")
 	terraform apply -no-color \
 		-var-file="profiles/development.tfvars" \
-		-var "default_tags={Environment = \"development\", Repository = \"allaria-tech/${project_name}\", ManagedBy = \"terraform\", TeamName = \"$(grep team_name profiles/development.tfvars | cut -d'"' -f2)\"}"
+		-var "default_tags={Environment = \"development\", Repository = \"allaria-tech/${project_name}\", ManagedBy = \"terraform\", TeamName = \"$(_tf_team_name)\"}"
 }
 
 tf-init-prod() {
@@ -56,19 +66,19 @@ tf-init-prod() {
 }
 
 tf-init-prod-bra() {
-	local project_name=$(basename "$PWD")
-	local region="sa-east-1"
-	terraform init \
-		-backend-config="bucket=allaria-production-tf-remote-state" \
-		-backend-config="key=allaria-tech/${project_name}/${region}/terraform.tfstate" \
-		-backend-config="region=us-east-1"
+    local project_name=$(basename "$PWD")
+    local state_region="${1:-sa-east-1}"
+    terraform init \
+        -backend-config="bucket=allaria-production-tf-remote-state" \
+        -backend-config="key=allaria-tech/${project_name}/${state_region}/terraform.tfstate" \
+        -backend-config="region=us-east-1"
 }
 
 tf-apply-prod() {
 	local project_name=$(basename "$PWD")
 	terraform apply -no-color \
 		-var-file="profiles/production.tfvars" \
-		-var "default_tags={Environment = \"production\", Repository = \"allaria-tech/${project_name}\", ManagedBy = \"terraform\", TeamName = \"$(grep team_name profiles/development.tfvars | cut -d'"' -f2)\"}"
+		-var "default_tags={Environment = \"production\", Repository = \"allaria-tech/${project_name}\", ManagedBy = \"terraform\", TeamName = \"$(_tf_team_name)\"}"
 }
 
 tf-apply-prod-bra() {
