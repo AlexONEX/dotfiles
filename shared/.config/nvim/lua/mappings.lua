@@ -248,7 +248,7 @@ keymap.set("n", "<Esc>", function()
   end
 end, { desc = "close float → clear search" })
 keymap.set("t", "<Esc>", [[<c-\><c-n>]])
-keymap.set("n", "<F11>", "<cmd>set spell!<cr>", { desc = "toggle spell" })
+keymap.set("n", "<leader>st", "<cmd>set spell!<cr>", { desc = "toggle spell" })
 keymap.set("i", "<F11>", "<c-o><cmd>set spell!<cr>", { desc = "toggle spell" })
 keymap.set("n", "<leader>cL", function()
   local log = vim.lsp.log.get_filename()
