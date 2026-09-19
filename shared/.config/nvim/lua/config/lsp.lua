@@ -148,6 +148,7 @@ capabilities.textDocument.foldingRange = {
   dynamicRegistration = false,
   lineFoldingOnly = true,
 }
+capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
 
 vim.lsp.config("*", {
   capabilities = capabilities,
@@ -190,5 +191,22 @@ for server_name, lsp_executable in pairs(enabled_lsp_servers) do
     vim.notify(msg, vim.log.levels.WARN, { title = "Nvim-config" })
   end
 end
+
+-- The LSP log only ever grows (servers dump stderr into it). Truncate it on
+-- startup if it got big, so it can't balloon to tens of MB again.
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = function()
+    local path = vim.lsp.get_log_path()
+    local st = vim.uv.fs_stat(path)
+    if st and st.size > 5 * 1024 * 1024 then -- 5 MB
+      local f = io.open(path, "w")
+      if f then
+        f:close()
+      end
+    end
+  end,
+  desc = "Truncate oversized LSP log on startup",
+})
 
 -- jdtls is managed by nvim-jdtls via after/ftplugin/java.lua
