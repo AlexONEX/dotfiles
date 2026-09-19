@@ -80,5 +80,6 @@
   "editorMode": "vim",
   "verbose": true,
   "preferredNotifChannel": "ghostty",
-  "fileCheckpointingEnabled": false
+  "fileCheckpointingEnabled": false,
+  "skipDangerousModePermissionPrompt": true
 }
