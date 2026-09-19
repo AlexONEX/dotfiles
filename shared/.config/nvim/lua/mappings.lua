@@ -1,5 +1,4 @@
 local keymap = vim.keymap
-local uv = vim.uv
 
 -- ─── Command shortcut ───────────────────────────────────────────────────────
 keymap.set({ "n", "x" }, ";", ":")
