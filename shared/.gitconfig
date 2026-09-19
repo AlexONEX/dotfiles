@@ -73,3 +73,9 @@
 [credential "https://gitlab.allaria.xyz"]
 	username = oauth2
 	helper = /Users/alex/.local/bin/git-credential-allaria
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
