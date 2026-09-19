@@ -247,4 +247,30 @@ complete -o nospace -C /opt/homebrew/bin/terraform terraform
 
 export GITLAB_TOKEN=$(security find-generic-password -s "gitlab-allaria" -a "alex" -w 2>/dev/null)
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="$(npm config get prefix)/bin:$PATH"
+export PROTONMAIL_USERNAME="josephcopertars@proton.me"
+export PROTONMAIL_PASSWORD=$(security find-generic-password -s "protonmail-smtp" -a "alex" -w 2>/dev/null)
+export PROTONMAIL_SMTP_PORT=1025
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/alex/.local/bin:$PATH"
+
+# rescate de red (tailscale roba DNS/ruta)
+alias net-rescue="~/bin/net-rescue"
+
+# --- controlx-api RDS (prod) via túnel AWS VPN PROD ---
+# La VPN DEV instala rutas /24 de 10.20.x que le roban el RDS al túnel PROD
+# (ambas VPC solapan en 10.20.x). Esto fuerza el host del RDS por PROD.
+# Incidente 2026-09-14. Uso: controlx-db-route
+controlx-db-route() {
+  local rds=10.20.180.209 iface=""
+  for i in ${(f)"$(ifconfig -l | tr ' ' '\n' | grep utun)"}; do
+    ifconfig "$i" 2>/dev/null | grep -qE 'inet 192\.168\.[0-3]\.' && { iface="$i"; break; }
+  done
+  if [[ -z "$iface" ]]; then
+    echo "controlx-db-route: no encuentro el túnel PROD (192.168.0.0/22). ¿VPN PROD conectada?" >&2
+    return 1
+  fi
+  sudo route -n delete -host "$rds" 2>/dev/null
+  sudo route -n add -host "$rds" -interface "$iface" >/dev/null && echo "controlx RDS -> $iface"
+}
