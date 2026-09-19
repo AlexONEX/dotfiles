@@ -65,21 +65,26 @@ vim.keymap.set("n", "<leader>ll", function()
   require("lint").try_lint()
 end, { desc = "Lint current file" })
 
--- Keymaps to disable/enable linting temporarily
-vim.keymap.set("n", "<leader>ld", function()
-  -- Store current linters
-  vim.g.linters_backup = vim.deepcopy(lint.linters_by_ft)
-  lint.linters_by_ft = {}
-  print("Linting disabled")
-end, { desc = "Disable linting" })
-
-vim.keymap.set("n", "<leader>le", function()
-  -- Restore linters
-  if vim.g.linters_backup then
-    lint.linters_by_ft = vim.deepcopy(vim.g.linters_backup)
-    print("Linting enabled")
+-- Toggle linting on/off (clears visible lint diagnostics when disabling)
+vim.keymap.set("n", "<leader>lt", function()
+  if vim.g.lint_disabled then
+    lint.linters_by_ft = vim.g.linters_backup or lint.linters_by_ft
+    vim.g.lint_disabled = false
+    require("lint").try_lint()
+    vim.notify("Linting enabled", vim.log.levels.INFO)
+  else
+    vim.g.linters_backup = vim.deepcopy(lint.linters_by_ft)
+    lint.linters_by_ft = {}
+    vim.g.lint_disabled = true
+    -- nvim-lint uses namespaces named "nvim-lint-<linter>"; reset only those
+    for ns_id, ns in pairs(vim.diagnostic.get_namespaces()) do
+      if ns.name and ns.name:find("nvim-lint", 1, true) then
+        vim.diagnostic.reset(ns_id)
+      end
+    end
+    vim.notify("Linting disabled", vim.log.levels.WARN)
   end
-end, { desc = "Enable linting" })
+end, { desc = "Toggle linting" })
 
 -- Agregar keymap para mostrar diagnósticos flotantes manualmente
 vim.keymap.set("n", "<leader>ce", function()
