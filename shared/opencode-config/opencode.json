@@ -31,7 +31,17 @@
       "write": "allow",
       "edit *": "allow",
       "sqlite3 *": "allow",
-      "mkdir *": "allow"
+      "mkdir *": "allow",
+      "rg *": "allow",
+      "jq *": "allow",
+      "python3 *": "allow",
+      "wc *": "allow",
+      "fd *": "allow",
+      "bat *": "allow",
+      "git status": "allow",
+      "git status *": "allow",
+      "curl *": "ask",
+      "aws *": "ask"
     }
   },
   "provider": {
