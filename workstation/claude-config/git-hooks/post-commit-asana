@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# =============================================================================
+# post-commit-asana — link git commits to Asana tasks (autonomous)
+#
+# Reads the just-created commit, looks for an Asana reference in the message:
+#     [asana:<task_gid>]        -> comments the commit on that task
+#     [asana:<task_gid> done]   -> comments AND marks the task complete
+#
+# The Asana Personal Access Token is read from the macOS Keychain
+# (service "asana-pat"), never from disk. Create it once with:
+#     security add-generic-password -a "$USER" -s asana-pat -w 'PAT' -U
+#
+# Fails soft: any problem (no token, no reference, API error) prints a warning
+# and exits 0 so it never blocks your git workflow.
+# =============================================================================
+set -uo pipefail
+
+readonly KEYCHAIN_SERVICE="asana-pat"
+readonly ASANA_API="https://app.asana.com/api/1.0"
+
+log() { printf '  \033[35m[asana]\033[0m %s\n' "$1" >&2; }
+
+# --- Parse the commit message for an Asana reference -------------------------
+commit_msg="$(git log -1 --pretty=%B)"
+
+# Match [asana:<digits>] optionally followed by a keyword (e.g. "done")
+if [[ ! "$commit_msg" =~ \[asana:([0-9]+)([[:space:]]+([a-zA-Z]+))?\] ]]; then
+  exit 0  # no reference, nothing to do (silent — most commits won't have one)
+fi
+task_gid="${BASH_REMATCH[1]}"
+keyword="${BASH_REMATCH[3]:-}"
+
+# --- Fetch the PAT from Keychain --------------------------------------------
+pat="$(security find-generic-password -a "$USER" -s "$KEYCHAIN_SERVICE" -w 2>/dev/null)"
+if [[ -z "$pat" ]]; then
+  log "referencia a task $task_gid detectada, pero no hay PAT en Keychain (service '$KEYCHAIN_SERVICE'). Se omite."
+  exit 0
+fi
+
+# --- Gather commit context ---------------------------------------------------
+sha_short="$(git rev-parse --short HEAD)"
+subject="$(git log -1 --pretty=%s)"
+author="$(git log -1 --pretty=%an)"
+branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+repo="$(basename "$(git rev-parse --show-toplevel 2>/dev/null)")"
+remote_url="$(git config --get remote.origin.url 2>/dev/null)"
+
+# Build a human-readable comment body.
+comment="🔗 Commit ${sha_short} — ${subject}
+repo: ${repo}  ·  branch: ${branch}  ·  autor: ${author}"
+[[ -n "$remote_url" ]] && comment="${comment}
+remote: ${remote_url}"
+
+# --- Post the comment (story) to the task -----------------------------------
+post_json() {
+  # $1 = HTTP method, $2 = path, $3 = JSON body
+  curl -s -o /tmp/asana_hook_resp.$$ -w "%{http_code}" \
+    -X "$1" \
+    -H "Authorization: Bearer $pat" \
+    -H "Content-Type: application/json" \
+    -d "$3" \
+    "${ASANA_API}${2}"
+}
+
+# jq-free JSON string escaping via python3 (present on macOS/dev machines)
+esc() { python3 -c 'import json,sys; print(json.dumps(sys.argv[1]))' "$1"; }
+
+body="{\"data\":{\"text\":$(esc "$comment")}}"
+code="$(post_json POST "/tasks/${task_gid}/stories" "$body")"
+
+if [[ "$code" == "20"* ]]; then
+  log "commit ${sha_short} → comentado en task ${task_gid}"
+else
+  log "falló al comentar en task ${task_gid} (HTTP $code): $(cat /tmp/asana_hook_resp.$$ 2>/dev/null)"
+  rm -f /tmp/asana_hook_resp.$$
+  exit 0
+fi
+rm -f /tmp/asana_hook_resp.$$
+
+# --- Optionally complete the task -------------------------------------------
+keyword_lc="$(printf '%s' "$keyword" | tr '[:upper:]' '[:lower:]')"
+if [[ "$keyword_lc" == "done" ]]; then
+  code="$(post_json PUT "/tasks/${task_gid}" '{"data":{"completed":true}}')"
+  if [[ "$code" == "20"* ]]; then
+    log "task ${task_gid} marcada como completada ✓"
+  else
+    log "no pude completar task ${task_gid} (HTTP $code)"
+  fi
+  rm -f /tmp/asana_hook_resp.$$
+fi
+
+exit 0
