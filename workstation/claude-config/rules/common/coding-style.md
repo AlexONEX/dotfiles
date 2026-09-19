@@ -14,11 +14,15 @@ Rationale: Immutable data prevents hidden side effects, makes debugging easier, 
 
 ## File Organization
 
-MANY SMALL FILES > FEW LARGE FILES:
+ONE RESPONSIBILITY PER FILE (the real rule):
+- The file name honestly describes the one thing it does
 - High cohesion, low coupling
-- 200-400 lines typical, 800 max
-- Extract utilities from large modules
 - Organize by feature/domain, not by type
+- Extract shared helpers to a single location; never re-implement inline
+
+Line count is a SMELL, not a law:
+- No hard max. A cohesive 900-line file is fine; a 300-line file doing five things is not.
+- Soft tripwire: past ~500 lines, ask "is this still one thing, or two?" — split by responsibility only if it's two. Never split just to hit a number (that adds coupling).
 
 ## Error Handling
 
@@ -41,7 +45,7 @@ ALWAYS validate at system boundaries:
 Before marking work complete:
 - [ ] Code is readable and well-named
 - [ ] Functions are small (<50 lines)
-- [ ] Files are focused (<800 lines)
+- [ ] Files have one responsibility (name describes it); ~500+ lines → checked for a hidden second responsibility
 - [ ] No deep nesting (>4 levels)
 - [ ] Proper error handling
 - [ ] No hardcoded values (use constants or config)
