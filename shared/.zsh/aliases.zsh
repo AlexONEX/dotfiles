@@ -205,6 +205,7 @@ FSTRING() {
 }
 
 alias k='pkill -9'
+alias kill-cuis='pkill -9 -f CuisVM'
 alias bl='xbacklight -get'
 
 alias dsize='du -hsx * | sort -rh'
@@ -763,3 +764,20 @@ meridian-restart() {
 function test-pancho-db() {
 	PGPASSWORD='17DeAgosto' psql -h 172.30.200.114 -p 5432 -U root -d controlx -c "SELECT version(), now();"
 }
+
+killforti() {
+    for f in /Library/LaunchDaemons/com.fortinet.*.plist; do sudo launchctl bootout system "$f" 2>/dev/null || sudo launchctl unload "$f" 2>/dev/null; done
+    for f in /Library/LaunchAgents/com.fortinet.*.plist; do launchctl bootout gui/$(id -u) "$f" 2>/dev/null || launchctl unload "$f" 2>/dev/null; done
+    launchctl bootout gui/$(id -u)/com.fortinet.forticlient.fortitray 2>/dev/null
+    sudo pkill -9 -f FortiClient
+    sudo pkill -9 -f FortiTray
+    echo "FortiClient muerto."
+}
+
+startforti() {
+    for f in /Library/LaunchDaemons/com.fortinet.*.plist; do sudo launchctl load "$f" 2>/dev/null; done
+    for f in /Library/LaunchAgents/com.fortinet.*.plist; do launchctl load "$f" 2>/dev/null; done
+    open -a FortiClient
+    echo "FortiClient revivido."
+}
+alias prune-terraform="find /Users/alex/Github -type d -name .terraform -prune -exec rm -rf {} +"
