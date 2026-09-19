@@ -3,7 +3,10 @@
     "commit": "",
     "pr": ""
   },
-  "model": "claude-sonnet-4-6",
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "claude-opus-4-8",
   "availableModels": [
     "claude-haiku-4-5",
     "claude-sonnet-4-6",
@@ -12,6 +15,19 @@
     "claude-sonnet-5",
     "claude-opus-5"
   ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/claude-profiles/hooks/asana-commit-brief.sh"
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
     "command": "~/.config/claude-profiles/context-bar.sh"
@@ -19,13 +35,23 @@
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true,
     "langfuse-observability@langfuse-observability": true,
-    "pyright-lsp@claude-plugins-official": true
+    "pyright-lsp@claude-plugins-official": true,
+    "jdtls-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "ponytail@ponytail": true,
+    "lua-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "langfuse-observability": {
       "source": {
         "source": "github",
         "repo": "langfuse/Claude-Observability-Plugin"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/alex/ponytail"
       }
     }
   },
@@ -39,5 +65,7 @@
       }
     }
   },
-  "theme": "dark-ansi"
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-ansi",
+  "preferredNotifChannel": "ghostty"
 }
