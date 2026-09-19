@@ -14,6 +14,11 @@
       "environment": {
         "GOG_ACCOUNT": "alejandro.schwartzmann@almafintech.com.ar"
       }
+    },
+    "codebase-memory": {
+      "type": "local",
+      "command": ["codebase-memory-mcp"],
+      "enabled": true
     }
   },
   "provider": {

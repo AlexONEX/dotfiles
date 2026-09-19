@@ -23,5 +23,10 @@ claude mcp remove gogcli -s user 2>/dev/null || true
 claude mcp add gogcli -s user -e "GOG_ACCOUNT=$GOG_ACCOUNT" -- gogcli-mcp
 echo "  ✔ gogcli (local stdio)"
 
+# codebase-memory — local stdio server (binary in ~/.local/bin, DeusData/codebase-memory-mcp)
+claude mcp remove codebase-memory -s user 2>/dev/null || true
+claude mcp add codebase-memory -s user -- codebase-memory-mcp
+echo "  ✔ codebase-memory (local stdio)"
+
 echo ""
 echo "Done. Verify with: claude mcp list"
