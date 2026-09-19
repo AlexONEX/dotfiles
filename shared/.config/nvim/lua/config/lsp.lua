@@ -57,28 +57,28 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end,
       }
     end, { desc = "go to definition" })
-    map("n", "gr", function()
+    map("n", "<leader>fr", function()
       require("fzf-lua").lsp_references()
-    end, { desc = "LSP references" })
+    end, { desc = "find references" })
     map("n", "gi", vim.lsp.buf.implementation, { desc = "LSP implementation" })
     map("n", "<leader>cD", vim.lsp.buf.type_definition, { desc = "type definition" })
     map("n", "[d", function()
-      vim.diagnostic.goto_prev { float = true }
+      vim.diagnostic.jump { count = -1, float = true }
     end, { desc = "prev diagnostic" })
     map("n", "]d", function()
-      vim.diagnostic.goto_next { float = true }
+      vim.diagnostic.jump { count = 1, float = true }
     end, { desc = "next diagnostic" })
     map("n", "[e", function()
-      vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.ERROR, float = true }
+      vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.ERROR, float = true }
     end, { desc = "prev error" })
     map("n", "]e", function()
-      vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR, float = true }
+      vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.ERROR, float = true }
     end, { desc = "next error" })
     map("n", "[w", function()
-      vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.WARN, float = true }
+      vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.WARN, float = true }
     end, { desc = "prev warning" })
     map("n", "]w", function()
-      vim.diagnostic.goto_next { severity = vim.diagnostic.severity.WARN, float = true }
+      vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.WARN, float = true }
     end, { desc = "next warning" })
     map("n", "<leader>ci", function()
       vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = 0 }, { bufnr = 0 })
@@ -115,7 +115,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       client.server_capabilities.hoverProvider = false
     end
 
-    vim.lsp.inlay_hint.enable(true, { buf = bufnr })
+    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 
     -- The blow command will highlight the current variable and its usages in the buffer.
     if client.server_capabilities.documentHighlightProvider then
