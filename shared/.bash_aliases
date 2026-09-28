@@ -35,6 +35,7 @@ _oc_switch() {
 
 alias oc-self='_oc_switch personal'
 alias oc-alma='_oc_switch alma'
+alias c-alma='echo "alma" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude-alma claude'
 
 oc-status() {
     local active
