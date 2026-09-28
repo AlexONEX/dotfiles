@@ -42,8 +42,10 @@ for skill in assistant executive secretary prototype setup-matt-pocock-skills \
     ln -s "$SHARED_SKILLS/$skill" . && echo "  ✓ $skill"
 done
 
-# Create symlink for homelab-specific skill
+# Create symlinks for homelab-specific skills
 ln -s "$HOMELAB_SKILLS/manage-server" . && echo "  ✓ manage-server (homelab)"
+ln -s "$HOMELAB_SKILLS/server-code" . && echo "  ✓ server-code (homelab)"
+ln -s "$HOMELAB_SKILLS/manage-cloudflare" . && echo "  ✓ manage-cloudflare (homelab)"
 
 # Symlink supporting files
 ln -s "$SHARED_SKILLS/README.md" . && echo "  ✓ README.md"
