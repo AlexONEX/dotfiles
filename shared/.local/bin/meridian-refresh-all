@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // meridian-refresh-all — refresh every meridian profile's OAuth token
-// macOS: via launchd every 4h  |  Linux: via systemd timer every 12h
+// macOS: via launchd every 4h  |  Linux: via systemd timer every 6h
 
 const { execSync } = require('child_process');
 const os = require('os');
@@ -11,6 +11,11 @@ const fs = require('fs');
 const OAUTH_URL = 'https://platform.claude.com/v1/oauth/token';
 const CLIENT_ID = '9d1c250a-e61b-44d9-88ed-5944d1962f5e';
 const IS_MACOS = process.platform === 'darwin';
+
+// The refresh token has its own (long) lifetime that the automation cannot
+// extend past its ceiling. Once it dies, only an interactive re-login recovers
+// the profile — so warn this many hours ahead to leave time to re-login.
+const REFRESH_TOKEN_WARN_HOURS = 48;
 
 // ── Storage helpers ──────────────────────────────────────────────────────────
 
@@ -68,6 +73,24 @@ async function main() {
     if (!oauth.refreshToken) {
       console.error(`[${profile.id}] ⏭ no refresh token`);
       continue;
+    }
+
+    // Refresh-token health — the access token can only be renewed while the
+    // *refresh* token is alive. Anthropic hands back a rotated refresh token
+    // on each refresh, but its expiry has an absolute ceiling that does not
+    // reset, so eventually it lapses and re-login is the only fix. Check this
+    // before the access-token freshness skip so the warning always fires.
+    const rte = oauth.refreshTokenExpiresAt;
+    if (rte) {
+      const rh = (rte - Date.now()) / 3600000;
+      if (rh <= 0) {
+        console.error(`[${profile.id}] ❌ refresh token expired — re-login required (dir: ${absDir})`);
+        fail++;
+        continue;
+      }
+      if (rh < REFRESH_TOKEN_WARN_HOURS) {
+        console.error(`[${profile.id}] ⚠ refresh token expires in ${rh.toFixed(1)}h — re-login soon`);
+      }
     }
 
     // Refresh if < 6h until expiry (covers 4h/12h intervals with buffer)
