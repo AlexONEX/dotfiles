@@ -34,6 +34,12 @@ ln -sf "$DOTFILES/shared/.zshenv" ~/.zshenv
 
 # Bash (used on Linux homelab server)
 ln -sf "$DOTFILES/shared/.bash_aliases" ~/.bash_aliases
+# Guarantee .bashrc actually sources the aliases. Debian's default .bashrc
+# does, but a minimal/fresh .bashrc may not — make it self-contained so the
+# aliases load regardless of the distro skeleton. Idempotent.
+if [ -f ~/.bashrc ] && ! grep -q '\.bash_aliases' ~/.bashrc; then
+  printf '\n# Load shared dotfiles aliases (symlink-setup.sh)\n[ -f ~/.bash_aliases ] && . ~/.bash_aliases\n' >> ~/.bashrc
+fi
 
 # Config dirs (nvim, tmux, alacritty, zathura)
 for cfg in nvim tmux alacritty zathura; do
