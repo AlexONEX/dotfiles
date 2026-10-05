@@ -51,10 +51,14 @@ done
 # Git
 ln -sf "$DOTFILES/shared/.gitconfig" ~/.gitconfig
 
-# Claude rules (deduped, path-scoped) — versioned here, loaded via ~/.claude/rules
+# Claude rules (deduped, path-scoped) — versioned here, loaded via ~/.claude/rules.
+# Drop any stale real dir first: `ln -sfn` into an existing directory nests the
+# link inside it (~/.claude/rules/rules) instead of replacing it.
 mkdir -p ~/.claude ~/.claude-shared
-ln -sfn "$DOTFILES/workstation/claude-config/rules" ~/.claude/rules
-ln -sfn "$DOTFILES/workstation/claude-config/rules" ~/.claude-shared/rules
+for link in ~/.claude/rules ~/.claude-shared/rules; do
+  [ -e "$link" ] && [ ! -L "$link" ] && rm -rf "$link"
+  ln -sfn "$DOTFILES/workstation/claude-config/rules" "$link"
+done
 
 # Zsh plugins dir
 target="$HOME/.zsh"
@@ -209,44 +213,50 @@ if [[ "$MACHINE" == "workstation" ]]; then
   launchctl unload ~/Library/LaunchAgents/com.rynfar.meridian-refresh-all.plist 2>/dev/null
   launchctl load   ~/Library/LaunchAgents/com.rynfar.meridian-refresh-all.plist
 
-  # ─── Claude Profiles ────────────────────────────────────────────────────────
-  CLAUDE_PROFILES_DIR="$HOME/.config/claude-profiles"
-  mkdir -p "$CLAUDE_PROFILES_DIR"
+fi
 
-  cp "$DOTFILES/workstation/claude-config/switch-profile.sh" "$CLAUDE_PROFILES_DIR/switch-profile.sh"
-  cp "$DOTFILES/workstation/claude-config/context-bar.sh"    "$CLAUDE_PROFILES_DIR/context-bar.sh"
-  cp "$DOTFILES/workstation/claude-config/status.sh"         "$CLAUDE_PROFILES_DIR/status.sh"
-  cp "$DOTFILES/workstation/claude-config/completion.zsh"    "$CLAUDE_PROFILES_DIR/completion.zsh"
+# =============================================================================
+# [CLAUDE CONFIG] — both machines (profiles, hooks, settings, agents)
+# Cross-platform: plain bash scripts + symlinks, no OS-specific deps. Kept out
+# of the workstation branch so a homelab reinstall reproduces the same Claude
+# config (settings.json references the hooks below — they must always deploy).
+# =============================================================================
+echo "  ── claude config (profiles, hooks, settings) ──"
+CLAUDE_PROFILES_DIR="$HOME/.config/claude-profiles"
+mkdir -p "$CLAUDE_PROFILES_DIR"
 
-  # Claude hooks (doc-blocker, git-push-guard) — referenced from settings.json
-  mkdir -p "$CLAUDE_PROFILES_DIR/hooks"
-  cp "$DOTFILES/workstation/claude-config/hooks/"*.sh "$CLAUDE_PROFILES_DIR/hooks/"
-  chmod +x "$CLAUDE_PROFILES_DIR/hooks/"*.sh
+cp "$DOTFILES/workstation/claude-config/switch-profile.sh" "$CLAUDE_PROFILES_DIR/switch-profile.sh"
+cp "$DOTFILES/workstation/claude-config/context-bar.sh"    "$CLAUDE_PROFILES_DIR/context-bar.sh"
+cp "$DOTFILES/workstation/claude-config/status.sh"         "$CLAUDE_PROFILES_DIR/status.sh"
+cp "$DOTFILES/workstation/claude-config/completion.zsh"    "$CLAUDE_PROFILES_DIR/completion.zsh"
 
-  sed "s|\$HOME|$HOME|g" "$DOTFILES/workstation/claude-config/profiles.json.tpl" > "$CLAUDE_PROFILES_DIR/profiles.json"
+# Claude hooks (doc-blocker, git-push-guard) — referenced from settings.json
+mkdir -p "$CLAUDE_PROFILES_DIR/hooks"
+cp "$DOTFILES/workstation/claude-config/hooks/"*.sh "$CLAUDE_PROFILES_DIR/hooks/"
+chmod +x "$CLAUDE_PROFILES_DIR/hooks/"*.sh
 
-  # Claude profile dirs & settings
-  # settings.json is versioned (symlink); settings.local.json holds
-  # machine-specific runtime grants (git-ignored) so Claude's writes don't
-  # churn the versioned file. Seed the local file once if absent.
-  mkdir -p ~/.claude
-  ln -sf "$DOTFILES/workstation/claude-config/settings.json" ~/.claude/settings.json
-  [ -f ~/.claude/settings.local.json ] || printf '{\n  "permissions": {\n    "allow": []\n  }\n}\n' > ~/.claude/settings.local.json
+sed "s|\$HOME|$HOME|g" "$DOTFILES/workstation/claude-config/profiles.json.tpl" > "$CLAUDE_PROFILES_DIR/profiles.json"
 
-  # Claude subagents (ported from opencode + curated from ECC)
-  mkdir -p ~/.claude/agents
-  for f in "$DOTFILES/workstation/claude-config/agents/"*.md; do
-    [ -f "$f" ] && ln -sf "$f" ~/.claude/agents/"$(basename "$f")"
-  done
+# Claude profile dirs & settings
+# settings.json is versioned (symlink); settings.local.json holds
+# machine-specific runtime grants (git-ignored) so Claude's writes don't
+# churn the versioned file. Seed the local file once if absent.
+mkdir -p ~/.claude
+ln -sf "$DOTFILES/workstation/claude-config/settings.json" ~/.claude/settings.json
+[ -f ~/.claude/settings.local.json ] || printf '{\n  "permissions": {\n    "allow": []\n  }\n}\n' > ~/.claude/settings.local.json
 
-  mkdir -p ~/.claude-alma
-  ln -sf "$DOTFILES/workstation/claude-config/alma.settings.json" ~/.claude-alma/settings.json
+# Claude subagents (ported from opencode + curated from ECC)
+mkdir -p ~/.claude/agents
+for f in "$DOTFILES/workstation/claude-config/agents/"*.md; do
+  [ -f "$f" ] && ln -sf "$f" ~/.claude/agents/"$(basename "$f")"
+done
 
-  # Claude MCP servers (jira OAuth + gogcli) — only if claude CLI is present
-  if command -v claude >/dev/null 2>&1; then
-    bash "$DOTFILES/workstation/claude-config/setup-mcp.sh" || true
-  fi
+mkdir -p ~/.claude-alma
+ln -sf "$DOTFILES/workstation/claude-config/alma.settings.json" ~/.claude-alma/settings.json
 
+# Claude MCP servers (jira OAuth + gogcli) — only if claude CLI is present
+if command -v claude >/dev/null 2>&1; then
+  bash "$DOTFILES/workstation/claude-config/setup-mcp.sh" || true
 fi
 
 # =============================================================================
