@@ -263,7 +263,6 @@ redshift-metrics() {
 	PATTERN=$1
 	PROFILE=${AWS_PROFILE:-development}
 
-	# Obtener todos los clusters con su info
 	CLUSTER_INFO=$(aws redshift describe-clusters --profile $PROFILE --query 'Clusters[*].[ClusterIdentifier,DBName,MasterUsername]' --output text)
 
 	if [ -z "$CLUSTER_INFO" ]; then
@@ -271,18 +270,14 @@ redshift-metrics() {
 		return 1
 	fi
 
-	# Recolectar todas las DBs de todos los clusters
 	typeset -a all_options
 	i=1
 
 	while IFS=$'\t' read -r cluster_id primary_db db_user; do
-		# Obtener todas las DBs del cluster como JSON y parsear
 		DBS=$(aws redshift-data list-databases --profile $PROFILE --cluster-identifier "$cluster_id" --database "$primary_db" --db-user "$db_user" --query 'Databases' --output json 2>/dev/null)
 
 		if [ -n "$DBS" ]; then
-			# Parsear el JSON y agregar cada DB
 			for db in $(echo "$DBS" | grep -o '"[^"]*"' | tr -d '"'); do
-				# Filtrar DBs de sistema
 				if [[ "$db" != "sys:internal" ]] && [[ "$db" != "awsdatacatalog" ]] && [[ -n "$db" ]]; then
 					all_options[$i]="$cluster_id:$db"
 					((i++))
@@ -291,7 +286,6 @@ redshift-metrics() {
 		fi
 	done <<<"$CLUSTER_INFO"
 
-	# Si no se pasó patrón, mostrar todas las opciones
 	if [ -z "$PATTERN" ]; then
 		echo "Clusters y bases de datos disponibles:"
 		echo "======================================"
@@ -312,7 +306,6 @@ redshift-metrics() {
 
 		IFS=':' read -r CLUSTER DBNAME <<<"${all_options[$selection]}"
 	else
-		# Buscar DB que coincida con el patrón
 		CLUSTER=""
 		DBNAME=""
 
@@ -350,7 +343,6 @@ redshift-metrics() {
 	echo "Período: Última hora"
 	echo "=========================================="
 
-	# Array de métricas
 	METRICS=(
 		"CPUUtilization"
 		"DatabaseConnections"
@@ -365,7 +357,6 @@ redshift-metrics() {
 		"MaintenanceMode"
 	)
 
-	# Iterar sobre cada métrica
 	for METRIC in "${METRICS[@]}"; do
 		echo ""
 		echo "--- $METRIC ---"
@@ -406,7 +397,6 @@ download_rds_logs() {
 		return 1
 	fi
 
-	# Buscar instancia RDS que tenga la DB
 	echo "Buscando instancia RDS con base de datos '$db_name_pattern'..."
 
 	local db_instance=""
@@ -462,7 +452,6 @@ trigger_alarm() {
 	echo "Fetching all CloudWatch alarms..."
 	echo ""
 
-	# Get all alarms and format them nicely
 	local alarms=$(aws cloudwatch describe-alarms \
 		--profile "$PROFILE" \
 		--query 'MetricAlarms[*].[AlarmName,StateValue]' \
@@ -473,7 +462,6 @@ trigger_alarm() {
 		return 1
 	fi
 
-	# Create array for alarm names
 	local alarm_names=()
 	local i=1
 
@@ -512,7 +500,6 @@ trigger_alarm() {
 	echo "Check Discord for the notification!"
 }
 
-# ECS Fargate Service Metrics
 ecs-stats() {
 	local service_name=$1
 	local days=${2:-1}
@@ -525,7 +512,7 @@ ecs-stats() {
 	fi
 
 	local cluster="services-fargate-spot"
-	local limit=$((days * 288)) # 288 datapoints por día (5 min intervals)
+	local limit=$((days * 288))
 	if [ $limit -gt 100 ]; then
 		limit=100
 	fi
@@ -563,7 +550,6 @@ ecs-stats() {
 		--output table
 }
 
-# RDS Instance Metrics
 rds-stats() {
 	local db_instance=$1
 	local days=${2:-1}
@@ -575,7 +561,7 @@ rds-stats() {
 		return 1
 	fi
 
-	local limit=$((days * 288)) # 288 datapoints por día (5 min intervals)
+	local limit=$((days * 288))
 	if [ $limit -gt 100 ]; then
 		limit=100
 	fi
@@ -642,7 +628,6 @@ rds-stats() {
 	echo "     Free Memory of 50-100 MB means you're using 90-95% RAM"
 }
 
-# ECS Autoscaling Status
 ecs-scaling() {
 	local service_name=$1
 	local max_results=${2:-10}
@@ -776,7 +761,6 @@ cwgroups() {
     | jq -r '.logGroups[].logGroupName'
 }
 
-# Search CloudWatch logs by request ID
 clreq() {
   local log_group=""
   local request_id=""
@@ -820,7 +804,6 @@ clreq() {
     return 1
   fi
 
-  # Set time range
   local start_ms
   local end_ms
 
@@ -829,7 +812,6 @@ clreq() {
     end_ms=$(TZ="America/Argentina/Buenos_Aires" date -j -f "%Y-%m-%d %H:%M:%S" "$end_time" "+%s000")
     local time_info="custom range"
   else
-    # Default: last N minutes
     end_ms=$(date +%s)000
     start_ms=$(( end_ms - (minutes * 60 * 1000) ))
     local time_info="last $minutes min"
@@ -850,7 +832,6 @@ clreq() {
   aws logs filter-log-events "${args[@]}" | jq -r '.events[].message'
 }
 
-# Docker
 function docker-clean() {
   docker ps -aq | xargs -r docker stop
   docker ps -aq | xargs -r docker rm

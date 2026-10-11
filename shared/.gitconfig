@@ -9,7 +9,7 @@
   verbose= true
   cleanup = scissors
 [core]
-	editor = nvim
+	editor = ec
 	pager = diff-so-fancy | less --tabs=4 -RF
 	excludesFile = ~/.gitignore
 [diff]

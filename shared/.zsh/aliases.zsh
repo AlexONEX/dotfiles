@@ -1,4 +1,3 @@
-# SHORTCUTS
 alias dotfiles='~/dotfiles/scripts/sync_dotfiles.sh'
 alias ls='ls -alFG'
 alias initpy='touch __init__.py'
@@ -38,7 +37,6 @@ brew-clean() {
 	echo "Manually installed packages (not dependencies):"
 	brew leaves
 
-	# Review optional packages
 	unused_pkgs=$(brew leaves)
 	if [ -n "$unused_pkgs" ]; then
 		echo "The following manually installed packages were found:"
@@ -66,7 +64,6 @@ brew-clean() {
 		echo "No manually installed packages found."
 	fi
 
-	# Check for and remove unneeded bottle files
 	echo "Looking for large bottle files..."
 	large_bottles=$(find "$(brew --cache)" -name "*.bottle.*" -size +100M | sort)
 	if [ -n "$large_bottles" ]; then
@@ -82,7 +79,6 @@ brew-clean() {
 		echo "No large bottle files found."
 	fi
 
-	# Option to purge the complete cache in extreme cases
 	echo "Current cache size after cleanup:"
 	du -sh "$(brew --cache)"
 
@@ -127,6 +123,9 @@ alias dotsadd='cd $HOME && chezmoi add .zshrc .zsh/aliases.zsh && cd ~/.config &
 alias z='$EDITOR ~/.zshrc'
 alias ct='$EDITOR ~/.config/tmux/tmux.conf'
 
+alias e="emacsclient -t -a ''"
+alias er="emacsclient -e '(kill-emacs)' 2>/dev/null; emacs --daemon"
+
 alias cf='cat $1 | xclip -sel c'
 alias calibre='fzf-calibre'
 
@@ -138,7 +137,6 @@ elif command -v xsel >/dev/null 2>&1; then
 	alias fromcp='xsel --clipboard --output'
 else
 	echo "Neither xclip nor xsel found. Please install one of them."
-	# Create dummy aliases that show error message
 	alias tocp='echo "No clipboard provider installed (xclip/xsel required)"'
 	alias fromcp='echo "No clipboard provider installed (xclip/xsel required)"'
 fi
@@ -149,9 +147,7 @@ logcmd() {
 
 alias vif='vim $(fzf)'
 alias rgf='vim $(rg . | fzf | cut -d ":" -f 1)'
-# Recursive search with rg and fzf
 alias rgfzf='rg . | fzf'
-# Search and cd into the directory
 fcd() {
 	local dir
 	dir=$(find ${1:-.} -type d 2>/dev/null | fzf +m) && cd "$dir"
@@ -214,15 +210,12 @@ alias c='clear'
 alias vim='nvim'
 alias cat='bat'
 
-#Alias cd
 alias cd..='cd ..'
 alias ..='cd..'
 
-# Compress
 alias zip='zip -r'
 alias xz='xz -z -v -k -T 0'
 
-# Docker
 ((${+commands[docker - compose]})) && dccmd='docker-compose' || dccmd='docker compose'
 
 alias dco="$dccmd"
@@ -247,11 +240,9 @@ alias dck="$dccmd kill"
 
 unset dccmd
 
-# Ip
 alias ip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
 alias ip_info="curl -qs https://ifconfig.co/json | jq -r '.ip,.city,.country,.hostname,.asn_org'"
 
-# Pacman stuff
 alias purge='brew uninstall'
 alias u='brew update && brew upgrade'
 alias i='brew install'
@@ -265,7 +256,6 @@ alias localip='ip -brief -color address'
 alias wttr='curl -4 wttr.in'
 alias rpolybar='~/.config/polybar/launch.sh'
 
-#Sudo
 alias stopB='sudo systemctl stop bluetooth.service'
 alias startB='sudo systemctl start bluetooth.service && bluetoothctl'
 alias b='fzf-calibre'
@@ -273,7 +263,6 @@ alias start='sudo systemctl start'
 alias stop='sudo systemctl stop'
 alias restart='sudo systemctl restart'
 
-# MEDIA
 alias pdfconvert='gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=output.pdf'
 alias ytp='yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"'
 mkplaylist() {
@@ -281,48 +270,39 @@ mkplaylist() {
 	mpv --playlist="playlist.txt"
 }
 
-# LS Stuff
-alias ls='eza -al --color=always --group-directories-first' # my preferred listing
-alias la='eza -a --color=always --group-directories-first'  # all files and dirs
-alias ll='eza -l --color=always --group-directories-first'  # long format
-alias lt='eza -aT --color=always --group-directories-first' # tree listing
+alias ls='eza -al --color=always --group-directories-first'
+alias la='eza -a --color=always --group-directories-first'
+alias ll='eza -l --color=always --group-directories-first'
+alias lt='eza -aT --color=always --group-directories-first'
 alias l='eza -a | grep -e "^\."'
 
-# get fastest mirrors
 alias mirror="sudo reflector -f 30 -l 30 --number 10 --verbose --save /etc/pacman.d/mirrorlist"
 alias mirrord="sudo reflector --latest 50 --number 20 --sort delay --save /etc/pacman.d/mirrorlist"
 alias mirrors="sudo reflector --latest 50 --number 20 --sort score --save /etc/pacman.d/mirrorlist"
 alias mirrora="sudo reflector --latest 50 --number 20 --sort age --save /etc/pacman.d/mirrorlist"
 
-# Colorize grep output (good for log files)
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias g="grep --color=auto -i"
 
-# adding flags
-alias df='df -h'     # human-readable sizes
-alias free='free -m' # show sizes in MB
+alias df='df -h'
+alias free='free -m'
 alias mocp='mocp -M "$XDG_CONFIG_HOME"/moc -O MOCDir="$XDG_CONFIG_HOME"/moc'
 
-# ps
 alias psa="ps auxf"
 alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
 alias psmem='ps auxf | sort -nr -k 4'
 alias pscpu='ps auxf | sort -nr -k 3'
 
-# get error messages from journalctl
 alias jctl="journalctl -p 3 -xb"
 
-# gpg encryption
 alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
 alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 
-# switch between shells
 alias tobash="sudo chsh $USER -s /bin/bash && echo 'Now log out.'"
 alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Now log out.'"
 
-#yta-best-mp3
 function yta() {
 	yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" "$1"
 }
@@ -331,7 +311,6 @@ function ytpa() {
 	yt-dlp --extract-audio --audio-format "$2" --audio-quality 0 --output "%(title)s.%(ext)s" --yes-playlist "$1"
 }
 
-# Improved function to replace yta-best alias
 yta-best() {
 	eval yt-dlp --extract-audio --audio-format "wav" --output '"%(title)s.%(ext)s"' -- '"$1"'
 }
@@ -339,7 +318,6 @@ yta-best() {
 alias ytp-abest='yt-dlp --extract-audio --audio-format "wav" --audio-quality 160K --output "%(title)s.%(ext)s" --yes-playlist '
 alias spotdl='spotdl --cookie-file /home/alex/Music/music.youtube.com_cookies.txt'
 
-# YouTube download max quality (video + audio)
 ytd() {
 	yt-dlp -f "bestvideo+bestaudio" --merge-output-format mp4 -o "%(title)s.%(ext)s" "$1"
 }
@@ -349,7 +327,6 @@ alias disks='ncdu'
 function docker-clean() {
 	docker ps -aq | xargs -r docker stop
 	docker ps -a -q | xargs -r docker rm
-	#docker volume ls -q | xargs -r docker volume rm
 	docker builder prune
 }
 
@@ -365,29 +342,23 @@ function t() {
 	tmux new-session -A -s $X
 }
 
-#function that receives dir and zips it
 function compress() {
 	if [[ $# -eq 0 ]]; then
 		echo "Error: Please provide a directory path"
 		return 1
 	fi
 
-	# Get the directory path
 	local dir_path="$1"
 
-	# Check if the provided path is a directory
 	if [[ ! -d "$dir_path" ]]; then
 		echo "Error: '$dir_path' is not a directory"
 		return 1
 	fi
 
-	# Get the base name of the directory
 	local dir_name=$(basename "$dir_path")
 
-	# Create the zip file name
 	local zip_file="${dir_name}.zip"
 
-	# Compress the directory
 	if zip -r "$zip_file" "$dir_path"; then
 		echo "Successfully compressed '$dir_path' into '$zip_file'"
 	else
@@ -419,12 +390,10 @@ function extract() {
 
 extractf() {
 	if [ -f "$1" ]; then
-		# Create a directory based on the file name without its extension
 		local dirname="${1%.*}"
 		mkdir -p "$dirname"
 		cd "$dirname"
 
-		# Extract the file based on its extension
 		case "$1" in
 		*.tar.bz2) tar xvjf "../$1" ;;
 		*.tar.gz) tar xvzf "../$1" ;;
@@ -470,15 +439,11 @@ compile-slides() {
 	npx @marp-team/marp-cli@latest "$1" --pdf
 }
 
-# ===== GEMINI MCP ALIASES =====
 alias gmcp='gemini mcp list'
 alias gmcp-status='gemini mcp list && echo "\nMCP Config:" && cat ~/.gemini/settings.json | grep -A 20 mcpServers'
 
 alias bcra-vars='curl https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias > output.json'
 
-# ===== BYMA TOKEN =====
-# Obtiene un access token de BYMA con todos los scopes (snapshot.read + marketDataInstruments.read)
-# leyendo credenciales del secret application/market-data en AWS (profile development)
 byma-token() {
 	local profile="${1:-development}"
 	local byma_url="${BYMA_URL:-https://apigw.byma.com.ar}"
@@ -530,29 +495,19 @@ byma-token() {
 	echo "$access_token"
 }
 
-# Alias con shorthand — usa profile development por defecto
 alias byma-token-dev='byma-token development'
 alias byma-token-prod='byma-token production'
 
-# Helper: copy token to clipboard
 byma-token-copy() {
 	local token
 	token=$(byma-token "$@") && echo "$token" | pbcopy && echo "Token copied to clipboard"
 }
 
-# Helper: export token as BYMA_TOKEN env var
 byma-token-export() {
 	export BYMA_TOKEN=$(byma-token "$@")
 	echo "BYMA_TOKEN set in environment"
 }
 
-# ===== BYMA MARKET DATA INSTRUMENTS =====
-# GET /market-data-instruments/v1/{type}?group={group}&market={market}
-# USO: byma-market-data-instruments <type> <group> [market] [profile]
-#   type: equities.json, fixed-income.json, options.json
-#   group: ACCIONES, CEDEARS, TITULOSPUBLICOS, LETRAS, OPCIONES, etc.
-#   market: PPT (default para fixed-income), opcional para equities
-#   profile: development (default), production
 byma-market-data-instruments() {
 	local type="${1:?Uso: byma-market-data-instruments <type> <group> [market] [profile]}"
 	local group="${2:?Falta group: ACCIONES, CEDEARS, etc}"
@@ -574,14 +529,10 @@ byma-market-data-instruments() {
 		--header "Authorization: Bearer $token" | jq .
 }
 
-# Shorthands para equities
 alias byma-mdi-equities-acciones='byma-market-data-instruments equities.json ACCIONES'
 alias byma-mdi-equities-cedears='byma-market-data-instruments equities.json CEDEARS'
 alias byma-mdi-options='byma-market-data-instruments options.json OPCIONES'
 
-# ===== BYMA FIXED INCOME ISSUANCE CONDITIONS =====
-# GET /market-data-instruments/v1/fixed-income-issuance-conditions.json?symbol={symbol}
-# USO: byma-mdi-issuance-conditions <symbol> [profile]
 byma-mdi-issuance-conditions() {
 	local symbol="${1:?Uso: byma-mdi-issuance-conditions <symbol> [profile]}"
 	local profile="${2:-development}"
@@ -600,15 +551,6 @@ byma-mdi-issuance-conditions() {
 }
 alias byma-mdi-condiciones='byma-mdi-issuance-conditions'
 
-# ===== BYMA SNAPSHOT EQUITY =====
-# Obtiene equity snapshot de BYMA
-# USO: byma-snapshot-equity [group] [subgroup] [operativeForm] [profile]
-#   group: ACCIONES (default), CEDEARS, OPCIONES
-#   subgroup: GENERAL, LIDER (default: usa .raw/ endpoint = raw json)
-#   operativeForm: CONTADO (default)
-#   profile: development (default), production
-#
-# Si BYMA_TOKEN está exportado lo usa; si no, obtiene token automáticamente.
 byma-snapshot-equity() {
 	local group="${1:-ACCIONES}"
 	local subgroup="${2:-}"
@@ -624,10 +566,8 @@ byma-snapshot-equity() {
 
 	local url
 	if [[ -z "$subgroup" ]]; then
-		# Raw endpoint (flat response, no subgroup)
 		url="$byma_url/snapshot/v1/equity.raw/?group=$group&operativeForm=$operative_form"
 	else
-		# Endpoint with subgroup (wrapped response)
 		url="$byma_url/snapshot/v1/equity?group=$group&subgroup=$subgroup&operativeForm=$operative_form"
 	fi
 	echo "GET $url" >&2
@@ -635,21 +575,11 @@ byma-snapshot-equity() {
 		--header "Authorization: Bearer $token" | jq .
 }
 
-# Shorthands (raw = sin subgroup)
 alias byma-snapshot-equity-all='byma-snapshot-equity ACCIONES "" CONTADO'
 alias byma-snapshot-equity-general='byma-snapshot-equity ACCIONES GENERAL CONTADO'
 alias byma-snapshot-equity-leaders='byma-snapshot-equity ACCIONES LIDER CONTADO'
 alias byma-snapshot-cedears='byma-snapshot-equity CEDEARS GENERAL CONTADO'
 
-# ===== BYMA SNAPSHOT FIXED INCOME =====
-# USO: byma-snapshot-fixed-income <group> [market] [operativeForm] [profile]
-#   group*: TITULOSPUBLICOS, BONOSCONSOLIDACION, LETRAS, LETRASTESORO,
-#           TITULOSDEUDA, CERTPARTICIPACION, OBLIGACIONESNEGOC, ONPYMES
-#   market: PPT (default)
-#   operativeForm: CONTADO (default)
-#   profile: development (default), production
-#
-# Si BYMA_TOKEN está exportado lo usa; si no, obtiene token automáticamente.
 byma-snapshot-fixed-income() {
 	local group="${1:?Uso: byma-snapshot-fixed-income <group> [market] [operativeForm] [profile]\nGroups: TITULOSPUBLICOS, BONOSCONSOLIDACION, LETRAS, LETRASTESORO, TITULOSDEUDA, CERTPARTICIPACION, OBLIGACIONESNEGOC, ONPYMES}"
 	local market="${2:-PPT}"
@@ -669,7 +599,6 @@ byma-snapshot-fixed-income() {
 		--header "Authorization: Bearer $token" | jq .
 }
 
-# Shorthands
 alias byma-snapshot-titulospublicos='byma-snapshot-fixed-income TITULOSPUBLICOS'
 alias byma-snapshot-letras='byma-snapshot-fixed-income LETRAS'
 alias byma-snapshot-titulosdeuda='byma-snapshot-fixed-income TITULOSDEUDA'
@@ -679,10 +608,6 @@ alias byma-snapshot-bonosconsolidacion='byma-snapshot-fixed-income BONOSCONSOLID
 alias byma-snapshot-letrastesoro='byma-snapshot-fixed-income LETRASTESORO'
 alias byma-snapshot-certparticipacion='byma-snapshot-fixed-income CERTPARTICIPACION'
 
-# ===== CLAUDE CODE MULTI-PROFILE MANAGEMENT =====
-# Profiles: personal (teal), w = work (orange), ww = alt (lavender)
-# Shared scripts in ~/.config/claude-profiles/
-
 _claude_run() {
 	local profile=$1
 	shift
@@ -691,15 +616,12 @@ _claude_run() {
 		echo "Unknown profile: $profile" >&2
 		return 1
 	fi
-	# Write profile marker so context-bar picks it up
 	echo "$profile" >"$HOME/.claude-profile"
 	CLAUDE_CONFIG_DIR="$config_dir" claude "$@"
 }
 
-# Claude Code profile aliases
 alias c-self='echo "personal" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude claude'
 alias c-alma='echo "alma" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude-alma claude'
-# Legacy aliases
 alias claude-personal='c-self'
 alias claude-alma='c-alma'
 
@@ -723,13 +645,9 @@ claude-whoami() {
 	echo "   Config dir:     ${CLAUDE_CONFIG_DIR:-~/.claude.json}"
 	echo "   User ID:        ${user_id}..."
 }
-# Load claude profile completion
 if [[ -f "$HOME/.config/claude-profiles/completion.zsh" ]]; then
 	source "$HOME/.config/claude-profiles/completion.zsh"
 fi
-
-# ===== MERIDIAN PROFILE SWITCHING FOR OPENCODE =====
-# Switch profiles at runtime — OpenCode picks it up automatically
 
 _oc_switch() {
 	local profile=$1

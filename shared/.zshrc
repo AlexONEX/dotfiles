@@ -2,7 +2,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# ─── Zstyle Completions ──────────────────────────────────────────────────────
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
 zstyle ':completion:*' list-colors '=*=80'
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
@@ -14,32 +13,26 @@ zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p
 autoload -U colors && colors
 unset LC_CTYPE
 
-# Initialize completions BEFORE loading plugins (plugins call compdef)
 autoload -Uz compinit
-# Usar dump cacheado si fue generado hace <20h, regenerar si es más viejo
-if [[ -n "${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh-20)" ]]; then
+_zcd=(${ZDOTDIR:-$HOME}/.zcompdump(N.mh-20))
+if (( $#_zcd )); then
   compinit -C
 else
   compinit -i
 fi
 
-# Basic history settings
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_ALL_DUPS
 
-# Ensure PATH has unique entries
 typeset -U PATH path
 
-# Java
-export JAVA_HOME=$(/usr/libexec/java_home 2>/dev/null || echo "/Users/alex/Library/Java/JavaVirtualMachines/corretto-21.0.4/Contents/Home")
+export JAVA_HOME="/Users/alex/Library/Java/JavaVirtualMachines/corretto-21.0.4/Contents/Home"
 
-# Vim keybindings (optional - comment out if you prefer emacs bindings)
 bindkey -v
 
-# Plugin management with zsh_unplugged
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.zsh}/plugins}
 if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
   mkdir -p $ZPLUGINDIR
@@ -47,7 +40,6 @@ if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
 fi
 source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
 
-# Essential plugins
 repos=(
     romkatv/powerlevel10k
     zsh-users/zsh-autosuggestions
@@ -55,7 +47,6 @@ repos=(
 )
 plugin-load $repos
 
-# Plugin update helper
 function plugin-update {
   ZPLUGINDIR=${ZPLUGINDIR:-$HOME/.zsh/plugins}
   for d in $ZPLUGINDIR/*/.git(/); do
@@ -64,15 +55,21 @@ function plugin-update {
   done
 }
 
-# Initialize Powerlevel10k
 if [[ -f $ZPLUGINDIR/powerlevel10k/powerlevel10k.zsh-theme ]]; then
     source $ZPLUGINDIR/powerlevel10k/powerlevel10k.zsh-theme
 fi
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Virtualenvwrapper — lazy-load (solo cuando usás workon/mkvirtualenv/etc)
+if [[ "$INSIDE_EMACS" == *vterm* ]]; then
+  _vterm_sh=(~/.config/emacs/elpa/vterm-*/etc/emacs-vterm-zsh.sh(N))
+  [[ -n "$_vterm_sh" ]] && source "${_vterm_sh[-1]}"
+  find_file() { vterm_cmd find-file "$(realpath "${@:-.}")"; }
+  alias o='find_file'
+  POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
+  (( $+functions[p10k] )) && p10k reload
+fi
+
 export WORKON_HOME=$HOME/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=/opt/homebrew/bin/python3
 _venv_lazy_init() {
@@ -89,15 +86,6 @@ cpvirtualenv() { _venv_lazy_init; cpvirtualenv "$@"; }
 allvirtualenv() { _venv_lazy_init; allvirtualenv "$@"; }
 deactivate()   { _venv_lazy_init; deactivate "$@"; }
 
-# Auto-excluir node_modules de Spotlight después de npm install
-npm() {
-  command npm "$@"
-  if [[ "$1" == "install" || "$1" == "i" || "$1" == "ci" ]]; then
-    [[ -d node_modules ]] && touch node_modules/.metadata_never_index
-  fi
-}
-
-# NVM — lazy-load (solo cuando usás node/npm/npx/nvm)
 export NVM_DIR="$HOME/.nvm"
 _nvm_lazy_load() {
   unset -f nvm node npm npx 2>/dev/null
@@ -106,7 +94,13 @@ _nvm_lazy_load() {
 }
 nvm() { _nvm_lazy_load; nvm "$@"; }
 node() { _nvm_lazy_load; command node "$@"; }
-npm() { _nvm_lazy_load; command npm "$@"; }
+npm() {
+  _nvm_lazy_load
+  command npm "$@"
+  if [[ "$1" == "install" || "$1" == "i" || "$1" == "ci" ]]; then
+    [[ -d node_modules ]] && touch node_modules/.metadata_never_index
+  fi
+}
 npx() { _nvm_lazy_load; command npx "$@"; }
 
 if command -v nvim &>/dev/null; then
@@ -114,29 +108,34 @@ if command -v nvim &>/dev/null; then
 else
   export VISUAL=vim
 fi
-export EDITOR="${VISUAL}"
+export EDITOR="ec"
 
-# ===== USER ALIASES =====
+{
+  if ! emacsclient -w 2 -e t &>/dev/null; then
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      open -ga /Applications/Emacs.app
+    elif command -v emacs &>/dev/null; then
+      emacs --daemon &>/dev/null
+    fi
+  fi
+} &!
+
 if [ -f ~/.zsh/aliases.zsh ]; then
     . ~/.zsh/aliases.zsh
 fi
 
-# ===== GIT PLUGIN =====
 if [ -f ~/.zsh/git.plugin.zsh ]; then
     . ~/.zsh/git.plugin.zsh
 fi
 
-# ===== INFRA ALIASES ====
 if [ -f ~/.zsh/infra-aliases.zsh ]; then
     . ~/.zsh/infra-aliases.zsh
 fi
 
-# ===== DATABASE ALIASES ====
 if [ -f ~/.zsh/database.zsh ]; then
     . ~/.zsh/database.zsh
 fi
 
-# SDKMAN lazy-load — se activa solo al primer `sdk` o `java` etc
 export SDKMAN_DIR="$HOME/.sdkman"
 sdk() {
   unset -f sdk
@@ -148,7 +147,6 @@ alias gwip="git add . && git commit -m 'WIP'"
 alias secretary="opencode --agent secretary"
 alias sec="opencode --agent secretary"
 
-# ===== SECRETARY TASKS =====
 _SECRETARY_DB="$HOME/.config/opencode/secretary/secretary.db"
 
 alias tasks='sqlite3 -column -header "$_SECRETARY_DB" \
@@ -212,56 +210,51 @@ if [ -f "$CREDENTIALS_FILE" ] && [ -r "$CREDENTIALS_FILE" ]; then
   source "$CREDENTIALS_FILE"
 fi
 
-# Source local env file if present (generated by mise/asdf/pyenv etc.)
 [[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
 export PATH="$HOME/.local/bin:$PATH"
 
-# Add JBang to environment
 alias j!=jbang
 export PATH="$HOME/.jbang/bin:$PATH"
 export PATH="/opt/homebrew/opt/mysql@8.4/bin:$PATH"
 
-# Emacs Mac keyboard fix
 export EMACS_MAC_OPTION_MODIFIER=meta
 
-# ─── Gmail CLI/TUI (usa credenciales de opencode, zero extra config) ─────────
-alias mails='gmail.py'                              # CLI — ultimos 15 (default: allaria)
-alias gmail='gmail-tui.py'                          # TUI interactiva con vim keys
-alias mails-ari='gmail.py --account allaria'        # CLI — Allaria
-alias mails-alm='gmail.py --account almafintech'    # CLI — Almafintech
-alias mails-unread='gmail.py --unread'              # CLI — solo no leidos
-alias mails-aws='gmail.py --label AWS'              # CLI — filtro AWS
-alias mails-github='gmail.py --label GitHub'        # CLI — filtro GitHub
-alias mails-jira='gmail.py --label Jira'            # CLI — filtro Jira
-alias mails-short='gmail.py --short'                # CLI — modo compacto
-alias mails-inbox='gmail.py --unread --label INBOX' # CLI — inbox pendiente
-alias gmail-ari='gmail-tui.py --account allaria'    # TUI — Allaria
-alias gmail-alm='gmail-tui.py --account almafintech' # TUI — Almafintech
-alias gmail-reauth='gmail-reauth.py'                  # Re-autenticacion OAuth
-# ─── Meridian usage ────────────────────────────────────────────────────────────
+alias mails='gmail.py'
+alias gmail='gmail-tui.py'
+alias mails-ari='gmail.py --account allaria'
+alias mails-alm='gmail.py --account almafintech'
+alias mails-unread='gmail.py --unread'
+alias mails-aws='gmail.py --label AWS'
+alias mails-github='gmail.py --label GitHub'
+alias mails-jira='gmail.py --label Jira'
+alias mails-short='gmail.py --short'
+alias mails-inbox='gmail.py --unread --label INBOX'
+alias gmail-ari='gmail-tui.py --account allaria'
+alias gmail-alm='gmail-tui.py --account almafintech'
+alias gmail-reauth='gmail-reauth.py'
 export PATH="$HOME/bin:$PATH"
 alias mu='meridian-usage'
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/terraform terraform
 
-export GITLAB_TOKEN=$(security find-generic-password -s "gitlab-allaria" -a "alex" -w 2>/dev/null)
 export PATH="$HOME/.local/bin:$PATH"
 export PROTONMAIL_USERNAME="josephcopertars@proton.me"
-export PROTONMAIL_PASSWORD=$(security find-generic-password -s "protonmail-smtp" -a "alex" -w 2>/dev/null)
 export PROTONMAIL_SMTP_PORT=1025
 
+autoload -Uz add-zsh-hook
+_deferred_init() {
+  add-zsh-hook -d precmd _deferred_init
+  export JAVA_HOME="$(/usr/libexec/java_home 2>/dev/null || echo "$JAVA_HOME")"
+  export GITLAB_TOKEN="$(security find-generic-password -s "gitlab-allaria" -a "alex" -w 2>/dev/null)"
+  export PROTONMAIL_PASSWORD="$(security find-generic-password -s "protonmail-smtp" -a "alex" -w 2>/dev/null)"
+}
+add-zsh-hook precmd _deferred_init
 
-# Added by Antigravity CLI installer
 export PATH="/Users/alex/.local/bin:$PATH"
 
-# rescate de red (tailscale roba DNS/ruta)
 alias net-rescue="~/bin/net-rescue"
 
-# --- controlx-api RDS (prod) via túnel AWS VPN PROD ---
-# La VPN DEV instala rutas /24 de 10.20.x que le roban el RDS al túnel PROD
-# (ambas VPC solapan en 10.20.x). Esto fuerza el host del RDS por PROD.
-# Incidente 2026-09-14. Uso: controlx-db-route
 controlx-db-route() {
   local rds=10.20.180.209 iface=""
   for i in ${(f)"$(ifconfig -l | tr ' ' '\n' | grep utun)"}; do
