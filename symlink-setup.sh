@@ -51,6 +51,10 @@ done
 # Git
 ln -sf "$DOTFILES/shared/.gitconfig" ~/.gitconfig
 
+# Emacs (only init.el is versioned; elpa/caches stay in ~/.config/emacs)
+mkdir -p ~/.config/emacs
+ln -sf "$DOTFILES/shared/.config/emacs/init.el" ~/.config/emacs/init.el
+
 # Claude rules (deduped, path-scoped) — versioned here, loaded via ~/.claude/rules.
 # Drop any stale real dir first: `ln -sfn` into an existing directory nests the
 # link inside it (~/.claude/rules/rules) instead of replacing it.

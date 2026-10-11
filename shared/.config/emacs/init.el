@@ -4,8 +4,15 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
+;; Keep Custom's writes (package-selected-packages, etc.) out of this
+;; git-tracked symlink. custom.el lives in the real ~/.config/emacs, not the repo.
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file t)
+
 (require 'use-package)
 (setq use-package-always-ensure t)
+;; Per-package load timings -> `M-x use-package-report'. Built-in, no cost at runtime.
+(setq use-package-compute-statistics t)
 
 ;; No GC during startup (avoids pauses mid-init); restore a sane 64MB afterwards.
 ;; A small read-process-output-max throttles rg/eglot output.
@@ -185,6 +192,7 @@
   "fG" '(al-grep-github :which-key "grep all ~/Github")
   "fp" '(project-switch-project :which-key "pick project")
   "fP" '(al-find-file-github :which-key "file across ~/Github")
+  "fn" '(dired-create-empty-file :which-key "new empty file (here)")
   "fb" '(consult-buffer :which-key "buffer")
   "fl" '(consult-line :which-key "line in buffer")
   "fs" '(consult-imenu :which-key "file symbols")
@@ -212,9 +220,8 @@
   (add-to-list 'completion-at-point-functions #'cape-file))
 
 (use-package yasnippet
-  :config
-  (yas-global-mode 1))
-(use-package yasnippet-snippets)
+  :hook (prog-mode . yas-minor-mode))   ; lazy: starts on the first code buffer, not at init
+(use-package yasnippet-snippets :after yasnippet)
 
 (use-package yasnippet-capf
   :after (cape yasnippet)
@@ -250,8 +257,17 @@
 
 (electric-pair-mode 1)
 
+;; copilot-mode turns on via the hook, but the language server starts lazily and
+;; loses the race on the first buffer at startup (fails silently -> dead until
+;; `copilot-diagnose'). Restart it on mode activation if the connection is down.
+(defun al-copilot-ensure-server ()
+  "Start the Copilot server when `copilot-mode' turns on and it's not alive."
+  (when (and copilot-mode (not (copilot--connection-alivep)))
+    (copilot--start-server)))
+
 (use-package copilot
-  :hook (prog-mode . copilot-mode)
+  :hook ((prog-mode . copilot-mode)
+         (copilot-mode . al-copilot-ensure-server))
   :init
   (setq copilot-node-executable "/opt/homebrew/bin/node"
         copilot-indent-offset-warning-disable t)   ; silence "no mode-specific indent offset"
@@ -309,6 +325,35 @@
   "gi" '(forge-list-issues :which-key "issues"))
 
 (use-package terraform-mode)
+
+;; SSH via TRAMP. Hosts autocomplete natively with `C-x C-f /ssh:host:`.
+;; ControlMaster (connection reuse) is on by default in modern TRAMP, so no config.
+;; `,ss` just picks a ~/.ssh/config host with vertico and opens dired there.
+;; debian-server's gitstatus prompt ends with an xterm title (ESC ] 0 ; ... BEL) after
+;; the `$ `; the stock pattern never matches it and TRAMP spins at 100% CPU forever.
+(with-eval-after-load 'tramp
+  (setq tramp-shell-prompt-pattern
+        "\\(?:^\\|\r\\)[^]#$%>\n]*#?[]#$%>] *\\(\e\\[[0-9;]*[a-zA-Z] *\\|\e\\][0-9];[^\a]*\a\\)*"))
+(defun al-ssh-dired ()
+  "Open dired on a host from ~/.ssh/config over TRAMP."
+  (interactive)
+  (require 'tramp)
+  (let* ((hosts (seq-uniq (delq nil (mapcar #'cadr (tramp-parse-sconfig "~/.ssh/config")))))
+         (host (completing-read "SSH host: " hosts nil t)))
+    (dired (format "/ssh:%s:" host))))
+
+(al-define-leader-key
+  "s" '(:ignore t :which-key "ssh")
+  "ss" '(al-ssh-dired :which-key "host -> dired"))
+
+(defun al-open-init ()
+  "Open the Emacs init file."
+  (interactive)
+  (find-file user-init-file))
+
+(al-define-leader-key
+  "o" '(:ignore t :which-key "open")
+  "oc" '(al-open-init :which-key "init.el"))
 
 ;; Java uses lsp-mode + lsp-java (a full jdtls client like VS Code): supports the
 ;; refactorings jdtls delegates to the client (Change Signature, Extract Interface,
@@ -498,17 +543,45 @@ e.g. pyright (no documentFormattingProvider)."
   :config
   (setq eglot-sync-connect nil
         eglot-events-buffer-size 0)
+  ;; pylsp (not pyright): pyright is type-check only, no refactors. pylsp bundles
+  ;; rope (extract method/variable, inline, introduce parameter) + ruff/mypy/black
+  ;; plugins -> those show up as ,ca code actions.
   (add-to-list 'eglot-server-programs
-               '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
+               '((python-mode python-ts-mode) . ("pylsp")))
   (add-to-list 'eglot-server-programs
                '((terraform-mode) . ("terraform-ls" "serve")))
   (cl-defmethod eglot-register-capability
     (server (method (eql workspace/didChangeWatchedFiles)) id &key watchers)
     (ignore server method id watchers)))
 
+;; ponytail: alist, add a language when you hit one. Native `compile' gives the
+;; output buffer + errant-line navigation for free.
+(defvar al-run-commands
+  '((python-mode        . "python3")
+    (python-ts-mode     . "python3")
+    (js-mode            . "node")
+    (js-ts-mode         . "node")
+    (typescript-ts-mode . "npx tsx")
+    (sh-mode            . "bash")
+    (bash-ts-mode       . "bash")
+    (go-mode            . "go run")
+    (go-ts-mode         . "go run"))
+  "Major-mode -> interpreter for `al-run-file'.")
+
+(defun al-run-file ()
+  "Save and run the current file via `compile'; output in *compilation*."
+  (interactive)
+  (let ((cmd  (cdr (assq major-mode al-run-commands)))
+        (file (buffer-file-name)))
+    (unless file (user-error "Buffer is not visiting a file"))
+    (unless cmd  (user-error "No run command for %s" major-mode))
+    (save-buffer)
+    (compile (format "%s %s" cmd (shell-quote-argument file)))))
+
 ;; Code binds top-level so ,c* work regardless of eglot/lsp load order.
 (al-define-leader-key
   "c" '(:ignore t :which-key "code")
+  "cc" '(al-run-file :which-key "run this file")
   "cr" '(al-code-rename :which-key "rename")
   "ca" '(al-code-action :which-key "code action")
   "cd" '(consult-flymake :which-key "list diagnostics (C-u = project)")
@@ -592,9 +665,9 @@ e.g. pyright (no documentFormattingProvider)."
   (load-theme al-current-theme t)
   (message "Theme: %s" al-current-theme))
 
-(use-package doom-themes)
-(use-package ef-themes)
-(use-package catppuccin-theme)
+(use-package doom-themes)                   ; eager: load-theme needs it at startup
+(use-package ef-themes :defer t)            ; only via consult-theme / ,T -> autoloaded
+(use-package catppuccin-theme :defer t)
 
 (with-eval-after-load 'doom-themes
   (load-theme al-dark-theme t))
@@ -622,7 +695,7 @@ e.g. pyright (no documentFormattingProvider)."
         dashboard-items '((projects . 12)              ; Projects section, up to 12
                           (recents  . 8))              ; and recent files
         dashboard-set-heading-icons t
-        dashboard-set-file-icons t
+        dashboard-set-file-icons nil        ; per-file icon lookup was the dashboard's startup cost
         dashboard-projects-switch-function #'project-switch-project)
   :config
   ;; Keep the dashboard (and what you open from it) rooted at ~/Github.
@@ -847,10 +920,15 @@ pane, or if it's the last pane in the workspace, close the whole workspace
   (when (derived-mode-p 'vterm-mode)
     (let ((kill-buffer-query-functions nil))   ; don't ask about the live process
       (kill-buffer (current-buffer))))
-  (cond
-   ((> (count-windows) 1) (delete-window))              ; other panes -> just this pane
-   ((> (length (tab-bar-tabs)) 1) (tab-bar-close-tab))  ; last pane -> kill workspace, go to another
-   (t (dashboard-open))))                               ; nothing left -> land on the dashboard
+  ;; Try to close the pane; delete-window refuses on the sole ordinary window
+  ;; (count-windows lies: it counts the minibuffer and side windows). On that
+  ;; refusal we're the last pane -> close the workspace, or land on dashboard.
+  (condition-case nil
+      (delete-window)                                     ; other panes -> just this pane
+    (error
+     (if (> (length (tab-bar-tabs)) 1)
+         (tab-bar-close-tab)                              ; last pane -> kill workspace, go to another
+       (dashboard-open)))))                               ; nothing left -> land on the dashboard
 
 (defun al-choose-tab ()
   "List workspaces (tab-bar tabs) and jump to the chosen one (tmux choose-window)."
@@ -928,23 +1006,3 @@ with identical names are still distinguishable."
 
 ;; Toggle the zsh dropdown from anywhere.
 (global-set-key (kbd "C-`") #'al-vterm-toggle)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(apheleia avy cape catppuccin-theme consult copilot
-              dashboard diff-hl doom-modeline doom-themes ef-themes
-              evil-collection evil-commentary evil-mc
-              evil-surround evil-textobj-tree-sitter
-              exec-path-from-shell flymake-collection forge general
-              indent-bars marginalia move-text orderless
-              terraform-mode treesit-auto treesit-fold vertico vterm
-              xclip yasnippet-capf yasnippet-snippets)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
