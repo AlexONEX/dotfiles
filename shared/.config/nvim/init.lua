@@ -1,7 +1,7 @@
 vim.loader.enable()
 
 local utils = require("utils")
-local expected_version = "0.12.4"
+local expected_version = "0.12.5"
 utils.is_compatible_version(expected_version)
 
 -- some global settings
