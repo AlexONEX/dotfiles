@@ -6,7 +6,7 @@
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
-  "model": "claude-opus-4-8",
+  "model": "sonnet",
   "availableModels": [
     "claude-haiku-4-5",
     "claude-sonnet-4-6",
@@ -65,6 +65,7 @@
       }
     }
   },
+  "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark-ansi",
   "preferredNotifChannel": "ghostty"
