@@ -35,3 +35,6 @@ shared/.local/bin/
 # Claude local (machine-specific) settings — never commit
 settings.local.json
 **/settings.local.json
+
+# tmux plugins (tpm)
+shared/.config/tmux/plugins/

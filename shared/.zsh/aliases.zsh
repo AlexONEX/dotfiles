@@ -624,6 +624,7 @@ alias c-self='echo "personal" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.
 alias c-alma='echo "alma" > "$HOME/.claude-profile" && CLAUDE_CONFIG_DIR=~/.claude-alma claude'
 alias claude-personal='c-self'
 alias claude-alma='c-alma'
+alias restore='~/claude-restore.sh'
 
 alias claude-profiles='bash ~/.config/claude-profiles/status.sh'
 
