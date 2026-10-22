@@ -64,7 +64,8 @@ for upstream_path in "${!CATEGORIES[@]}"; do
 
     # Detail diff for changed files
     while IFS= read -r line; do
-      file=$(echo "$line" | grep "differ" | awk '{print $2}')
+      # awk filter, not grep: grep exits 1 on "Only in" lines and pipefail+set -e aborts
+      file=$(echo "$line" | awk '/ differ$/{print $2}')
       [ -z "$file" ] && continue
       rel="${file#$dst/}"
       [ -f "$src/$rel" ] && echo "" && echo ">> $rel" && diff -u "$dst/$rel" "$src/$rel" || true
@@ -119,6 +120,7 @@ if [ "${1:-}" = "--pr" ]; then
       --title "chore: sync skills from mattpocock" \
       --body "Sync from [mattpocock/skills](https://github.com/mattpocock/skills/commit/$UPSTREAM_HASH)"
     echo "PR created!"
+    git checkout main
   fi
 else
   echo ""
