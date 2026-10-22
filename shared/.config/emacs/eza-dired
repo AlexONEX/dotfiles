@@ -1,0 +1,14 @@
+#!/bin/sh
+# eza for dired: dired's parser wants ls's column order (links owner size), a
+# numeric size (eza prints "-" for dirs) and no "@" xattr marker after the mode.
+# Also maps ls's -t (dired's `o` sort toggle) to eza's --sort=age, since eza's -t takes an argument.
+for a; do
+  case $a in
+    -[a-zA-Z]*t*) a="-$(printf %s "${a#-}" | tr -d t)"; set -- "$@" --sort=age ;;
+  esac
+  set -- "$@" "$a"; shift
+done
+exec eza "$@" | sed -E \
+  -e 's/^([-a-z][-rwxsStT]{9})@/\1 /' \
+  -e 's/^([^ ]+ +[0-9]+) +([0-9]+|-) +([^ ]+) /\1 \3 \2 /' \
+  -e 's/^([^ ]+ +[0-9]+ +[^ ]+ +)- /\10 /'

@@ -126,6 +126,14 @@
   (al-define-localleader-key
     "e" '(dired-jump :which-key "explorer")))
 
+;; Dired lists with eza (like the `ls` alias in ~/.zsh/aliases.zsh): eza -al, dirs first.
+;; -H adds the link-count column, long-iso/no color keep dired's parser happy;
+;; eza-dired reorders/cleans eza columns so dired can parse them.
+;; ponytail: eza ignores ls's -t/-S sort flags, so dired's `s` sort toggle is a no-op.
+(setq insert-directory-program (expand-file-name "eza-dired" (file-name-directory (file-truename user-init-file)))
+      dired-use-ls-dired nil
+      dired-listing-switches "-alH --group-directories-first --time-style=long-iso --color=never")
+
 (use-package which-key
   :ensure nil
   :config
@@ -352,7 +360,7 @@
   (find-file user-init-file))
 
 (al-define-leader-key
-  "o" '(:ignore t :which-key "open")
+  "o" '(:ignore t :which-key "open / obsidian")
   "oc" '(al-open-init :which-key "init.el"))
 
 ;; Java uses lsp-mode + lsp-java (a full jdtls client like VS Code): supports the
@@ -689,19 +697,205 @@ e.g. pyright (no documentFormattingProvider)."
 (setq-default default-directory (expand-file-name "~/Github/"))
 (setq command-line-default-directory (expand-file-name "~/Github/"))
 
+;; Dashboard: repos from the three roots below + commit stats.
+(defconst al-repo-roots
+  (mapcar #'expand-file-name '("~/Github/Allaria" "~/Github/Gitlab" "~/Github/me")))
+(defconst al-repos-per-root 14)
+(defconst al-col-width 38)
+(defvar-local al-dashboard-col-pos nil
+  "Buffer position of the first repo in each column of `al-repo-roots'.")
+(defconst al-activity-days 14)
+
+(defun al-root-repos (root)
+  "Git repos directly under ROOT, most recently active first."
+  (let* ((act (lambda (d) (float-time (or (file-attribute-modification-time
+                                           (file-attributes (expand-file-name ".git/logs/HEAD" d)))
+                                          0))))
+         (repos (seq-filter (lambda (d) (file-exists-p (expand-file-name ".git" d)))
+                            (directory-files root t directory-files-no-dot-files-regexp))))
+    (sort repos (lambda (a b) (> (funcall act a) (funcall act b))))))
+
+(defun al-commit-counts (repos)
+  "Alist (DAY . N) of my commits over the last `al-activity-days' days in REPOS."
+  (let ((counts (make-hash-table :test #'equal)))
+    (dolist (r repos)
+      (with-temp-buffer
+        (when (zerop (call-process "git" nil t nil "-C" r "log" "--no-merges"
+                                   (format "--since=%d.days" al-activity-days)
+                                   "--author=Alex\\|alejandro" "--format=%ad" "--date=short"))
+          (dolist (day (split-string (buffer-string) "\n" t))
+            (puthash day (1+ (gethash day counts 0)) counts)))))
+    (mapcar (lambda (i)
+              (let ((day (format-time-string "%F" (time-subtract (current-time) (days-to-time (- al-activity-days 1 i))))))
+                (cons day (gethash day counts 0))))
+            (number-sequence 0 (1- al-activity-days)))))
+
+(defun al-bar (n biggest)
+  (make-string (if (zerop biggest) 0 (max (min 1 n) (round (* 20 (/ (float n) biggest))))) ?█))
+
+(defun al-sparkline (nums)
+  (let ((top (max 1 (apply #'max nums))))
+    (mapconcat (lambda (n) (string (aref "▁▂▃▄▅▆▇█" (min 7 (floor (* 7 (/ (float n) top))))))) nums "")))
+
+(defun al-dashboard-repos (_list-size)
+  "Dashboard item: stats, then one repo column per root in `al-repo-roots'."
+  (let* ((all (mapcar (lambda (r) (cons r (al-root-repos r))) al-repo-roots))
+         (sizes (mapcar (lambda (x) (length (cdr x))) all))
+         (counts (mapcar #'cdr (al-commit-counts (apply #'append (mapcar #'cdr all)))))
+         (biggest (apply #'max sizes))
+         (shown (mapcar (lambda (x) (seq-take (cdr x) al-repos-per-root)) all))
+         (pos (make-list (length all) nil)))
+    (insert (format "  %d repos · commits (%dd) %s  %d total\n\n"
+                    (apply #'+ sizes) al-activity-days (al-sparkline counts) (apply #'+ counts)))
+    (insert "  ")
+    (cl-loop for root in all for n in sizes
+             do (insert (propertize (format (format "%%-%ds" al-col-width)
+                                            (format "%s %s %d" (file-name-nondirectory (car root))
+                                                    (al-bar n biggest) n))
+                                    'face 'dashboard-heading)))
+    (insert "\n")
+    (dotimes (row al-repos-per-root)
+      (insert "  ")
+      (cl-loop for col in shown for i from 0
+               do (let ((repo (nth row col)))
+                    (when (and repo (zerop row)) (setf (nth i pos) (point)))
+                    (if repo
+                        (let ((name (truncate-string-to-width (file-name-nondirectory repo) (- al-col-width 2))))
+                          (insert-text-button name 'action (lambda (_) (dired repo))
+                                              'follow-link t)
+                          (insert (make-string (- al-col-width (string-width name)) ?\s)))
+                      (insert (make-string al-col-width ?\s)))))
+      (insert "\n"))
+    (setq al-dashboard-col-pos pos)
+    (run-with-idle-timer 0 nil (lambda () (al-dashboard-goto-col 0)))))
+
+(defun al-dashboard-goto-col (i)
+  "Jump to the first repo of column I (0 = Allaria, 1 = Gitlab, 2 = me)."
+  (when-let* ((p (nth i al-dashboard-col-pos))) (goto-char p)))
+
+(defun al-dashboard-cell (line col)
+  "Position of the repo button at LINE / column COL of the grid, or nil."
+  (save-excursion
+    (goto-char (point-min))
+    (and (zerop (forward-line (1- line)))
+         (progn (move-to-column col) (button-at (point)))
+         (point))))
+
+(defun al-dashboard-step (drow dcol)
+  "Move DROW rows / DCOL columns over the repo grid.
+Off the grid (e.g. at startup) it lands on the first Allaria repo.
+Moving sideways into a shorter column lands on its last repo."
+  (let* ((idx (max 0 (floor (- (current-column) 2) al-col-width)))
+         (target (+ idx dcol))
+         (col (+ 2 (* target al-col-width)))
+         (line (line-number-at-pos))
+         (dest (and (<= 0 target (1- (length al-repo-roots)))
+                    (if (zerop dcol)
+                        (al-dashboard-cell (+ line drow) col)
+                      (cl-loop for l downfrom line to 1
+                               thereis (al-dashboard-cell l col))))))
+    (cond ((not (button-at (point))) (al-dashboard-goto-col 0))
+          (dest (goto-char dest)))))
+
 (use-package dashboard
   :init
-  (setq dashboard-projects-backend 'project-el         ; projects = repos (project.el)
-        dashboard-items '((projects . 12)              ; Projects section, up to 12
-                          (recents  . 8))              ; and recent files
-        dashboard-set-heading-icons t
-        dashboard-set-file-icons nil        ; per-file icon lookup was the dashboard's startup cost
-        dashboard-projects-switch-function #'project-switch-project)
+  (setq dashboard-items '((repos . 1))
+        dashboard-item-generators '((repos . al-dashboard-repos))
+        dashboard-item-names '(("Repos:" . repos))
+        dashboard-set-file-icons nil
+        dashboard-startup-banner nil)          ; no logo: the space goes to the repo grid
   :config
+  ;; dashboard rejects a nil banner; its only caller already skips a nil result.
+  (advice-add 'dashboard-choose-banner :around (lambda (f b) (and b (funcall f b))))
+  ;; Buffer-local so they beat evil-collection's dashboard-next-line/previous-line,
+  ;; which only know dashboard's own widgets, not this grid.
+  (add-hook 'dashboard-mode-hook
+            (lambda ()
+              (dolist (k `(("h" ,(lambda () (interactive) (al-dashboard-step 0 -1)))
+                           ("l" ,(lambda () (interactive) (al-dashboard-step 0 1)))
+                           ("j" ,(lambda () (interactive) (al-dashboard-step 1 0)))
+                           ("k" ,(lambda () (interactive) (al-dashboard-step -1 0)))
+                           ("r" ,(lambda () (interactive) (al-dashboard-goto-col 0)))   ; Allaria
+                           ("t" ,(lambda () (interactive) (al-dashboard-goto-col 1)))   ; Gitlab
+                           ("p" ,(lambda () (interactive) (al-dashboard-goto-col 2))))) ; me
+                (evil-local-set-key 'normal (kbd (car k)) (cadr k)))))
   ;; Keep the dashboard (and what you open from it) rooted at ~/Github.
   (add-hook 'dashboard-mode-hook
             (lambda () (setq default-directory (expand-file-name "~/Github/"))))
   (dashboard-setup-startup-hook))
+
+;; Obsidian: one vault, versioned in git, with work/ and personal/ folders.
+;; obsidian.el works on the .md files directly (wikilinks, backlinks, tags,
+;; daily notes) -> the Obsidian app doesn't need to be running.
+(defconst al-vault (expand-file-name "~/Github/me/obsidian/"))
+
+(use-package obsidian
+  :init
+  (setq elgrep-data-file nil                ; elgrep's saved-search history; unused, and its file triggers a lexical-binding warning
+        obsidian-directory al-vault
+        obsidian-inbox-directory "inbox"
+        obsidian-daily-notes-directory "daily")
+  :config
+  (global-obsidian-mode 1))
+
+(defun al-note-recent ()
+  "Pick among the 30 most recently modified notes."
+  (interactive)
+  (let* ((files (sort (obsidian-files)
+                      (lambda (a b) (time-less-p (file-attribute-modification-time (file-attributes b))
+                                                 (file-attribute-modification-time (file-attributes a))))))
+         (names (mapcar (lambda (f) (file-relative-name f al-vault)) (seq-take files 30))))
+    (find-file (expand-file-name
+                (completing-read "Recent note: "
+                                 (lambda (str pred action)  ; keep mtime order
+                                   (if (eq action 'metadata)
+                                       '(metadata (display-sort-function . identity))
+                                     (complete-with-action action names str pred)))
+                                 nil t)
+                al-vault))))
+
+(defun al-vault-dired ()
+  (interactive)
+  (dired al-vault))
+
+(defun al-note-open-app ()
+  "Open the vault in the Obsidian app."
+  (interactive)
+  (browse-url (concat "obsidian://open?path=" (url-hexify-string (directory-file-name al-vault)))))
+
+(use-package markdown-mode
+  :mode ("\\.md\\'" . markdown-mode)
+  :init
+  (setq markdown-header-scaling t                 ; bigger headings
+        markdown-fontify-code-blocks-natively t   ; highlight ```lang blocks
+        markdown-enable-wiki-links t
+        markdown-list-item-bullets '("●" "○" "◆" "◇"))
+  :config
+  ;; defcustom resets it on load, so set after (hides ** _ # [[ ]] until the cursor is on them).
+  (setq-default markdown-hide-markup t)
+  :hook ((markdown-mode . visual-line-mode)
+         (markdown-mode . visual-wrap-prefix-mode)
+         ;; LSP (marksman: [[link]] / heading completion, go-to-definition,
+         ;; diagnostics for broken links) only for notes in the vault.
+         (markdown-mode . (lambda ()
+                            (when (and buffer-file-name
+                                       (string-prefix-p al-vault buffer-file-name))
+                              (eglot-ensure))))))
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs '(markdown-mode . ("marksman" "server"))))
+
+(al-define-leader-key
+  "od" '(obsidian-daily-note :which-key "obsidian: daily note")
+  "on" '(obsidian-capture :which-key "obsidian: new note (inbox)")
+  "of" '(obsidian-jump :which-key "obsidian: find note")
+  "or" '(al-note-recent :which-key "obsidian: recent notes")
+  "os" '(obsidian-search :which-key "obsidian: search text")
+  "ot" '(obsidian-find-tag :which-key "obsidian: find by tag")
+  "ob" '(obsidian-toggle-backlinks-panel :which-key "obsidian: backlinks")
+  "ol" '(obsidian-follow-link-at-point :which-key "obsidian: follow [[link]]")
+  "ov" '(al-vault-dired :which-key "obsidian: vault folder (dired)")
+  "oa" '(al-note-open-app :which-key "obsidian: open in app"))
 
 ;; Tabs = buffers, bufferline.nvim style: a flat global list of all file
 ;; buffers (not per-window like tab-line's default).
@@ -867,14 +1061,7 @@ e.g. pyright (no documentFormattingProvider)."
 (setq display-time-format "%H:%M" display-time-default-load-average nil)
 (display-time-mode 1)
 
-;; Persistence across restart (tmux-resurrect analog): saves file buffers and
-;; window/frame layout. vterm can't be restored (live processes) -> excluded.
-(setq desktop-save t                          ; save without asking
-      desktop-load-locked-desktop t           ; don't prompt about the lock
-      desktop-restore-frames t)
-(with-eval-after-load 'desktop
-  (add-to-list 'desktop-modes-not-to-save 'vterm-mode))
-(desktop-save-mode 1)
+;; No desktop-save: file tabs are not restored across restarts.
 ;; (windmove: pane nav is C-hjkl and C-SPC arrows; dropped the redundant M-<arrows>.)
 
 (defun al-vterm-new ()
