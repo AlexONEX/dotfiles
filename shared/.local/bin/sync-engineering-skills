@@ -95,6 +95,13 @@ if [ "${1:-}" = "--pr" ]; then
     [ -d "$src" ] || continue
     mkdir -p "$dst"
 
+    # Category dirs mirror upstream: drop skills removed/renamed there.
+    # Keep your own skills out of these dirs or they get deleted here.
+    for local_dir in "$dst"/*/; do
+      [ -d "$local_dir" ] || continue
+      [ -d "$src/$(basename "$local_dir")" ] || rm -rf "$local_dir"
+    done
+
     for skill_dir in "$src"/*/; do
       skill=$(basename "$skill_dir")
       skip=false
