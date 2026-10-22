@@ -30,6 +30,21 @@ declare -A CATEGORIES=(
 # Skills to skip from upstream
 SKIP="ask-matt README.md"
 
+# Single skills vendored from repos too big to keep as submodules:
+# <dir under shared/opencode-skills> -> "<repo url> <skill path in repo>"
+declare -A VENDORED=(
+  ["test-audit"]="https://github.com/openclaw/openclaw.git .agents/skills/test-audit"
+)
+VENDOR_TMP=$(mktemp -d)
+trap 'rm -rf "$VENDOR_TMP"' EXIT
+
+# Blobless sparse clone: downloads only the skill's files, not the whole repo.
+fetch_vendored() {
+  local name="$1" url="$2" path="$3"
+  git clone -q --depth 1 --filter=blob:none --sparse "$url" "$VENDOR_TMP/$name"
+  git -C "$VENDOR_TMP/$name" sparse-checkout set --no-cone "/$path/"
+}
+
 echo "=== Sync Engineering Skills ==="
 echo "  Dotfiles:  $DOTFILES_DIR"
 echo "  Submodule: $SUBMODULE"
@@ -73,6 +88,18 @@ for upstream_path in "${!CATEGORIES[@]}"; do
   fi
 done
 
+for name in "${!VENDORED[@]}"; do
+  read -r url path <<< "${VENDORED[$name]}"
+  fetch_vendored "$name" "$url" "$path"
+  changes=$(diff -ru "$SKILLS_DIR/$name" "$VENDOR_TMP/$name/$path" || true)
+  if [ -n "$changes" ]; then
+    echo ""
+    echo "[vendored: $name]"
+    echo "$changes"
+    HAS_CHANGES=true
+  fi
+done
+
 if ! $HAS_CHANGES; then
   echo "Already up to date."
 fi
@@ -110,6 +137,12 @@ if [ "${1:-}" = "--pr" ]; then
       rm -rf "$dst/$skill"
       cp -r "$skill_dir" "$dst/$skill"
     done
+  done
+
+  for name in "${!VENDORED[@]}"; do
+    read -r _ path <<< "${VENDORED[$name]}"
+    rm -rf "${SKILLS_DIR:?}/$name"
+    cp -r "$VENDOR_TMP/$name/$path" "$SKILLS_DIR/$name"
   done
 
   git add external/mattpocock-skills "$SKILLS_DIR"

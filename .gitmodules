@@ -19,10 +19,6 @@
 [submodule "external/b-mendoza-agent-skills"]
 	path = external/b-mendoza-agent-skills
 	url = https://github.com/b-mendoza/agent-skills.git
-[submodule "external/openclaw"]
-	path = external/openclaw
-	url = https://github.com/openclaw/openclaw.git
-	shallow = true
 [submodule "external/cloudflare-security-audit-skill"]
 	path = external/cloudflare-security-audit-skill
 	url = https://github.com/cloudflare/security-audit-skill.git
