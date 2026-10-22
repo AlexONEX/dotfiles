@@ -134,6 +134,9 @@ for skill in code-review-and-quality code-simplification performance-optimizatio
   link_openskill "$skill" "$DOTFILES/external/addyosmani-agent-skills/skills/$skill"
 done
 
+# cloudflare: security audit / pen-test guidance
+link_openskill security-audit "$DOTFILES/external/cloudflare-security-audit-skill/skills/security-audit"
+
 # Archivos sueltos (init-secretary.sh, README.md)
 for f in "$DOTFILES/shared/opencode-skills/"*.sh "$DOTFILES/shared/opencode-skills/"*.md; do
   [ -f "$f" ] && ln -sf "$f" ~/.config/opencode/skills/$(basename "$f")
